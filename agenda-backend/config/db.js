@@ -2,13 +2,17 @@ require('dotenv').config();
 const mysql = require('mysql2');
 
 const connection = process.env.DATABASE_URL
-  ? mysql.createConnection(process.env.DATABASE_URL)
+  ? mysql.createConnection({
+      uri: process.env.DATABASE_URL,
+      ssl: { rejectUnauthorized: false }
+    })
   : mysql.createConnection({
       host: process.env.DB_HOST || 'localhost',
       user: process.env.DB_USER || 'root',
       password: process.env.DB_PASS || 'root',
       database: process.env.DB_NAME || 'agenda_web',
-      port: process.env.DB_PORT || 3306
+      port: process.env.DB_PORT || 3306,
+      ssl: (process.env.DB_HOST && process.env.DB_HOST !== 'localhost') ? { rejectUnauthorized: false } : undefined
     });
 
 connection.connect((err) => {
