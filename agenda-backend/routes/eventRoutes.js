@@ -1,0 +1,12 @@
+const express = require('express');
+const router = express.Router();
+const authenticateToken = require('../middleware/auth');
+
+const eventController = require('../controllers/eventController');
+
+router.post('/', authenticateToken, eventController.createEvent);
+router.get('/:id_usuario', authenticateToken, eventController.getEvents);
+router.put('/:id', authenticateToken, eventController.updateEvent);
+router.delete('/:id', authenticateToken, eventController.deleteEvent);
+
+module.exports = router;

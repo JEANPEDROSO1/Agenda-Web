@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Agenda Web - Sistema de Gestão</title>
+  <link rel="stylesheet" href="index.css?v=6">
+</head>
+<body class="auth-mesh-body">
+  <!-- Fundo Animado -->
+  <div class="mesh-background">
+    <div class="mesh-blob blob-1"></div>
+    <div class="mesh-blob blob-2"></div>
+    <div class="mesh-blob blob-3"></div>
+  </div>
+
+  <div class="glass-landing-container">
+    <div class="glass-header landing-header">
+      <div class="logo-box landing-logo">
+        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </div>
+      <h1>Agenda Web</h1>
+      <p>Organize seus eventos e compromissos de forma elegante e eficiente. Uma experiência moderna para gestão de tempo.</p>
+    </div>
+
+    <div class="landing-buttons">
+      <a href="login.html" class="glass-action-btn">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M15 3h4a2 2 0 012 2v14a2 2 0 01-2 2h-4"/>
+          <polyline points="10,17 15,12 10,7"/>
+          <line x1="15" x2="3" y1="12" y2="12"/>
+        </svg>
+        Entrar
+      </a>
+      <a href="cadastro.html" class="glass-action-btn glass-action-alt">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M16 21v-2a4 4 0 00-4-4H6a4 4 0 00-4 4v2"/>
+          <circle cx="9" cy="7" r="4"/>
+          <path d="M19 8v6m3-3h-6"/>
+        </svg>
+        Criar Conta
+      </a>
+    </div>
+
+    <div class="glass-features">
+      <div class="glass-feature">
+        <h3>✨ Interface Moderna</h3>
+        <p>Design glassmorphism com efeitos visuais elegantes.</p>
+      </div>
+      <div class="glass-feature">
+        <h3>🔐 Segurança</h3>
+        <p>Criptografia de senhas e autenticação JWT de ponta.</p>
+      </div>
+      <div class="glass-feature">
+        <h3>📱 Responsivo</h3>
+        <p>Funciona perfeitamente em desktop e dispositivos móveis.</p>
+      </div>
+    </div>
+  </div>
+
+  <script src="config.js?v=final_fix_100"></script>
+  <script src="script.js?v=final_fix_100"></script>
+  <script>
+    const token = localStorage.getItem('token');
+    const userId = localStorage.getItem('userId');
+    if (token && userId) {
+      console.log('Usuário já logado');
+    }
+  </script>
+</body>
+</html>
