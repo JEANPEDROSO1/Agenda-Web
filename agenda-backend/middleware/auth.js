@@ -8,7 +8,7 @@ const authenticateToken = (req, res, next) => {
     return res.status(401).send('Token não fornecido');
   }
 
-  jwt.verify(token, 'secreta', (err, user) => {
+  jwt.verify(token, process.env.JWT_SECRET || 'secreta', (err, user) => {
     if (err) {
       return res.status(403).send('Token inválido');
     }

@@ -33,7 +33,7 @@ const msalConfig = {
 };
 
 const cca = new msal.ConfidentialClientApplication(msalConfig);
-const redirectUri = "http://localhost:5000/auth/microsoft/callback";
+const redirectUri = process.env.REDIRECT_URI || "http://localhost:5000/auth/microsoft/callback";
 
 // Gera a URL para o usuário fazer login
 const getAuthUrl = async () => {
