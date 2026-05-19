@@ -2,7 +2,24 @@ const path = require('path');
 require('dotenv').config();
 require('dotenv').config({ path: path.join(__dirname, '../.env') });
 require('dotenv').config({ path: path.join(__dirname, '../../.env') });
+require('dotenv').config({ path: '/etc/secrets/.env' });
 const mysql = require('mysql2');
+
+console.log('--- Configuração do Banco de Dados ---');
+console.log('DATABASE_URL presente:', !!process.env.DATABASE_URL);
+if (process.env.DATABASE_URL) {
+  console.log('DATABASE_URL length:', process.env.DATABASE_URL.length);
+  const match = process.env.DATABASE_URL.match(/@([^:/]+)/);
+  if (match) {
+    console.log('DATABASE_URL Host:', match[1]);
+  }
+} else {
+  console.log('DB_HOST:', process.env.DB_HOST || 'localhost');
+  console.log('DB_PORT:', process.env.DB_PORT || 3306);
+  console.log('DB_USER:', process.env.DB_USER || 'root');
+  console.log('DB_NAME:', process.env.DB_NAME || 'agenda_web');
+}
+console.log('--------------------------------------');
 
 const connection = process.env.DATABASE_URL
   ? mysql.createConnection({
