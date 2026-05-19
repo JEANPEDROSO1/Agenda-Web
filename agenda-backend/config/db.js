@@ -1,20 +1,35 @@
 const path = require('path');
-require('dotenv').config();
-require('dotenv').config({ path: path.join(__dirname, '../.env') });
-require('dotenv').config({ path: path.join(__dirname, '../../.env') });
-require('dotenv').config({ path: '/etc/secrets/.env' });
+
+console.log('=== DIAGNÓSTICO DO BANCO DE DADOS (ABSOLUTO TOP) ===');
+console.log('DATABASE_URL no OS:', typeof process.env.DATABASE_URL, process.env.DATABASE_URL ? `definida (tamanho: ${process.env.DATABASE_URL.length})` : 'vazia/indefinida');
+if (process.env.DATABASE_URL) {
+  const match = process.env.DATABASE_URL.match(/@([^:/]+)/);
+  if (match) {
+    console.log('DATABASE_URL Host no OS:', match[1]);
+  }
+}
+console.log('==================================================');
+
+// Apenas carrega o dotenv se a variável não estiver definida no sistema operacional (ex: localmente)
+if (!process.env.DATABASE_URL) {
+  console.log('[db] DATABASE_URL não está no OS. Carregando dotenv...');
+  require('dotenv').config();
+  require('dotenv').config({ path: path.join(__dirname, '../.env') });
+  require('dotenv').config({ path: path.join(__dirname, '../../.env') });
+  require('dotenv').config({ path: '/etc/secrets/.env' });
+} else {
+  console.log('[db] DATABASE_URL já está ativa no OS. Ignorando dotenv para evitar conflito.');
+}
+
 const mysql = require('mysql2');
 
 console.log('--- Configuração do Banco de Dados ---');
-console.log('--- Todas as chaves do process.env ---');
-console.log(Object.keys(process.env).filter(key => !key.startsWith('npm_') && !key.startsWith('NODE_')).join(', '));
-console.log('--------------------------------------');
 console.log('DATABASE_URL presente:', !!process.env.DATABASE_URL);
 if (process.env.DATABASE_URL) {
   console.log('DATABASE_URL length:', process.env.DATABASE_URL.length);
   const match = process.env.DATABASE_URL.match(/@([^:/]+)/);
   if (match) {
-    console.log('DATABASE_URL Host:', match[1]);
+    console.log('DATABASE_URL Host ativo:', match[1]);
   }
 } else {
   console.log('DB_HOST:', process.env.DB_HOST || 'localhost');
