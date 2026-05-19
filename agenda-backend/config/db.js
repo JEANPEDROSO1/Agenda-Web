@@ -6,6 +6,9 @@ require('dotenv').config({ path: '/etc/secrets/.env' });
 const mysql = require('mysql2');
 
 console.log('--- Configuração do Banco de Dados ---');
+console.log('--- Todas as chaves do process.env ---');
+console.log(Object.keys(process.env).filter(key => !key.startsWith('npm_') && !key.startsWith('NODE_')).join(', '));
+console.log('--------------------------------------');
 console.log('DATABASE_URL presente:', !!process.env.DATABASE_URL);
 if (process.env.DATABASE_URL) {
   console.log('DATABASE_URL length:', process.env.DATABASE_URL.length);
