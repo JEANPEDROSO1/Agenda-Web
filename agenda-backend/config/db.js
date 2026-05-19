@@ -1,4 +1,7 @@
+const path = require('path');
 require('dotenv').config();
+require('dotenv').config({ path: path.join(__dirname, '../.env') });
+require('dotenv').config({ path: path.join(__dirname, '../../.env') });
 const mysql = require('mysql2');
 
 const connection = process.env.DATABASE_URL

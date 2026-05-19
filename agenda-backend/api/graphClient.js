@@ -4,6 +4,8 @@ const fs = require('fs');
 const path = require('path');
 require('isomorphic-fetch');
 require('dotenv').config();
+require('dotenv').config({ path: path.join(__dirname, '../.env') });
+require('dotenv').config({ path: path.join(__dirname, '../../.env') });
 
 const cachePath = path.join(__dirname, 'tokenCache.json');
 
