@@ -1,18 +1,18 @@
 const path = require('path');
 
 console.log('=== DIAGNÓSTICO DO BANCO DE DADOS (ABSOLUTO TOP) ===');
-console.log('DATABASE_URL no OS:', typeof process.env.DATABASE_URL, process.env.DATABASE_URL ? `definida (tamanho: ${process.env.DATABASE_URL.length})` : 'vazia/indefinida');
-if (process.env.DATABASE_URL) {
-  const match = process.env.DATABASE_URL.match(/@([^:/]+)/);
-  if (match) {
-    console.log('DATABASE_URL Host no OS:', match[1]);
-  }
-}
+console.log('DATABASE_URL no OS tipo:', typeof process.env.DATABASE_URL);
+console.log('DATABASE_URL no OS length:', process.env.DATABASE_URL ? process.env.DATABASE_URL.length : 0);
+console.log('DATABASE_URL no OS valor:', process.env.DATABASE_URL ? `"${process.env.DATABASE_URL.substring(0, 5)}...${process.env.DATABASE_URL.substring(process.env.DATABASE_URL.length - 5)}"` : 'vazia/indefinida');
+
+console.log('AZURE_CLIENT_ID no OS:', typeof process.env.AZURE_CLIENT_ID, process.env.AZURE_CLIENT_ID ? `tamanho: ${process.env.AZURE_CLIENT_ID.length}` : 'vazia');
+console.log('EMAIL_USER no OS:', typeof process.env.EMAIL_USER, process.env.EMAIL_USER ? `tamanho: ${process.env.EMAIL_USER.length}` : 'vazia');
+console.log('JWT_SECRET no OS:', typeof process.env.JWT_SECRET, process.env.JWT_SECRET ? `tamanho: ${process.env.JWT_SECRET.length}` : 'vazia');
 console.log('==================================================');
 
 // Apenas carrega o dotenv se a variável não estiver definida no sistema operacional (ex: localmente)
-if (!process.env.DATABASE_URL) {
-  console.log('[db] DATABASE_URL não está no OS. Carregando dotenv...');
+if (!process.env.DATABASE_URL || process.env.DATABASE_URL.length === 0) {
+  console.log('[db] DATABASE_URL não está ativa no OS. Carregando dotenv...');
   require('dotenv').config();
   require('dotenv').config({ path: path.join(__dirname, '../.env') });
   require('dotenv').config({ path: path.join(__dirname, '../../.env') });

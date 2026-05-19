@@ -3,7 +3,7 @@ const { Client } = require('@microsoft/microsoft-graph-client');
 const fs = require('fs');
 const path = require('path');
 require('isomorphic-fetch');
-if (!process.env.DATABASE_URL) {
+if (!process.env.DATABASE_URL || process.env.DATABASE_URL.length === 0) {
   require('dotenv').config();
   require('dotenv').config({ path: path.join(__dirname, '../.env') });
   require('dotenv').config({ path: path.join(__dirname, '../../.env') });

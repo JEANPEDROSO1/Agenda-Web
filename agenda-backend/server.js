@@ -1,4 +1,4 @@
-if (!process.env.DATABASE_URL) {
+if (!process.env.DATABASE_URL || process.env.DATABASE_URL.length === 0) {
   const path = require('path');
   require('dotenv').config();
   require('dotenv').config({ path: path.join(__dirname, '../.env') });
