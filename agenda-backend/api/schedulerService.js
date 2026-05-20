@@ -107,8 +107,8 @@ const checkAndSendEmails = () => {
 
                     const todayStr = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`;
 
-                    // 1. DISPARO NO MINUTO EXATO (0 minutos de diferença)
-                    if (diffMin === 0 && event.ultimo_inicio_enviado !== todayStr) {
+                    // 1. DISPARO DE INÍCIO DO COMPROMISSO (com janela de tolerância de 5 minutos)
+                    if (diffMin <= 0 && diffMin >= -5 && event.ultimo_inicio_enviado !== todayStr) {
                         console.log(`[Scheduler] Disparando e-mail de Início para o evento "${event.titulo}" (${event.urgencia}) de ${event.email}`);
                         const isUrgente = (event.urgencia === 'urgente');
                         
@@ -122,8 +122,8 @@ const checkAndSendEmails = () => {
                         });
                     }
                     
-                    // 2. DISPARO DO ALERTA ANTECIPADO (Exatamente alerta_minutos de diferença antes de iniciar)
-                    else if (event.alerta_minutos > 0 && diffMin === event.alerta_minutos && event.ultimo_alerta_enviado !== todayStr) {
+                    // 2. DISPARO DO ALERTA ANTECIPADO (com janela de tolerância de 5 minutos)
+                    else if (event.alerta_minutos > 0 && diffMin <= event.alerta_minutos && diffMin >= (event.alerta_minutos - 5) && event.ultimo_alerta_enviado !== todayStr) {
                         console.log(`[Scheduler] Disparando e-mail de Alerta (${event.alerta_minutos} min antes) para o evento "${event.titulo}" de ${event.email}`);
                         const isUrgente = (event.urgencia === 'urgente');
                         

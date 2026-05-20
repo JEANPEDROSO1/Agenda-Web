@@ -39,6 +39,7 @@ exports.getEvents = (req, res) => {
         console.error(err);
         return res.status(500).json({ error: 'Erro ao buscar eventos' });
       }
+      res.set('Cache-Control', 'no-store, no-cache, must-revalidate, private');
       res.json(results);
     }
   );
