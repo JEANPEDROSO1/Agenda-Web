@@ -135,13 +135,14 @@ function getNextOccurrence(dateStr, timeStr, repeticao) {
 async function loadCompromissos() {
   const userId = localStorage.getItem('userId');
   const countSpan = document.getElementById('compromissosCount');
+  const list = document.getElementById('compromissosList');
   
   try {
-    const compromissos = await apiRequest(`${API_BASE}/events/${userId}`, {
+    // Adiciona cache buster para evitar respostas cacheadas pelo navegador
+    const compromissos = await apiRequest(`${API_BASE}/events/${userId}?_=${Date.now()}`, {
       headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` }
     });
 
-    const list = document.getElementById('compromissosList');
     list.innerHTML = '';
     countSpan.textContent = `${compromissos.length} itens`;
 
@@ -249,7 +250,7 @@ async function loadCompromissos() {
       // Botão editar só aparece para eventos ativos (não passados)
       const editButton = isPast
         ? ''
-        : `<button class="btn-edit" onclick="abrirEdicao(${item.id_evento}, '${item.titulo}', '${(item.descricao || '').replace(/'/g, "\\'")  }', '${item.data_evento.substring(0, 10)}', '${item.hora_evento}', '${item.urgencia}', '${item.cor}', '${item.repeticao || 'nenhuma'}', ${item.alerta_minutos || 0})">Editar</button>`;
+        : `<button class="btn-edit" onclick="abrirEdicao(${item.id_evento}, '${item.titulo.replace(/'/g, "\\'")}', '${(item.descricao || '').replace(/'/g, "\\'")  }', '${item.data_evento.substring(0, 10)}', '${item.hora_evento}', '${item.urgencia}', '${item.cor}', '${item.repeticao || 'nenhuma'}', ${item.alerta_minutos || 0})">Editar</button>`;
 
       const repeticaoLabel = {
         'semanal': '🔁 Semanal',
@@ -282,6 +283,9 @@ async function loadCompromissos() {
     });
   } catch (error) {
     console.error('Erro ao carregar:', error);
+    if (list) {
+      list.innerHTML = `<p style="grid-column: 1/-1; text-align: center; color: var(--danger); font-style: italic; padding: 20px;">⚠️ Erro ao carregar compromissos: ${error.message}</p>`;
+    }
   }
 }
 
