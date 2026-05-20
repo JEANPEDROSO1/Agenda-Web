@@ -48,6 +48,10 @@ const isEventDueToday = (event, today) => {
 };
 
 const checkAndSendEmails = () => {
+    if (!db.isInitialized) {
+        console.log('[Scheduler] Banco de dados ainda não inicializado. Pulando verificação por enquanto...');
+        return;
+    }
     const now = new Date();
     const currentHour = now.getHours();
     const currentMinute = now.getMinutes();

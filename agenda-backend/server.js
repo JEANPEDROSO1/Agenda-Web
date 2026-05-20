@@ -1,3 +1,10 @@
+const envKeysToClean = ['DATABASE_URL', 'DB_HOST', 'DB_USER', 'DB_PASS', 'DB_NAME', 'DB_PORT'];
+envKeysToClean.forEach(key => {
+  if (process.env[key] === '') {
+    delete process.env[key];
+  }
+});
+
 if (!process.env.DATABASE_URL || process.env.DATABASE_URL.length === 0) {
   const path = require('path');
   require('dotenv').config();

@@ -1,5 +1,13 @@
 const path = require('path');
 
+// Limpar variáveis do OS que vieram como strings vazias, para que o dotenv ou o fallback possam funcionar
+const envKeysToClean = ['DATABASE_URL', 'DB_HOST', 'DB_USER', 'DB_PASS', 'DB_NAME', 'DB_PORT'];
+envKeysToClean.forEach(key => {
+  if (process.env[key] === '') {
+    delete process.env[key];
+  }
+});
+
 console.log('=== DIAGNÓSTICO DO BANCO DE DADOS (ABSOLUTO TOP) ===');
 console.log('DATABASE_URL no OS tipo:', typeof process.env.DATABASE_URL);
 console.log('DATABASE_URL no OS length:', process.env.DATABASE_URL ? process.env.DATABASE_URL.length : 0);
@@ -17,6 +25,13 @@ if (!process.env.DATABASE_URL || process.env.DATABASE_URL.length === 0) {
   require('dotenv').config({ path: path.join(__dirname, '../.env') });
   require('dotenv').config({ path: path.join(__dirname, '../../.env') });
   require('dotenv').config({ path: '/etc/secrets/.env' });
+
+  // Limpar novamente caso os arquivos dotenv tenham injetado strings vazias
+  envKeysToClean.forEach(key => {
+    if (process.env[key] === '') {
+      delete process.env[key];
+    }
+  });
 } else {
   console.log('[db] DATABASE_URL já está ativa no OS. Ignorando dotenv para evitar conflito.');
 }
@@ -39,28 +54,35 @@ if (process.env.DATABASE_URL) {
 }
 console.log('--------------------------------------');
 
-const connection = process.env.DATABASE_URL
-  ? mysql.createConnection({
+const pool = process.env.DATABASE_URL
+  ? mysql.createPool({
       uri: process.env.DATABASE_URL,
-      ssl: { rejectUnauthorized: false }
+      ssl: { rejectUnauthorized: false },
+      waitForConnections: true,
+      connectionLimit: 10,
+      queueLimit: 0
     })
-  : mysql.createConnection({
+  : mysql.createPool({
       host: process.env.DB_HOST || 'localhost',
       user: process.env.DB_USER || 'root',
       password: process.env.DB_PASS || 'root',
       database: process.env.DB_NAME || 'agenda_web',
       port: process.env.DB_PORT || 3306,
-      ssl: (process.env.DB_HOST && process.env.DB_HOST !== 'localhost') ? { rejectUnauthorized: false } : undefined
+      ssl: (process.env.DB_HOST && process.env.DB_HOST !== 'localhost') ? { rejectUnauthorized: false } : undefined,
+      waitForConnections: true,
+      connectionLimit: 10,
+      queueLimit: 0
     });
 
-connection.connect((err) => {
+pool.getConnection((err, connection) => {
   if (err) {
-    console.error('Erro ao conectar:', err);
+    console.error('Erro ao conectar ao banco de dados via Pool:', err);
   } else {
-    console.log('Conectado ao MySQL 🚀');
+    console.log('Conectado ao MySQL via Pool 🚀');
+    connection.release();
 
-    // Garantir que a tabela usuarios exista antes de criar eventos
-    connection.query(
+    // 1. Garantir que a tabela usuarios exista primeiro (necessário para a foreign key)
+    pool.query(
       `CREATE TABLE IF NOT EXISTS usuarios (
         id_usuario INT AUTO_INCREMENT PRIMARY KEY,
         nome VARCHAR(255) NOT NULL,
@@ -70,60 +92,78 @@ connection.connect((err) => {
       (err) => {
         if (err) {
           console.error('Erro ao criar/atualizar tabela usuarios:', err);
+          return;
         }
-      }
-    );
 
-    // Garantir que a tabela eventos tenha as colunas urgencia e cor
-    connection.query(
-      `CREATE TABLE IF NOT EXISTS eventos (
-        id_evento INT AUTO_INCREMENT PRIMARY KEY,
-        titulo VARCHAR(255) NOT NULL,
-        descricao TEXT,
-        data_evento DATE NOT NULL,
-        hora_evento TIME NOT NULL,
-        id_usuario INT NOT NULL,
-        urgencia VARCHAR(20) NOT NULL DEFAULT 'normal',
-        cor VARCHAR(7) NOT NULL DEFAULT '#3b82f6',
-        FOREIGN KEY (id_usuario) REFERENCES usuarios(id_usuario) ON DELETE CASCADE
-      )`,
-      (err) => {
-        if (err) {
-          console.error('Erro ao criar/atualizar tabela eventos:', err);
-        }
-      }
-    );
+        // 2. Garantir que a tabela eventos exista (depois que usuarios existe)
+        pool.query(
+          `CREATE TABLE IF NOT EXISTS eventos (
+            id_evento INT AUTO_INCREMENT PRIMARY KEY,
+            titulo VARCHAR(255) NOT NULL,
+            descricao TEXT,
+            data_evento DATE NOT NULL,
+            hora_evento TIME NOT NULL,
+            id_usuario INT NOT NULL,
+            urgencia VARCHAR(20) NOT NULL DEFAULT 'normal',
+            cor VARCHAR(7) NOT NULL DEFAULT '#3b82f6',
+            FOREIGN KEY (id_usuario) REFERENCES usuarios(id_usuario) ON DELETE CASCADE
+          )`,
+          (err) => {
+            if (err) {
+              console.error('Erro ao criar/atualizar tabela eventos:', err);
+              return;
+            }
 
-    const ensureColumn = (table, column, definition) => {
-      connection.query(
-        'SHOW COLUMNS FROM ' + table + ' LIKE ?',
-        [column],
-        (err, results) => {
-          if (err) {
-            console.error(`Erro ao verificar coluna ${column} em ${table}:`, err);
-            return;
-          }
-          if (results.length === 0) {
-            connection.query(
-              `ALTER TABLE ${table} ADD COLUMN ${column} ${definition}`,
-              (err) => {
-                if (err) {
-                  console.error(`Erro ao adicionar coluna ${column} em ${table}:`, err);
-                }
+            // 3. Verificar/Adicionar colunas extras na tabela eventos
+            const columns = [
+              { name: 'urgencia', def: "VARCHAR(20) NOT NULL DEFAULT 'normal'" },
+              { name: 'cor', def: "VARCHAR(7) NOT NULL DEFAULT '#3b82f6'" },
+              { name: 'repeticao', def: "VARCHAR(20) NOT NULL DEFAULT 'nenhuma'" },
+              { name: 'alerta_minutos', def: "INT NOT NULL DEFAULT 0" },
+              { name: 'ultimo_alerta_enviado', def: "VARCHAR(10) DEFAULT NULL" },
+              { name: 'ultimo_inicio_enviado', def: "VARCHAR(10) DEFAULT NULL" }
+            ];
+
+            let pending = columns.length;
+            const checkFinished = () => {
+              pending--;
+              if (pending === 0) {
+                console.log('Banco de dados totalmente inicializado e tabelas verificadas! 🚀');
+                pool.isInitialized = true;
               }
-            );
-          }
-        }
-      );
-    };
+            };
 
-    ensureColumn('eventos', 'urgencia', "VARCHAR(20) NOT NULL DEFAULT 'normal'");
-    ensureColumn('eventos', 'cor', "VARCHAR(7) NOT NULL DEFAULT '#3b82f6'");
-    ensureColumn('eventos', 'repeticao', "VARCHAR(20) NOT NULL DEFAULT 'nenhuma'");
-    ensureColumn('eventos', 'alerta_minutos', "INT NOT NULL DEFAULT 0");
-    ensureColumn('eventos', 'ultimo_alerta_enviado', "VARCHAR(10) DEFAULT NULL");
-    ensureColumn('eventos', 'ultimo_inicio_enviado', "VARCHAR(10) DEFAULT NULL");
+            columns.forEach(col => {
+              pool.query(
+                'SHOW COLUMNS FROM eventos LIKE ?',
+                [col.name],
+                (err, results) => {
+                  if (err) {
+                    console.error(`Erro ao verificar coluna ${col.name} em eventos:`, err);
+                    checkFinished();
+                    return;
+                  }
+                  if (results.length === 0) {
+                    pool.query(
+                      `ALTER TABLE eventos ADD COLUMN ${col.name} ${col.def}`,
+                      (err) => {
+                        if (err) {
+                          console.error(`Erro ao adicionar coluna ${col.name} em eventos:`, err);
+                        }
+                        checkFinished();
+                      }
+                    );
+                  } else {
+                    checkFinished();
+                  }
+                }
+              );
+            });
+          }
+        );
+      }
+    );
   }
 });
 
-module.exports = connection;
+module.exports = pool;
