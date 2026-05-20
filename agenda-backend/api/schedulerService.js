@@ -1,22 +1,23 @@
 const db = require('../config/db');
 const { sendEventEmail, sendEventAlertEmail } = require('./emailService');
 
-const isEventDueToday = (event, today) => {
-    // today é um objeto Date em horário local
-    const todayYear = today.getFullYear();
-    const todayMonth = today.getMonth(); // 0-11
-    const todayDate = today.getDate(); // 1-31
-    const todayDay = today.getDay(); // 0-6 (dia da semana)
+const getSaoPauloDate = (date = new Date()) => {
+    // Converte a data para a string correspondente no fuso horário de SP
+    const spString = date.toLocaleString('en-US', { timeZone: 'America/Sao_Paulo' });
+    return new Date(spString);
+};
+
+const isEventDueToday = (event, todayInSP) => {
+    const todayYear = todayInSP.getFullYear();
+    const todayMonth = todayInSP.getMonth(); // 0-11
+    const todayDate = todayInSP.getDate(); // 1-31
+    const todayDay = todayInSP.getDay(); // 0-6 (dia da semana)
     
-    // event.data_evento retornado do MySQL2 é um Date
-    const eDate = new Date(event.data_evento);
-    const evYear = eDate.getFullYear();
-    const evMonth = eDate.getMonth();
-    const evDate = eDate.getDate();
-    const evDay = eDate.getDay();
+    // event.data_evento é uma string "YYYY-MM-DD"
+    const [evYear, evMonth, evDate] = event.data_evento.split('-').map(Number);
     
     // Comparação de timestamps para garantir que o evento já iniciou ou inicia hoje
-    const evCompare = new Date(evYear, evMonth, evDate).getTime();
+    const evCompare = new Date(evYear, evMonth - 1, evDate).getTime();
     const todayCompare = new Date(todayYear, todayMonth, todayDate).getTime();
     
     if (evCompare > todayCompare) {
@@ -33,6 +34,7 @@ const isEventDueToday = (event, today) => {
     }
     
     if (event.repeticao === 'semanal') {
+        const evDay = new Date(evYear, evMonth - 1, evDate).getDay();
         return evDay === todayDay;
     }
     
@@ -41,7 +43,7 @@ const isEventDueToday = (event, today) => {
     }
     
     if (event.repeticao === 'anual') {
-        return evDate === todayDate && evMonth === todayMonth;
+        return evDate === todayDate && (evMonth - 1) === todayMonth;
     }
     
     return false;
@@ -52,15 +54,19 @@ const checkAndSendEmails = () => {
         console.log('[Scheduler] Banco de dados ainda não inicializado. Pulando verificação por enquanto...');
         return;
     }
-    const now = new Date();
+    
+    // now ajustado para o fuso horário de SP (UTC-3)
+    const now = getSaoPauloDate();
     const currentHour = now.getHours();
     const currentMinute = now.getMinutes();
     
-    console.log(`[Scheduler] Verificando compromissos para o horário: ${String(currentHour).padStart(2, '0')}:${String(currentMinute).padStart(2, '0')}`);
+    console.log(`[Scheduler] Verificando compromissos para o horário (SP): ${String(currentHour).padStart(2, '0')}:${String(currentMinute).padStart(2, '0')}`);
 
-    // Buscar todos os eventos cadastrados
+    // Buscar todos os eventos cadastrados formatando a data de evento como string YYYY-MM-DD
     db.query(
-        `SELECT e.*, u.email 
+        `SELECT e.id_evento, e.titulo, e.descricao, DATE_FORMAT(e.data_evento, '%Y-%m-%d') as data_evento, 
+                e.hora_evento, e.id_usuario, e.urgencia, e.cor, e.repeticao, e.alerta_minutos, 
+                e.ultimo_alerta_enviado, e.ultimo_inicio_enviado, u.email 
          FROM eventos e 
          JOIN usuarios u ON e.id_usuario = u.id_usuario`,
         async (err, results) => {
@@ -75,7 +81,7 @@ const checkAndSendEmails = () => {
                     // hora_evento vem como string "17:30:00"
                     const [eventHour, eventMinute] = event.hora_evento.split(':').map(Number);
                     
-                    // Criar data de ocorrência hoje para cálculo matemático preciso de minutos
+                    // Criar data de ocorrência hoje no timezone do sistema (usando os componentes de SP) para cálculo preciso
                     const eventTimeToday = new Date(
                         now.getFullYear(),
                         now.getMonth(),
@@ -89,10 +95,13 @@ const checkAndSendEmails = () => {
                     const diffMs = eventTimeToday.getTime() - now.getTime();
                     const diffMin = Math.round(diffMs / 60000);
                     
-                    const link = `http://localhost:8082/dashboard.html`; // link da aplicação
+                    // Se houver FRONTEND_URL configurada no Render, usa ela. Senão, fallback para localhost.
+                    const baseUrl = process.env.FRONTEND_URL || 'http://localhost:8082';
+                    const link = `${baseUrl}/dashboard.html`;
                     
-                    // Formatar data em padrão brasileiro para ficar profissional e legível
-                    const formattedDate = new Date(event.data_evento).toLocaleDateString('pt-BR');
+                    // Formatar data em padrão brasileiro para ficar profissional e legível (DD/MM/YYYY)
+                    const [yr, mo, dy] = event.data_evento.split('-');
+                    const formattedDate = `${dy}/${mo}/${yr}`;
                     const formattedTime = event.hora_evento.substring(0, 5);
                     const formattedDateTime = `${formattedDate} às ${formattedTime}`;
 
