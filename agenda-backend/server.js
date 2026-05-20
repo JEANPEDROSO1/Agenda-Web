@@ -34,6 +34,33 @@ app.get('/', (req, res) => {
   });
 });
 
+app.get('/db-status', (req, res) => {
+  const db = require('./config/db');
+  if (!db.isInitialized) {
+    return res.json({ initialized: false, message: 'Banco de dados ainda não inicializado' });
+  }
+
+  db.query('SHOW COLUMNS FROM eventos', (err, columns) => {
+    if (err) {
+      return res.status(500).json({ error: 'Erro ao listar colunas', details: err.message });
+    }
+    db.query('SELECT COUNT(*) as count FROM usuarios', (err, userCount) => {
+      const users = err ? 'erro' : userCount[0].count;
+      db.query('SELECT COUNT(*) as count FROM eventos', (err, eventCount) => {
+        const events = err ? 'erro' : eventCount[0].count;
+        res.json({
+          initialized: true,
+          users,
+          events,
+          columns: columns.map(c => ({ Field: c.Field, Type: c.Type })),
+          timezone: process.env.TZ || 'not set',
+          serverTime: new Date().toISOString()
+        });
+      });
+    });
+  });
+});
+
 const authRoutes = require('./routes/authRoutes');
 app.use('/auth', authRoutes);
 
