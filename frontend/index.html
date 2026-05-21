@@ -4,6 +4,8 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Agenda Web - Sistema de Gestão</title>
+  <meta name="description" content="Agenda Web - Organize seus eventos e compromissos de forma elegante e eficiente com nossa interface moderna e segura.">
+  <link rel="icon" type="image/png" href="logo.png">
   <link rel="stylesheet" href="index.css?v=6">
 </head>
 <body class="auth-mesh-body">
@@ -46,23 +48,27 @@
 
     <div class="glass-features">
       <div class="glass-feature">
-        <h3>✨ Interface Moderna</h3>
+        <h3><i data-lucide="sparkles" class="feature-icon" style="color: #3b82f6;"></i> Interface Moderna</h3>
         <p>Design glassmorphism com efeitos visuais elegantes.</p>
       </div>
       <div class="glass-feature">
-        <h3>🔐 Segurança</h3>
+        <h3><i data-lucide="lock" class="feature-icon" style="color: #10b981;"></i> Segurança</h3>
         <p>Criptografia de senhas e autenticação JWT de ponta.</p>
       </div>
       <div class="glass-feature">
-        <h3>📱 Responsivo</h3>
+        <h3><i data-lucide="smartphone" class="feature-icon" style="color: #8b5cf6;"></i> Responsivo</h3>
         <p>Funciona perfeitamente em desktop e dispositivos móveis.</p>
       </div>
     </div>
   </div>
 
+  <script src="https://unpkg.com/lucide@latest"></script>
   <script src="config.js?v=final_fix_100"></script>
   <script src="script.js?v=final_fix_100"></script>
   <script>
+    if (typeof lucide !== 'undefined') {
+      lucide.createIcons();
+    }
     const token = localStorage.getItem('token');
     const userId = localStorage.getItem('userId');
     if (token && userId) {

@@ -568,3 +568,13 @@ body {
     height: 400px;
   }
 }
+
+/* ===== LUCIDE ICONS STYLE ===== */
+.lucide {
+  width: 18px;
+  height: 18px;
+  vertical-align: middle;
+  display: inline-block;
+  stroke-width: 2.5;
+}
+

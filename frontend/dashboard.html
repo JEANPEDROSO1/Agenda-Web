@@ -4,6 +4,8 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Dashboard - Agenda Web</title>
+  <meta name="description" content="Visualize seu calendário de compromissos mensal e acompanhe seus próximos eventos na Agenda Web.">
+  <link rel="icon" type="image/png" href="logo.png">
   <link rel="stylesheet" href="dashboard.css?v=final_fix_108">
 </head>
 <body class="auth-mesh-body">
@@ -99,9 +101,15 @@
     </div>
   </div>
 
+  <script src="https://unpkg.com/lucide@latest"></script>
   <script src="config.js?v=final_fix_108"></script>
   <script src="script.js?v=final_fix_108"></script>
   <script src="menu.js?v=final_fix_108"></script>
   <script src="dashboard.js?v=final_fix_108"></script>
+  <script>
+    if (typeof lucide !== 'undefined') {
+      lucide.createIcons();
+    }
+  </script>
 </body>
 </html>

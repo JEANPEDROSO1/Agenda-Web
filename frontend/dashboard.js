@@ -283,20 +283,28 @@ function renderEventsList() {
     const repeticaoLabels = { 'semanal': 'Semanal', 'mensal': 'Mensal', 'anual': 'Anual' };
     const rep = event.repeticao;
     const repeatBadge = (rep && rep !== 'nenhuma' && group.count > 1)
-      ? `<div style="margin-top: 6px; display: inline-block; background: rgba(139, 92, 246, 0.2); color: #a78bfa; font-size: 0.75rem; font-weight: 700; padding: 3px 10px; border-radius: 6px;">🔁 ${repeticaoLabels[rep] || rep} · ${group.count}x neste mês</div>`
+      ? `<div style="margin-top: 6px; display: inline-flex; align-items: center; background: rgba(139, 92, 246, 0.2); color: #a78bfa; font-size: 0.75rem; font-weight: 700; padding: 3px 10px; border-radius: 6px;"><i data-lucide="repeat" class="icon-inline" style="width: 12px; height: 12px; stroke-width: 2.5; margin-right: 4px;"></i>${repeticaoLabels[rep] || rep} · ${group.count}x neste mês</div>`
       : '';
     
+    const urgenciaBadge = event.urgencia === 'urgente'
+      ? `<i data-lucide="alert-triangle" class="icon-inline" style="width: 14px; height: 14px; stroke-width: 2.5; color: #ef4444; margin-right: 4px; vertical-align: middle;"></i>URGENTE`
+      : `<i data-lucide="pin" class="icon-inline" style="width: 14px; height: 14px; stroke-width: 2.5; color: #10b981; margin-right: 4px; vertical-align: middle;"></i>NORMAL`;
+
     eventDiv.innerHTML = `
       <span class="event-time">${dataFormatada} às ${event.hora_evento}</span>
       <h3>${event.titulo}</h3>
       <p>${event.descricao || 'Sem descrição'}</p>
       ${repeatBadge}
-      <div style="margin-top: 10px; font-size: 0.8rem; font-weight: 700; color: ${event.urgencia === 'urgente' ? '#ef4444' : '#10b981'}">
-        ${event.urgencia === 'urgente' ? '⚠️ URGENTE' : '📌 NORMAL'}
+      <div style="margin-top: 10px; font-size: 0.8rem; font-weight: 700; color: ${event.urgencia === 'urgente' ? '#ef4444' : '#10b981'}; display: flex; align-items: center;">
+        ${urgenciaBadge}
       </div>
     `;
     eventsList.appendChild(eventDiv);
   });
+
+  if (typeof lucide !== 'undefined') {
+    lucide.createIcons();
+  }
 }
 
 // Formatar data

@@ -4,6 +4,8 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Compromissos - Agenda Web</title>
+  <meta name="description" content="Gerencie, crie e edite seus compromissos, tarefas e lembretes com facilidade e segurança na Agenda Web.">
+  <link rel="icon" type="image/png" href="logo.png">
   <link rel="stylesheet" href="compromissos.css?v=final_fix_110">
 </head>
 <body class="auth-mesh-body">
@@ -53,7 +55,7 @@
     </div>
 
     <div class="compromissos-actions">
-      <button id="openCreateCompromisso" class="btn-primary-glass">➕ Novo Compromisso</button>
+      <button id="openCreateCompromisso" class="btn-primary-glass" style="display: inline-flex; align-items: center; gap: 6px;"><i data-lucide="plus" class="icon-inline" style="width: 16px; height: 16px;"></i> Novo Compromisso</button>
     </div>
 
     <div class="compromissos-content">
@@ -129,7 +131,7 @@
               </div>
             </div>
 
-            <button type="submit" class="btn-primary-glass w-100">➕ Salvar Compromisso</button>
+            <button type="submit" class="btn-primary-glass w-100" style="display: inline-flex; align-items: center; justify-content: center; gap: 6px;"><i data-lucide="plus" class="icon-inline" style="width: 16px; height: 16px;"></i> Salvar Compromisso</button>
           </form>
         </div>
       </div>
@@ -139,12 +141,12 @@
         <div class="list-header" style="display: flex; align-items: center; gap: 15px;">
           <h2>Seus Compromissos</h2>
           <span id="compromissosCount" class="compromissos-count">0 compromissos</span>
-          <button id="btnDeleteAllPast" class="btn-primary-glass" style="background: var(--danger); display: none; padding: 6px 12px; font-size: 0.8rem; margin-left: auto;">🗑️ Excluir Todos</button>
+          <button id="btnDeleteAllPast" class="btn-primary-glass" style="background: var(--danger); display: none; padding: 6px 12px; font-size: 0.8rem; margin-left: auto; align-items: center; gap: 4px;"><i data-lucide="trash-2" class="icon-inline" style="width: 14px; height: 14px;"></i> Excluir Todos</button>
         </div>
         <div class="filter-container">
-          <button class="filter-btn active" id="filterTodos" onclick="setFilter('todos')">📋 Todos</button>
-          <button class="filter-btn" id="filterAtivos" onclick="setFilter('ativos')">✅ Ativos</button>
-          <button class="filter-btn" id="filterDesativados" onclick="setFilter('desativados')">⏰ Desativados</button>
+          <button class="filter-btn active" id="filterTodos" onclick="setFilter('todos')" style="display: inline-flex; align-items: center; gap: 4px;"><i data-lucide="list" class="icon-inline" style="width: 14px; height: 14px;"></i> Todos</button>
+          <button class="filter-btn" id="filterAtivos" onclick="setFilter('ativos')" style="display: inline-flex; align-items: center; gap: 4px;"><i data-lucide="check-circle" class="icon-inline" style="width: 14px; height: 14px;"></i> Ativos</button>
+          <button class="filter-btn" id="filterDesativados" onclick="setFilter('desativados')" style="display: inline-flex; align-items: center; gap: 4px;"><i data-lucide="clock" class="icon-inline" style="width: 14px; height: 14px;"></i> Desativados</button>
         </div>
         <div id="compromissosList" class="compromissos-list"></div>
       </div>
@@ -221,7 +223,7 @@
           </div>
         </div>
 
-        <button type="submit" class="btn-primary-glass w-100">💾 Salvar Alterações</button>
+        <button type="submit" class="btn-primary-glass w-100" style="display: inline-flex; align-items: center; justify-content: center; gap: 6px;"><i data-lucide="save" class="icon-inline" style="width: 16px; height: 16px;"></i> Salvar Alterações</button>
       </form>
     </div>
   </div>
@@ -262,9 +264,15 @@
     </div>
   </div>
 
+  <script src="https://unpkg.com/lucide@latest"></script>
   <script src="config.js?v=final_fix_110"></script>
   <script src="script.js?v=final_fix_110"></script>
   <script src="menu.js?v=final_fix_110"></script>
   <script src="compromissos.js?v=final_fix_110"></script>
+  <script>
+    if (typeof lucide !== 'undefined') {
+      lucide.createIcons();
+    }
+  </script>
 </body>
 </html>

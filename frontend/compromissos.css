@@ -339,3 +339,13 @@ input:-webkit-autofill:active {
     transform: translateY(0);
   }
 }
+
+/* ===== LUCIDE ICONS STYLE ===== */
+.lucide {
+  width: 18px;
+  height: 18px;
+  vertical-align: middle;
+  display: inline-block;
+  stroke-width: 2.5;
+}
+

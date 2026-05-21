@@ -253,27 +253,31 @@ async function loadCompromissos() {
         : `<button class="btn-edit" onclick="abrirEdicao(${item.id_evento}, '${item.titulo.replace(/'/g, "\\'")}', '${(item.descricao || '').replace(/'/g, "\\'")  }', '${item.data_evento.substring(0, 10)}', '${item.hora_evento}', '${item.urgencia}', '${item.cor}', '${item.repeticao || 'nenhuma'}', ${item.alerta_minutos || 0})">Editar</button>`;
 
       const repeticaoLabel = {
-        'semanal': '🔁 Semanal',
-        'mensal': '🔁 Mensal',
-        'anual': '🔁 Anual'
+        'semanal': `<i data-lucide="repeat" class="icon-inline" style="width: 12px; height: 12px; stroke-width: 2.5; display: inline-block; vertical-align: middle; margin-right: 4px; margin-top: -2px;"></i>Semanal`,
+        'mensal': `<i data-lucide="repeat" class="icon-inline" style="width: 12px; height: 12px; stroke-width: 2.5; display: inline-block; vertical-align: middle; margin-right: 4px; margin-top: -2px;"></i>Mensal`,
+        'anual': `<i data-lucide="repeat" class="icon-inline" style="width: 12px; height: 12px; stroke-width: 2.5; display: inline-block; vertical-align: middle; margin-right: 4px; margin-top: -2px;"></i>Anual`
       };
       const repeticaoBadge = item.repeticao && item.repeticao !== 'nenhuma'
-        ? `<span class="urgencia-badge normal">${repeticaoLabel[item.repeticao] || item.repeticao}</span>`
+        ? `<span class="urgencia-badge normal" style="display: inline-flex; align-items: center;">${repeticaoLabel[item.repeticao] || item.repeticao}</span>`
         : '';
 
       const alertaBadge = item.alerta_minutos && item.alerta_minutos > 0
-        ? `<span class="urgencia-badge normal" style="background: rgba(245, 158, 11, 0.1); color: #f59e0b; border: 1px solid rgba(245, 158, 11, 0.2);">🔔 Alerta ${item.alerta_minutos === 60 ? '1h' : item.alerta_minutos + ' min'}</span>`
+        ? `<span class="urgencia-badge normal" style="background: rgba(245, 158, 11, 0.1); color: #f59e0b; border: 1px solid rgba(245, 158, 11, 0.2); display: inline-flex; align-items: center;"><i data-lucide="bell" class="icon-inline" style="width: 12px; height: 12px; stroke-width: 2.5; display: inline-block; vertical-align: middle; margin-right: 4px;"></i>Alerta ${item.alerta_minutos === 60 ? '1h' : item.alerta_minutos + ' min'}</span>`
         : '';
 
       card.innerHTML = `
         <div class="compromisso-header">
-          <span class="urgencia-badge ${item.urgencia}">${item.urgencia === 'urgente' ? '⚠️ Urgente' : '📌 Normal'}</span>
+          <span class="urgencia-badge ${item.urgencia}" style="display: inline-flex; align-items: center;">
+            ${item.urgencia === 'urgente' 
+              ? `<i data-lucide="alert-triangle" class="icon-inline" style="width: 12px; height: 12px; stroke-width: 2.5; display: inline-block; vertical-align: middle; margin-right: 4px;"></i>Urgente` 
+              : `<i data-lucide="pin" class="icon-inline" style="width: 12px; height: 12px; stroke-width: 2.5; display: inline-block; vertical-align: middle; margin-right: 4px;"></i>Normal`}
+          </span>
           ${repeticaoBadge}
           ${alertaBadge}
           <h3>${item.titulo}</h3>
         </div>
         <p class="compromisso-descricao">${item.descricao || 'Sem descrição'}</p>
-        <p class="compromisso-data">📅 ${date} às ${item.hora_evento}</p>
+        <p class="compromisso-data" style="display: flex; align-items: center; gap: 4px;"><i data-lucide="calendar" class="icon-inline" style="width: 14px; height: 14px; stroke-width: 2.5; display: inline-block; vertical-align: middle;"></i> ${date} às ${item.hora_evento}</p>
         <div class="compromisso-actions">
           ${editButton}
           <button class="btn-delete" onclick="deletarCompromisso(${item.id_evento})">Excluir</button>
@@ -281,10 +285,17 @@ async function loadCompromissos() {
       `;
       list.appendChild(card);
     });
+
+    if (typeof lucide !== 'undefined') {
+      lucide.createIcons();
+    }
   } catch (error) {
     console.error('Erro ao carregar:', error);
     if (list) {
-      list.innerHTML = `<p style="grid-column: 1/-1; text-align: center; color: var(--danger); font-style: italic; padding: 20px;">⚠️ Erro ao carregar compromissos: ${error.message}</p>`;
+      list.innerHTML = `<p style="grid-column: 1/-1; text-align: center; color: var(--danger); font-style: italic; padding: 20px;"><i data-lucide="alert-octagon" class="icon-inline" style="width: 14px; height: 14px; stroke-width: 2.5; color: var(--danger); margin-right: 4px; vertical-align: middle;"></i>Erro ao carregar compromissos: ${error.message}</p>`;
+      if (typeof lucide !== 'undefined') {
+        lucide.createIcons();
+      }
     }
   }
 }

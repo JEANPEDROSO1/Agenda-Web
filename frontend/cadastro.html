@@ -4,6 +4,8 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Cadastro - Agenda Web</title>
+  <meta name="description" content="Crie sua conta na Agenda Web e comece a organizar sua rotina, compromissos e tarefas de forma simples e rápida.">
+  <link rel="icon" type="image/png" href="logo.png">
   <link rel="stylesheet" href="cadastro.css?v=6">
 </head>
 <body class="auth-mesh-body">
@@ -22,12 +24,8 @@
     </a>
 
     <div class="glass-header">
-      <div class="logo-box logo-box-alt">
-        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <path d="M16 21v-2a4 4 0 00-4-4H6a4 4 0 00-4 4v2" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-          <circle cx="9" cy="7" r="4" stroke="currentColor" stroke-width="2"/>
-          <path d="M19 8v6m3-3h-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-        </svg>
+      <div class="logo-box" style="background: white; padding: 2px;">
+        <img src="logo.png" alt="Logo" style="width: 100%; height: 100%; object-fit: contain; border-radius: 18px;">
       </div>
       <h1>Criar Conta</h1>
       <p>Cadastre-se para organizar seu tempo</p>
@@ -87,7 +85,13 @@
     </div>
   </div>
 
+  <script src="https://unpkg.com/lucide@latest"></script>
   <script src="config.js?v=final_fix_100"></script>
   <script src="script.js?v=final_fix_100"></script>
+  <script>
+    if (typeof lucide !== 'undefined') {
+      lucide.createIcons();
+    }
+  </script>
 </body>
 </html>

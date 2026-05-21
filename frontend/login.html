@@ -4,6 +4,8 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Login - Agenda Web</title>
+  <meta name="description" content="Acesse sua conta na Agenda Web para gerenciar seus compromissos e planejar seu dia a dia de forma inteligente.">
+  <link rel="icon" type="image/png" href="logo.png">
   <link rel="stylesheet" href="login.css?v=6">
 </head>
 <body class="auth-mesh-body">
@@ -22,10 +24,8 @@
     </a>
 
     <div class="glass-header">
-      <div class="logo-box">
-        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <path d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-        </svg>
+      <div class="logo-box" style="background: white; padding: 2px;">
+        <img src="logo.png" alt="Logo" style="width: 100%; height: 100%; object-fit: contain; border-radius: 18px;">
       </div>
       <h1>Bem-vindo</h1>
       <p>Acesse sua conta para continuar</p>
@@ -75,7 +75,13 @@
     </div>
   </div>
 
+  <script src="https://unpkg.com/lucide@latest"></script>
   <script src="config.js?v=final_fix_100"></script>
   <script src="script.js?v=final_fix_100"></script>
+  <script>
+    if (typeof lucide !== 'undefined') {
+      lucide.createIcons();
+    }
+  </script>
 </body>
 </html>
