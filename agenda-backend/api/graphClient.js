@@ -10,18 +10,44 @@ if (!process.env.DATABASE_URL || process.env.DATABASE_URL.length === 0) {
   require('dotenv').config({ path: '/etc/secrets/.env' });
 }
 
-const cachePath = path.join(__dirname, 'tokenCache.json');
+const db = require('../config/db');
 
-// Plugin para persistir os tokens localmente
+// Plugin para persistir os tokens no banco de dados MySQL
 const cachePlugin = {
     beforeCacheAccess: async (cacheContext) => {
-        if (fs.existsSync(cachePath)) {
-            cacheContext.tokenCache.deserialize(fs.readFileSync(cachePath, "utf-8"));
-        }
+        return new Promise((resolve) => {
+            db.query('SELECT cache_data FROM msal_cache WHERE id = 1', (err, results) => {
+                if (err) {
+                    console.error('[MSAL DB Cache] Erro ao carregar cache do DB:', err);
+                } else if (results.length > 0) {
+                    try {
+                        cacheContext.tokenCache.deserialize(results[0].cache_data);
+                        console.log('[MSAL DB Cache] Cache de tokens Microsoft carregado do banco 🛡️');
+                    } catch (e) {
+                        console.error('[MSAL DB Cache] Erro ao deserializar cache do DB:', e);
+                    }
+                }
+                resolve();
+            });
+        });
     },
     afterCacheAccess: async (cacheContext) => {
         if (cacheContext.cacheHasChanged) {
-            fs.writeFileSync(cachePath, cacheContext.tokenCache.serialize());
+            return new Promise((resolve) => {
+                const serialized = cacheContext.tokenCache.serialize();
+                db.query(
+                    'INSERT INTO msal_cache (id, cache_data) VALUES (1, ?) ON DUPLICATE KEY UPDATE cache_data = ?',
+                    [serialized, serialized],
+                    (err) => {
+                        if (err) {
+                            console.error('[MSAL DB Cache] Erro ao salvar cache no DB:', err);
+                        } else {
+                            console.log('[MSAL DB Cache] Cache de tokens Microsoft salvo no banco com sucesso 🛡️');
+                        }
+                        resolve();
+                    }
+                );
+            });
         }
     }
 };

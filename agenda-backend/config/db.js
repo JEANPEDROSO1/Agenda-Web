@@ -95,6 +95,21 @@ pool.getConnection((err, connection) => {
           return;
         }
 
+        // Criar tabela de cache MSAL para persistência no banco
+        pool.query(
+          `CREATE TABLE IF NOT EXISTS msal_cache (
+            id INT PRIMARY KEY,
+            cache_data LONGTEXT NOT NULL
+          )`,
+          (errCache) => {
+            if (errCache) {
+              console.error('Erro ao criar tabela msal_cache:', errCache);
+            } else {
+              console.log('Tabela msal_cache verificada/criada com sucesso 🛡️');
+            }
+          }
+        );
+
         // 2. Garantir que a tabela eventos exista (depois que usuarios existe)
         pool.query(
           `CREATE TABLE IF NOT EXISTS eventos (
