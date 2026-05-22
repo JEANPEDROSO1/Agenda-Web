@@ -9,38 +9,69 @@ exports.createEvent = async (req, res) => {
   const repeticaoValue = repeticao || 'nenhuma';
   const alertaMinutosValue = parseInt(alerta_minutos) || 0;
 
-  try {
+  const fullInsert = () => new Promise((resolve, reject) => {
     db.query(
       'INSERT INTO eventos (titulo, descricao, data_evento, hora_evento, id_usuario, urgencia, cor, repeticao, alerta_minutos) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)',
       [titulo, descricao, data_evento, hora_evento, id_usuario, urgenciaValue, corValue, repeticaoValue, alertaMinutosValue],
-      async (err, result) => {
-        if (err) {
-          console.error('Erro no banco ao criar evento:', err);
-          return res.status(500).json({ error: 'Erro ao criar evento' });
-        }
-
-        res.json({ message: 'Evento criado com sucesso 🚀' });
-      }
+      (err, result) => { if (err) reject(err); else resolve(result); }
     );
+  });
+
+  const fallbackInsert = () => new Promise((resolve, reject) => {
+    db.query(
+      'INSERT INTO eventos (titulo, descricao, data_evento, hora_evento, id_usuario, urgencia, cor) VALUES (?, ?, ?, ?, ?, ?, ?)',
+      [titulo, descricao, data_evento, hora_evento, id_usuario, urgenciaValue, corValue],
+      (err, result) => { if (err) reject(err); else resolve(result); }
+    );
+  });
+
+  try {
+    try {
+      await fullInsert();
+    } catch (err) {
+      if (err.code === 'ER_BAD_FIELD_ERROR') {
+        console.warn('Colunas extras ausentes, usando insert reduzido...');
+        await fallbackInsert();
+      } else {
+        throw err;
+      }
+    }
+    res.json({ message: 'Evento criado com sucesso 🚀' });
   } catch (error) {
-    console.error(error);
-    res.status(500).json({ error: 'Erro interno' });
+    console.error('Erro no banco ao criar evento:', error);
+    res.status(500).json({ error: 'Erro ao criar evento' });
   }
 };
 
 exports.getEvents = (req, res) => {
   const id_usuario = req.user.id;
 
+  // Try full query with all columns
   db.query(
     'SELECT id_evento, titulo, descricao, DATE_FORMAT(data_evento, "%Y-%m-%d") as data_evento, hora_evento, urgencia, cor, repeticao, alerta_minutos FROM eventos WHERE id_usuario = ?',
     [id_usuario],
     (err, results) => {
       if (err) {
-        console.error('DB error fetching events:', err);
-        // If column missing, return empty list instead of failing
-        if (err.code && err.code === 'ER_BAD_FIELD_ERROR') {
-          return res.json([]);
+        console.error('DB error fetching events (full query):', err.code, err.message);
+
+        // Se a coluna não existe, tenta query reduzida
+        if (err.code === 'ER_BAD_FIELD_ERROR') {
+          console.warn('Colunas extras ausentes, usando query reduzida...');
+          db.query(
+            'SELECT id_evento, titulo, descricao, DATE_FORMAT(data_evento, "%Y-%m-%d") as data_evento, hora_evento, COALESCE(urgencia, "normal") as urgencia, COALESCE(cor, "#3b82f6") as cor, "nenhuma" as repeticao, 0 as alerta_minutos FROM eventos WHERE id_usuario = ?',
+            [id_usuario],
+            (err2, results2) => {
+              if (err2) {
+                console.error('DB error fetching events (fallback query):', err2.message);
+                return res.status(500).json({ error: 'Erro ao buscar eventos' });
+              }
+              res.set('Cache-Control', 'no-store, no-cache, must-revalidate, private');
+              return res.json(results2);
+            }
+          );
+          return;
         }
+
         return res.status(500).json({ error: 'Erro ao buscar eventos' });
       }
       res.set('Cache-Control', 'no-store, no-cache, must-revalidate, private');
@@ -48,6 +79,7 @@ exports.getEvents = (req, res) => {
     }
   );
 };
+
 
 exports.updateEvent = (req, res) => {
   const { id } = req.params;
