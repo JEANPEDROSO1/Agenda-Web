@@ -1,3 +1,4 @@
+const db = require('../config/db');
 process.env.TZ = 'America/Sao_Paulo';
 
 const getSaoPauloDate = () => new Date();
