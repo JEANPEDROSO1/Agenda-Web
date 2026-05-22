@@ -29,7 +29,7 @@ exports.createEvent = async (req, res) => {
 };
 
 exports.getEvents = (req, res) => {
-  const { id_usuario } = req.params;
+  const id_usuario = req.user.id;
 
   db.query(
     'SELECT id_evento, titulo, descricao, DATE_FORMAT(data_evento, "%Y-%m-%d") as data_evento, hora_evento, urgencia, cor, repeticao, alerta_minutos FROM eventos WHERE id_usuario = ?',
