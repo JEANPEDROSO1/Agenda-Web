@@ -1,11 +1,6 @@
-const db = require('../config/db');
-const { sendEventEmail, sendEventAlertEmail } = require('./emailService');
+process.env.TZ = 'America/Sao_Paulo';
 
-const getSaoPauloDate = (date = new Date()) => {
-    // Converte a data para a string correspondente no fuso horário de SP
-    const spString = date.toLocaleString('en-US', { timeZone: 'America/Sao_Paulo' });
-    return new Date(spString);
-};
+const getSaoPauloDate = () => new Date();
 
 const isEventDueToday = (event, todayInSP) => {
     const todayYear = todayInSP.getFullYear();
