@@ -139,7 +139,7 @@ async function loadCompromissos() {
   
   try {
     // Adiciona cache buster para evitar respostas cacheadas pelo navegador
-    const compromissos = await apiRequest(`${API_BASE}/events/${userId}?_=${Date.now()}`, {
+    const compromissos = await apiRequest(`${API_BASE}/events?_=${Date.now()}`, {
       headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` }
     });
 

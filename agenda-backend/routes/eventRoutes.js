@@ -5,7 +5,7 @@ const authenticateToken = require('../middleware/auth');
 const eventController = require('../controllers/eventController');
 
 router.post('/', authenticateToken, eventController.createEvent);
-router.get('/:id_usuario', authenticateToken, eventController.getEvents);
+router.get('/', authenticateToken, eventController.getEvents);
 router.put('/:id', authenticateToken, eventController.updateEvent);
 router.delete('/:id', authenticateToken, eventController.deleteEvent);
 
