@@ -148,4 +148,4 @@ const startScheduler = () => {
     setInterval(checkAndSendEmails, 60000);
 };
 
-module.exports = { startScheduler };
+module.exports = { startScheduler, checkAndSendEmails };

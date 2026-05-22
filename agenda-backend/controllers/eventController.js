@@ -1,4 +1,6 @@
 const db = require('../config/db');
+const { checkAndSendEmails } = require('../api/schedulerService');
+const { sendEventEmail, sendEventAlertEmail } = require('../api/emailService');
 
 
 exports.createEvent = async (req, res) => {
@@ -43,6 +45,8 @@ exports.createEvent = async (req, res) => {
       }
     }
     res.json({ message: 'Evento criado com sucesso 🚀' });
+  // Verifica imediatamente se há e‑mails a enviar após a criação
+  checkAndSendEmails();
   } catch (error) {
     console.error('Erro no banco ao criar evento:', error);
     res.status(500).json({ error: 'Erro ao criar evento', details: error.message, code: error.code });
