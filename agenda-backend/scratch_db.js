@@ -9,7 +9,7 @@ setTimeout(() => {
     
     // Consultar eventos usando a mesma query do eventController
     db.query(
-        'SELECT id_evento, titulo, descricao, DATE_FORMAT(data_evento, "%Y-%m-%d") as data_evento, hora_evento, urgencia, cor, repeticao, alerta_minutos FROM eventos WHERE id_usuario = ?',
+        'SELECT id_evento, titulo, descricao, data_evento, hora_evento, urgencia, cor, repeticao, alerta_minutos FROM eventos WHERE id_usuario = ?',
         [id_usuario],
         (err, results) => {
             if (err) {
