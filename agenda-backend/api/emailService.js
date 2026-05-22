@@ -1,3 +1,4 @@
+const { getGraphClient } = require('./graphClient');
 require('dotenv').config();
 if (!process.env.AZURE_CLIENT_ID) {
   const path = require('path');
@@ -29,9 +30,29 @@ const sendGraphEmail = async (toEmail, subject, contentHTML) => {
         
         await client.api('/me/sendMail').post(sendMail);
         console.log(`[Graph API] Email enviado para ${toEmail} com sucesso!`);
+        return;
     } catch (error) {
-        console.error('[Graph API] Erro ao enviar email via Graph SDK:', error);
-    }
+        // Se o Graph falhar (ex.: nenhuma conta autenticada), tenta SMTP via Nodemailer
+        console.warn('[Email Service] Falha no Graph, tentando fallback SMTP:', error.message);
+        try {
+            const nodemailer = require('nodemailer');
+            const transporter = nodemailer.createTransport({
+                service: 'Outlook',
+                auth: {
+                    user: process.env.EMAIL_USER,
+                    pass: process.env.EMAIL_PASS
+                }
+            });
+            await transporter.sendMail({
+                from: process.env.SENDER_EMAIL || process.env.EMAIL_USER,
+                to: toEmail,
+                subject: subject,
+                html: contentHTML
+            });
+            console.log(`[SMTP] Email enviado para ${toEmail} via fallback.`);
+        } catch (smtpErr) {
+            console.error('[Email Service] Falha ao enviar e‑mail via SMTP fallback:', smtpErr);
+        }
 };
 
 const getProfessionalTemplate = (titleText, detailText, eventTitle, eventTime, link, accentColor, badgeHTML) => {
