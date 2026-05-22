@@ -21,5 +21,6 @@ CREATE TABLE IF NOT EXISTS eventos (
   urgencia VARCHAR(20) NOT NULL DEFAULT 'normal',
   cor VARCHAR(7) NOT NULL DEFAULT '#3b82f6',
   repeticao VARCHAR(20) NOT NULL DEFAULT 'nenhuma',
+  alerta_minutos INT NOT NULL DEFAULT 0,
   FOREIGN KEY (id_usuario) REFERENCES usuarios(id_usuario) ON DELETE CASCADE
 );

@@ -36,7 +36,11 @@ exports.getEvents = (req, res) => {
     [id_usuario],
     (err, results) => {
       if (err) {
-        console.error(err);
+        console.error('DB error fetching events:', err);
+        // If column missing, return empty list instead of failing
+        if (err.code && err.code === 'ER_BAD_FIELD_ERROR') {
+          return res.json([]);
+        }
         return res.status(500).json({ error: 'Erro ao buscar eventos' });
       }
       res.set('Cache-Control', 'no-store, no-cache, must-revalidate, private');
