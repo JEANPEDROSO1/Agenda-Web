@@ -3,7 +3,13 @@ const db = require('../config/db');
 
 exports.createEvent = async (req, res) => {
   const { titulo, descricao, data_evento, hora_evento, urgencia, cor, repeticao, alerta_minutos } = req.body;
-  const id_usuario = req.user.id;
+  const id_usuario = req.user ? (req.user.id || req.user.id_usuario) : null;
+  
+  if (!id_usuario) {
+    console.error('createEvent: id_usuario não encontrado no token/req.user');
+    return res.status(401).json({ error: 'Usuário não autenticado ou token inválido' });
+  }
+  
   const urgenciaValue = urgencia || 'normal';
   const corValue = cor || '#3b82f6';
   const repeticaoValue = repeticao || 'nenhuma';
@@ -39,12 +45,17 @@ exports.createEvent = async (req, res) => {
     res.json({ message: 'Evento criado com sucesso 🚀' });
   } catch (error) {
     console.error('Erro no banco ao criar evento:', error);
-    res.status(500).json({ error: 'Erro ao criar evento' });
+    res.status(500).json({ error: 'Erro ao criar evento', details: error.message, code: error.code });
   }
 };
 
 exports.getEvents = (req, res) => {
-  const id_usuario = req.user.id;
+  const id_usuario = req.user ? (req.user.id || req.user.id_usuario) : null;
+  
+  if (!id_usuario) {
+    console.error('getEvents: id_usuario não encontrado no token/req.user');
+    return res.status(401).json({ error: 'Usuário não autenticado ou token inválido' });
+  }
 
   // Try full query with all columns
   db.query(
@@ -63,7 +74,12 @@ exports.getEvents = (req, res) => {
             (err2, results2) => {
               if (err2) {
                 console.error('DB error fetching events (fallback query):', err2.message);
-                return res.status(500).json({ error: 'Erro ao buscar eventos' });
+                return res.status(500).json({ 
+                  error: 'Erro ao buscar eventos', 
+                  details: err2.message, 
+                  code: err2.code,
+                  query: 'fallback' 
+                });
               }
               res.set('Cache-Control', 'no-store, no-cache, must-revalidate, private');
               return res.json(results2);
@@ -72,7 +88,12 @@ exports.getEvents = (req, res) => {
           return;
         }
 
-        return res.status(500).json({ error: 'Erro ao buscar eventos' });
+        return res.status(500).json({ 
+          error: 'Erro ao buscar eventos', 
+          details: err.message, 
+          code: err.code,
+          query: 'full' 
+        });
       }
       res.set('Cache-Control', 'no-store, no-cache, must-revalidate, private');
       res.json(results);

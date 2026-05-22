@@ -151,10 +151,10 @@ async function apiRequest(url, options = {}) {
 // Carregar eventos para a dashboard (apenas visualização)
 async function loadDashboardEvents() {
   const userId = localStorage.getItem('userId');
-  console.log('Carregando eventos para userId:', userId);
+  console.log('Carregando eventos...');
   
   try {
-    const eventsData = await apiRequest(`${API_BASE}/events/${userId}`, {
+    const eventsData = await apiRequest(`${API_BASE}/events?_=${Date.now()}`, {
       headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` }
     });
     
