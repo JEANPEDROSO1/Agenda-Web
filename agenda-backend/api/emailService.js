@@ -1,5 +1,10 @@
-const { getGraphClient } = require('./graphClient');
 require('dotenv').config();
+if (!process.env.AZURE_CLIENT_ID) {
+  const path = require('path');
+  require('dotenv').config({ path: path.join(__dirname, '../.env') });
+  require('dotenv').config({ path: path.join(__dirname, '../../.env') });
+  require('dotenv').config({ path: '/etc/secrets/.env' });
+}
 
 const sendGraphEmail = async (toEmail, subject, contentHTML) => {
     try {
