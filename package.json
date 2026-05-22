@@ -1,0 +1,13 @@
+{
+  "name": "agenda-web",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "start": "node agenda-backend/server.js",
+    "dev": "cd agenda-backend && npm run dev"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "description": "Root package.json for Railway deployment pointing to agenda-backend subdirectory"
+}
