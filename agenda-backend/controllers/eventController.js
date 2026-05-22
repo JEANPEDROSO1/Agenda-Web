@@ -59,7 +59,7 @@ exports.getEvents = (req, res) => {
 
   // Try full query with all columns
   db.query(
-    "SELECT id_evento, titulo, descricao, DATE_FORMAT(data_evento, '%Y-%m-%d') as data_evento, hora_evento, urgencia, cor, repeticao, alerta_minutos FROM eventos WHERE id_usuario = ?",
+    "SELECT id_evento, titulo, descricao, data_evento, hora_evento, urgencia, cor, repeticao, alerta_minutos FROM eventos WHERE id_usuario = ?",
     [id_usuario],
     (err, results) => {
       if (err) {
@@ -69,7 +69,7 @@ exports.getEvents = (req, res) => {
         if (err.code === 'ER_BAD_FIELD_ERROR') {
           console.warn('Colunas extras ausentes, usando query reduzida...');
           db.query(
-            "SELECT id_evento, titulo, descricao, DATE_FORMAT(data_evento, '%Y-%m-%d') as data_evento, hora_evento, COALESCE(urgencia, 'normal') as urgencia, COALESCE(cor, '#3b82f6') as cor, 'nenhuma' as repeticao, 0 as alerta_minutos FROM eventos WHERE id_usuario = ?",
+            "SELECT id_evento, titulo, descricao, data_evento, hora_evento, COALESCE(urgencia, 'normal') as urgencia, COALESCE(cor, '#3b82f6') as cor, 'nenhuma' as repeticao, 0 as alerta_minutos FROM eventos WHERE id_usuario = ?",
             [id_usuario],
             (err2, results2) => {
               if (err2) {

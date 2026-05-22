@@ -60,7 +60,8 @@ const pool = process.env.DATABASE_URL
       ssl: { rejectUnauthorized: false },
       waitForConnections: true,
       connectionLimit: 10,
-      queueLimit: 0
+      queueLimit: 0,
+      dateStrings: true
     })
   : mysql.createPool({
       host: process.env.DB_HOST || 'localhost',
@@ -71,7 +72,8 @@ const pool = process.env.DATABASE_URL
       ssl: (process.env.DB_HOST && process.env.DB_HOST !== 'localhost') ? { rejectUnauthorized: false } : undefined,
       waitForConnections: true,
       connectionLimit: 10,
-      queueLimit: 0
+      queueLimit: 0,
+      dateStrings: true
     });
 
 pool.getConnection((err, connection) => {

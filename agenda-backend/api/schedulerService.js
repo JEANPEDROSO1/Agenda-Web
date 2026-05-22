@@ -64,7 +64,7 @@ const checkAndSendEmails = () => {
 
     // Buscar todos os eventos cadastrados formatando a data de evento como string YYYY-MM-DD
     db.query(
-        `SELECT e.id_evento, e.titulo, e.descricao, DATE_FORMAT(e.data_evento, '%Y-%m-%d') as data_evento, 
+        `SELECT e.id_evento, e.titulo, e.descricao, e.data_evento, 
                 e.hora_evento, e.id_usuario, e.urgencia, e.cor, e.repeticao, e.alerta_minutos, 
                 e.ultimo_alerta_enviado, e.ultimo_inicio_enviado, u.email 
          FROM eventos e 
