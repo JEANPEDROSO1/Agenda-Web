@@ -142,11 +142,15 @@ const checkAndSendEmails = () => {
 const startScheduler = () => {
     console.log('[Scheduler] Serviço de agendamento de e-mails iniciado ⏰');
     
-    // Executa a primeira vez ao iniciar
-    checkAndSendEmails();
-    
-    // Executa a cada 60 segundos
-    setInterval(checkAndSendEmails, 60000);
+    // Espera o banco de dados inicializar antes de começar a verificação
+    const checkDbReady = setInterval(() => {
+        if (db.isInitialized) {
+            clearInterval(checkDbReady);
+            console.log('[Scheduler] Banco de dados pronto. Iniciando verificações periódicas...');
+            checkAndSendEmails(); // Executa a primeira vez imediatamente
+            setInterval(checkAndSendEmails, 60000); // Executa a cada 60 segundos
+        }
+    }, 1000);
 };
 
 module.exports = { startScheduler, checkAndSendEmails };
