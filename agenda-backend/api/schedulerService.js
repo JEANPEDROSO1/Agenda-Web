@@ -1,4 +1,5 @@
 const db = require('../config/db');
+const { sendEventEmail, sendEventAlertEmail } = require('./emailService');
 process.env.TZ = 'America/Sao_Paulo';
 
 const getSaoPauloDate = () => new Date();
