@@ -55,6 +55,7 @@ const sendGraphEmail = async (toEmail, subject, contentHTML) => {
         } catch (smtpErr) {
             console.error('[Email Service] Falha ao enviar e‑mail via SMTP fallback:', smtpErr);
         }
+    }
 };
 
 const getProfessionalTemplate = (titleText, detailText, eventTitle, eventTime, link, accentColor, badgeHTML) => {
