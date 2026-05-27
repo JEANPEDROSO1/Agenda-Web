@@ -338,6 +338,34 @@ input:-webkit-autofill:active {
     visibility: visible;
     transform: translateY(0);
   }
+
+  /* Form and Container Mobile Refinement */
+  .container {
+    padding: 20px 12px;
+  }
+
+  .glass-card {
+    padding: 20px 16px;
+  }
+
+  .form-row {
+    grid-template-columns: 1fr !important;
+    gap: 15px;
+  }
+
+  .form-group {
+    margin-bottom: 15px;
+  }
+
+  .form-group label {
+    font-size: 0.8rem;
+    margin-bottom: 6px;
+  }
+
+  input, textarea, select {
+    padding: 10px 14px;
+    font-size: 0.95rem;
+  }
 }
 
 /* ===== LUCIDE ICONS STYLE ===== */

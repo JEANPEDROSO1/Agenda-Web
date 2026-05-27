@@ -361,6 +361,27 @@ body {
   color: var(--primary);
 }
 
+.calendar-day.selected {
+  background: var(--primary) !important;
+  color: white !important;
+  border-color: rgba(255, 255, 255, 0.3) !important;
+  box-shadow: 0 4px 15px rgba(59, 130, 246, 0.5) !important;
+}
+
+.mobile-new-event-container {
+  display: none;
+}
+
+.btn-primary-glass {
+  background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+  color: white; border: none; border-radius: 12px; padding: 12px 24px;
+  font-weight: 700; font-size: 1rem; cursor: pointer; transition: all 0.3s ease;
+  box-shadow: 0 10px 20px rgba(59, 130, 246, 0.3);
+}
+
+.btn-primary-glass:hover { transform: translateY(-2px); box-shadow: 0 15px 25px rgba(59, 130, 246, 0.4); }
+.w-100 { width: 100%; }
+
 .calendar-day.other-month {
   opacity: 0.15;
 }
@@ -524,6 +545,10 @@ body {
 }
 
 @media (max-width: 600px) {
+  .mobile-new-event-container {
+    display: block !important;
+  }
+
   .hamburger {
     display: flex;
   }

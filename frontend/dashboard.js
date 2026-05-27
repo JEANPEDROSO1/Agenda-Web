@@ -39,6 +39,7 @@ setInterval(function() {
 // Calendário
 let currentDate = new Date();
 let events = [];
+let selectedMobileDate = null;
 
 function initCalendar() {
   console.log('initCalendar chamado');
@@ -50,6 +51,19 @@ function initCalendar() {
     currentDate.setMonth(currentDate.getMonth() + 1);
     renderCalendar();
   });
+
+  const mobileBtn = document.getElementById('mobileNewEventBtn');
+  if (mobileBtn) {
+    mobileBtn.addEventListener('click', () => {
+      if (selectedMobileDate) {
+        window.location.href = `compromissos.html?date=${selectedMobileDate}`;
+      } else {
+        const todayStr = new Date().toISOString().split('T')[0];
+        window.location.href = `compromissos.html?date=${todayStr}`;
+      }
+    });
+  }
+
   renderCalendar();
 }
 
@@ -95,6 +109,22 @@ function renderCalendar() {
     const monthStr = String(date.getMonth() + 1).padStart(2, '0');
     const dayStr = String(date.getDate()).padStart(2, '0');
     const dateStr = `${yearStr}-${monthStr}-${dayStr}`;
+    
+    if (selectedMobileDate === dateStr) {
+      dayDiv.classList.add('selected');
+    }
+
+    dayDiv.addEventListener('click', () => {
+      const isMobile = window.innerWidth <= 600;
+      if (isMobile) {
+        document.querySelectorAll('.calendar-day').forEach(d => d.classList.remove('selected'));
+        dayDiv.classList.add('selected');
+        selectedMobileDate = dateStr;
+      } else {
+        window.location.href = `compromissos.html?date=${dateStr}`;
+      }
+    });
+
     const dayEvents = events.filter(event => {
       const eventDateStr = event.data_evento.substring(0, 10);
       return eventDateStr === dateStr;

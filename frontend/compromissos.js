@@ -13,6 +13,20 @@ document.addEventListener('DOMContentLoaded', function() {
 
   loadCompromissos();
   setupFormListeners();
+
+  // Verificar se há uma data passada via query parameter (?date=YYYY-MM-DD)
+  const urlParams = new URLSearchParams(window.location.search);
+  const prefilledDate = urlParams.get('date');
+  if (prefilledDate) {
+    const createCard = document.getElementById('createCompromissoCard');
+    const dateInput = document.getElementById('compromissoData');
+    if (createCard && dateInput) {
+      createCard.classList.remove('hidden');
+      dateInput.value = prefilledDate;
+      // Scroll smoothly to the form to make it visible and obvious to the user
+      createCard.scrollIntoView({ behavior: 'smooth' });
+    }
+  }
 });
 
 function setupFormListeners() {
