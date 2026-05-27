@@ -179,3 +179,38 @@ exports.resendCode = async (req, res) => {
     res.status(500).json({ error: 'Erro interno' });
   }
 };
+
+exports.deleteAccount = async (req, res) => {
+  const { email, senha } = req.body;
+  if (!email || !senha) {
+    return res.status(400).json({ error: 'Email e senha são obrigatórios' });
+  }
+  try {
+    // Verify user exists and password
+    db.query('SELECT id_usuario, senha FROM usuarios WHERE email = ?', [email], async (err, results) => {
+      if (err) {
+        console.error(err);
+        return res.status(500).json({ error: 'Erro interno' });
+      }
+      if (results.length === 0) {
+        return res.status(404).json({ error: 'Usuário não encontrado' });
+      }
+      const user = results[0];
+      const senhaValida = await bcrypt.compare(senha, user.senha);
+      if (!senhaValida) {
+        return res.status(401).json({ error: 'Senha incorreta' });
+      }
+      // Delete user
+      db.query('DELETE FROM usuarios WHERE id_usuario = ?', [user.id_usuario], (delErr) => {
+        if (delErr) {
+          console.error(delErr);
+          return res.status(500).json({ error: 'Erro ao excluir usuário' });
+        }
+        return res.json({ message: 'Conta excluída com sucesso' });
+      });
+    });
+  } catch (e) {
+    console.error(e);
+    res.status(500).json({ error: 'Erro interno' });
+  }
+};
