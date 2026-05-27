@@ -107,20 +107,11 @@ document.getElementById('cadastroForm')?.addEventListener('submit', async (e) =>
       body: JSON.stringify({ nome, email, senha })
     });
 
-    const loginData = await apiRequest(`${API_BASE}/auth/login`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ email, senha })
-    });
-
-    if (!loginData.token) {
-      throw new Error('Não foi possível fazer login automático. Tente entrar manualmente.');
-    }
-
-    storeAuthData(loginData);
-    showNotification('Conta criada e login efetuado! Redirecionando...', 'success');
+    // Store email for verification step
+    localStorage.setItem('pendingVerificationEmail', email);
+    showNotification('Cadastro concluído. Verifique seu e‑mail para ativar a conta.', 'success');
     setTimeout(() => {
-      window.location.href = 'dashboard.html';
+      window.location.href = 'verify.html';
     }, 1200);
   } catch (error) {
     console.error('Erro no cadastro:', error);

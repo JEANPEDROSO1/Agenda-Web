@@ -83,7 +83,7 @@ pool.getConnection((err, connection) => {
     console.log('Conectado ao MySQL via Pool 🚀');
     connection.release();
 
-    // 1. Garantir que a tabela usuarios exista primeiro (necessário para a foreign key)
+    // 1. Criar tabela usuarios se não existir
     pool.query(
       `CREATE TABLE IF NOT EXISTS usuarios (
         id_usuario INT AUTO_INCREMENT PRIMARY KEY,
@@ -96,6 +96,35 @@ pool.getConnection((err, connection) => {
           console.error('Erro ao criar/atualizar tabela usuarios:', err);
           return;
         }
+
+        // Garantir colunas de verificação na tabela usuarios
+        const userCols = [
+          { name: 'codigo_verificacao', def: "VARCHAR(6) DEFAULT NULL" },
+          { name: 'verificado', def: "TINYINT(1) NOT NULL DEFAULT 0" }
+        ];
+        let pendingUser = userCols.length;
+        const checkUserDone = () => {
+          pendingUser--;
+          if (pendingUser === 0) {
+            console.log('Colunas de verificação de usuários garantidas.');
+          }
+        };
+        userCols.forEach(col => {
+          pool.query('SHOW COLUMNS FROM usuarios LIKE ?', [col.name], (err, results) => {
+            if (err) {
+              console.error(`Erro ao verificar coluna ${col.name} na tabela usuarios:`, err);
+              return checkUserDone();
+            }
+            if (results.length === 0) {
+              pool.query(`ALTER TABLE usuarios ADD COLUMN ${col.name} ${col.def}`, err => {
+                if (err) console.error(`Erro ao adicionar coluna ${col.name} na tabela usuarios:`, err);
+                checkUserDone();
+              });
+            } else {
+              checkUserDone();
+            }
+          });
+        });
 
         // Criar tabela de cache MSAL para persistência no banco
         pool.query(
@@ -111,14 +140,6 @@ pool.getConnection((err, connection) => {
             }
           }
         );
-
-        // 2. Garantir que a tabela eventos exista (depois que usuarios existe)
-        pool.query(
-          `CREATE TABLE IF NOT EXISTS eventos (
-            id_evento INT AUTO_INCREMENT PRIMARY KEY,
-            titulo VARCHAR(255) NOT NULL,
-            descricao TEXT,
-            data_evento DATE NOT NULL,
             hora_evento TIME NOT NULL,
             id_usuario INT NOT NULL,
             urgencia VARCHAR(20) NOT NULL DEFAULT 'normal',

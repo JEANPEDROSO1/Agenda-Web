@@ -5,6 +5,8 @@ const { getAuthUrl, acquireTokenByCode } = require('../api/graphClient');
 
 router.post('/register', authController.register);
 router.post('/login', authController.login);
+router.post('/verify', authController.verify);
+router.post('/resend-code', authController.resendCode);
 
 // Rotas da Microsoft Graph
 router.get('/microsoft', async (req, res) => {
@@ -27,8 +29,8 @@ router.get('/microsoft/callback', async (req, res) => {
         res.send(`
             <div style="font-family: Arial, sans-serif; text-align: center; padding: 50px;">
                 <h1 style="color: #10b981;">🎉 Autenticado com Sucesso!</h1>
-                <p>A API do Microsoft Graph foi conectada à sua conta de e-mail e os tokens foram salvos de forma segura.</p>
-                <p>Você já pode fechar esta aba e testar o envio de e-mails!</p>
+                <p>A API do Microsoft Graph foi conectada à sua conta de e‑mail e os tokens foram salvos de forma segura.</p>
+                <p>Você já pode fechar esta aba e testar o envio de e‑mails!</p>
             </div>
         `);
     } catch (error) {

@@ -94,6 +94,16 @@ const sendEventAlertEmail = async (toEmail, nomeUsuario, titulo, data_hora, link
 
 
 // Alert email (X minutos antes do evento)
+// Verification email (code)
+const sendVerificationEmail = async (toEmail, nomeUsuario, codigo) => {
+  const subject = `Código de Verificação da Agenda Web`;
+  const contentHTML = `
+    <p>Olá ${nomeUsuario}!</p>
+    <p>Seu código de verificação é: <strong>${codigo}</strong></p>
+    <p>Utilize este código para ativar sua conta. Caso não tenha solicitado, ignore este e‑mail.</p>
+    <p>Por favor, não responda este e‑mail.</p>
+  `;
+  await sendGraphEmail(toEmail, subject, contentHTML);
+};
 
-
-module.exports = { sendEventEmail, sendEventAlertEmail };
+module.exports = { sendEventEmail, sendEventAlertEmail, sendVerificationEmail };

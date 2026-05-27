@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Verificar Conta - Agenda Web</title>
+  <link rel="stylesheet" href="cadastro.css?v=6">
+</head>
+<body class="auth-mesh-body">
+  <div class="mesh-background">
+    <div class="mesh-blob blob-1"></div>
+    <div class="mesh-blob blob-2"></div>
+    <div class="mesh-blob blob-3"></div>
+  </div>
+  <div class="glass-auth-container">
+    <a href="login.html" class="glass-back-btn" aria-label="Voltar">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M15 18L9 12L15 6"/>
+      </svg>
+    </a>
+    <div class="glass-header">
+      <div class="logo-box">
+        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </div>
+      <h1>Verificar Conta</h1>
+      <p>Insira o código enviado ao seu e‑mail</p>
+    </div>
+    <form id="verifyForm" class="glass-form">
+      <div class="glass-input-group">
+        <label for="codigo">Código de Verificação</label>
+        <div class="input-wrapper">
+          <svg class="input-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M2 7V17C2 18.1046 2.89543 19 4 19H20C21.1046 19 22 18.1046 22 17V7C22 5.89543 21.1046 5 20 5H4C2.89543 5 2 5.89543 2 7Z"/>
+            <path d="M2 7L12 13L22 7"/>
+          </svg>
+          <input type="text" id="codigo" placeholder="Código de 6 dígitos" required>
+        </div>
+      </div>
+      <button type="submit" class="glass-submit-btn glass-submit-alt">
+        Verificar Conta
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M5 12h14M12 5l7 7-7 7"/>
+        </svg>
+      </button>
+    </form>
+    <div class="glass-footer">
+      <p>Não recebeu o e‑mail? Verifique a pasta de <strong>Spam</strong> ou <a href="#" id="resendLink">reenvie o código</a>.</p>
+    </div>
+  </div>
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <script src="config.js?v=final_fix_100"></script>
+  <script src="verify.js?v=final_fix_100"></script>
+  <script>
+    if (typeof lucide !== 'undefined') { lucide.createIcons(); }
+  </script>
+</body>
+</html>
