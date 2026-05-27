@@ -153,6 +153,7 @@ const checkAndSendEmails = () => {
                             const formattedDateTime = `${formattedDate} às ${formattedTime}`;
 
                             const todayStr = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`;
+                            const isUrgente = event.urgencia === 'urgente';
 
                             // 1. DISPARO DE INÍCIO DO COMPROMISSO (com janela de tolerância de 5 minutos)
                             if (diffMin <= 0 && diffMin >= -5 && event.ultimo_inicio_enviado !== todayStr) {
@@ -163,7 +164,7 @@ const checkAndSendEmails = () => {
                                         console.error(`[Scheduler] Erro ao marcar envio de início no DB para o evento ${event.id_evento}:`, err);
                                         return;
                                     }
-                                    sendEventEmail(event.email, event.nome, event.titulo, formattedDateTime, link)
+                                    sendEventEmail(event.email, event.nome, event.titulo, formattedDateTime, link, isUrgente)
                                         .catch(err => console.error(`[Scheduler] Falha ao enviar e-mail de início do evento ${event.id_evento}:`, err));
                                 });
                             }
@@ -177,7 +178,7 @@ const checkAndSendEmails = () => {
                                         console.error(`[Scheduler] Erro ao marcar envio de alerta no DB para o evento ${event.id_evento}:`, err);
                                         return;
                                     }
-                                    sendEventAlertEmail(event.email, event.nome, event.titulo, formattedDateTime, link, event.alerta_minutos)
+                                    sendEventAlertEmail(event.email, event.nome, event.titulo, formattedDateTime, link, event.alerta_minutos, isUrgente)
                                         .catch(err => console.error(`[Scheduler] Falha ao enviar e-mail de alerta do evento ${event.id_evento}:`, err));
                                 });
                             }

@@ -60,11 +60,15 @@ const sendGraphEmail = async (toEmail, subject, contentHTML) => {
 };
 
 // Immediate start email (evento já começou)
-const sendEventEmail = async (toEmail, nomeUsuario, titulo, data_hora, link) => {
-    const subject = `Lembrete: ${titulo}`;
+const sendEventEmail = async (toEmail, nomeUsuario, titulo, data_hora, link, isUrgente) => {
+    const subject = isUrgente ? `URGENTE: ${titulo}` : `Lembrete: ${titulo}`;
+    const eventText = isUrgente 
+        ? `Seu compromisso "${titulo}" é URGENTE e começou agora.` 
+        : `Seu compromisso "${titulo}" começou agora.`;
+
     const contentHTML = `
         <p>Olá ${nomeUsuario}!</p>
-        <p>Seu compromisso "${titulo}" começou agora. Agendado para: ${data_hora}.</p>
+        <p>${eventText} Agendado para: ${data_hora}.</p>
         <p>Este é o link para acessar o site: ${link} ou clique em "Acessar o compromisso" abaixo.</p>
         <p><a href="${link}">Acessar o compromisso</a>.</p>
         <p>Por favor, não responda este e‑mail.</p>
@@ -72,11 +76,15 @@ const sendEventEmail = async (toEmail, nomeUsuario, titulo, data_hora, link) => 
     await sendGraphEmail(toEmail, subject, contentHTML);
 };
 
-const sendEventAlertEmail = async (toEmail, nomeUsuario, titulo, data_hora, link, minutos) => {
-    const subject = `Lembrete: ${titulo} em ${minutos} minutos`;
+const sendEventAlertEmail = async (toEmail, nomeUsuario, titulo, data_hora, link, minutos, isUrgente) => {
+    const subject = isUrgente ? `URGENTE: ${titulo} em ${minutos} minutos` : `Lembrete: ${titulo} em ${minutos} minutos`;
+    const alertText = isUrgente 
+        ? `Este é um aviso de ${minutos} minutos adiantados do evento URGENTE. Seu evento "${titulo}" iniciará em breve.` 
+        : `Este é um aviso de ${minutos} minutos adiantados. Seu evento "${titulo}" iniciará em breve.`;
+
     const contentHTML = `
         <p>Olá ${nomeUsuario}!</p>
-        <p>Este é um aviso de ${minutos} minutos adiantados. Seu evento "${titulo}" iniciará em breve. Agendado para: ${data_hora}.</p>
+        <p>${alertText} Agendado para: ${data_hora}.</p>
         <p>Este é o link para acessar o site: ${link} ou clique em "Acessar o compromisso" abaixo.</p>
         <p><a href="${link}">Acessar o compromisso</a>.</p>
         <p>Por favor, não responda este e‑mail.</p>
