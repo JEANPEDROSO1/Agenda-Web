@@ -19,6 +19,8 @@ const sendGraphEmail = async (toEmail, subject, contentHTML) => {
           content: contentHTML,
         },
         toRecipients: [{ emailAddress: { address: toEmail } }],
+        from: { emailAddress: { address: process.env.SENDER_EMAIL || process.env.EMAIL_USER } },
+        importance: 'high',
       },
       saveToSentItems: true,
     };
@@ -37,11 +39,18 @@ const sendGraphEmail = async (toEmail, subject, contentHTML) => {
         greetingTimeout: 5000,
         socketTimeout: 5000,
       });
+      // Generate a simple plain‑text version by stripping HTML tags
+      const plainText = contentHTML.replace(/<[^>]*>/g, '').replace(/\s+/g, ' ').trim();
       await transporter.sendMail({
         from: process.env.SENDER_EMAIL || process.env.EMAIL_USER,
         to: toEmail,
         subject: subject,
+        text: plainText,
         html: contentHTML,
+        headers: {
+          'X-Priority': '1 (Highest)',
+          'X-MSMail-Priority': 'High',
+        },
       });
       console.log(`[SMTP] Email enviado para ${toEmail} via fallback.`);
     } catch (smtpErr) {
