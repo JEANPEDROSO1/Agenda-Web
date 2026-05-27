@@ -62,25 +62,25 @@ const sendGraphEmail = async (toEmail, subject, contentHTML) => {
 // Immediate start email (evento já começou)
 const sendEventEmail = async (toEmail, nomeUsuario, titulo, data_hora, link) => {
     const subject = `Lembrete: ${titulo}`;
-    const contentHTML = `
-        <p>Olá ${nomeUsuario}!</p>
-        <p>Seu compromisso "${titulo}" começou agora. Agendado para: ${data_hora}.</p>
-        <p>Este é o link para acessar o site: ${link} ou clique em "Acessar o compromisso" abaixo.</p>
-        <p><a href="${link}">Acessar o compromisso</a>.</p>
-        <p>Por favor, não responda este e‑mail.</p>
-    `;
+        const contentHTML = `
+            <p>Olá ${nomeUsuario}!</p>
+            <p>Seu compromisso "${titulo}" começou agora. Agendado para: ${data_hora}.</p>
+            <p>Este é o link para acessar o site: https://agendaweb360.vercel.app ou clique em "Acessar o compromisso" abaixo.</p>
+            <p><a href="https://agendaweb360.vercel.app">Acessar o compromisso</a>.</p>
+            <p>Por favor, não responda este e‑mail.</p>
+        `;
     await sendGraphEmail(toEmail, subject, contentHTML);
 };
 
 const sendEventAlertEmail = async (toEmail, nomeUsuario, titulo, data_hora, link, minutos) => {
     const subject = `Lembrete: ${titulo} em ${minutos} minutos`;
-    const contentHTML = `
-        <p>Olá ${nomeUsuario}!</p>
-        <p>Este é um aviso de ${minutos} minutos adiantados. Seu evento "${titulo}" iniciará em breve. Agendado para: ${data_hora}.</p>
-        <p>Este é o link para acessar o site: ${link} ou clique em "Acessar o compromisso" abaixo.</p>
-        <p><a href="${link}">Acessar o compromisso</a>.</p>
-        <p>Por favor, não responda este e‑mail.</p>
-    `;
+        const contentHTML = `
+            <p>Olá ${nomeUsuario}!</p>
+            <p>Este é um aviso de ${minutos} minutos adiantados. Seu evento "${titulo}" iniciará em breve. Agendado para: ${data_hora}.</p>
+            <p>Este é o link para acessar o site: https://agendaweb360.vercel.app ou clique em "Acessar o compromisso" abaixo.</p>
+            <p><a href="https://agendaweb360.vercel.app">Acessar o compromisso</a>.</p>
+            <p>Por favor, não responda este e‑mail.</p>
+        `;
     await sendGraphEmail(toEmail, subject, contentHTML);
 };
 

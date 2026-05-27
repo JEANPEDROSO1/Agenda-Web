@@ -309,6 +309,9 @@ input:-webkit-autofill:active {
 
 /* ===== RESPONSIVE ===== */
 @media (max-width: 600px) {
+  .form-row {
+    grid-template-columns: 1fr;
+  }
   .hamburger {
     display: flex;
   }

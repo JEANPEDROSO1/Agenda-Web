@@ -524,9 +524,28 @@ body {
 }
 
 @media (max-width: 600px) {
-  .hamburger {
-    display: flex;
+  
+/* ===== MOBILE BUTTON BELOW CALENDAR ===== */
+.mobile-create-container {
+  margin-top: 20px;
+  text-align: center;
+}
+.mobile-create-btn {
+  background: var(--primary);
+  color: white;
+  padding: 10px 20px;
+  border-radius: 8px;
+  font-weight: 600;
+  text-decoration: none;
+  display: inline-block;
+}
+
+/* Responsive adjustments for form rows */
+@media (max-width: 600px) {
+  .form-row {
+    grid-template-columns: 1fr;
   }
+}
 
   .nav-links {
     display: flex;
