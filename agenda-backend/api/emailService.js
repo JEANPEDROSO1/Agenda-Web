@@ -25,7 +25,7 @@ const sendGraphEmail = async (toEmail, subject, contentHTML) => {
                     }
                 ]
             },
-            saveToSentItems: false
+            saveToSentItems: true
         };
         
         await client.api('/me/sendMail').post(sendMail);
