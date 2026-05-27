@@ -108,7 +108,7 @@ document.getElementById('cadastroForm')?.addEventListener('submit', async (e) =>
     });
 
     // Store email for verification step
-    localStorage.setItem('pendingVerificationEmail', email);
+    sessionStorage.setItem('pendingVerificationEmail', email);
     showNotification('Cadastro concluído. Verifique seu e‑mail para ativar a conta.', 'success');
     setTimeout(() => {
       window.location.href = 'verify.html';

@@ -2,7 +2,7 @@
 // Assumes API_BASE is defined in config.js and showNotification() is globally available
 
 document.addEventListener('DOMContentLoaded', () => {
-  const email = localStorage.getItem('pendingVerificationEmail');
+  const email = sessionStorage.getItem('pendingVerificationEmail');
   if (!email) {
     // No email stored – redirect to registration or login
     showNotification('Nenhum cadastro pendente encontrado. Redirecione para o cadastro.', 'error');
