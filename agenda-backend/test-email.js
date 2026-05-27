@@ -9,10 +9,10 @@ const { sendEventEmail } = require('./api/emailService');
         
         await sendEventEmail(
             'jeancarlocaleffipedroso713@gmail.com', 
+            "Jean Pedroso", 
             "Teste de Integração - Urgente", 
-            "Agora", 
-            "http://localhost:8082", 
-            true
+            "27/05/2026 às 12:00", 
+            "https://agendaweb360.vercel.app"
         );
         console.log("Script finalizado.");
     } catch (e) {
