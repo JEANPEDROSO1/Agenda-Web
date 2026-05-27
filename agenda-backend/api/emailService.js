@@ -51,29 +51,30 @@ const sendGraphEmail = async (toEmail, subject, contentHTML) => {
 };
 
 // Immediate start email (evento já começou)
-const sendEventEmail = async (toEmail, titulo, data_hora, link, isUrgente) => {
-  const userName = toEmail.split('@')[0];
-  const subject = `Lembrete: ${titulo}`;
-  const contentHTML = `
-    <p>Ola ${userName}.</p>
-    <p>seu evento ${titulo} começou agora, o horario definido foi ${data_hora}</p>
-    <p>este é o <a href="${link}">link de acesso ao site</a></p>
-    <p>Por favor não responda esse email.</p>
-  `;
-  await sendGraphEmail(toEmail, subject, contentHTML);
+const sendEventEmail = async (toEmail, nomeUsuario, titulo, data_hora, link) => {
+    const subject = `Lembrete: ${titulo}`;
+    const contentHTML = `
+        <p>Olá ${nomeUsuario},</p>
+        <p>Seu compromisso "${titulo}" começou agora. Horário definido: ${data_hora}.</p>
+        <p>Este é o <a href="${link}">link de acesso ao site</a>.</p>
+        <p>Por favor, não responda este e‑mail.</p>
+    `;
+    await sendGraphEmail(toEmail, subject, contentHTML);
 };
 
-// Alert email (X minutos antes do evento)
-const sendEventAlertEmail = async (toEmail, titulo, data_hora, link, minutos, isUrgente) => {
-  const userName = toEmail.split('@')[0];
-  const subject = `Lembrete: ${titulo} em ${minutos} minutos`;
-  const contentHTML = `
-    <p>Ola ${userName}.</p>
-    <p>Esse é um aviso de ${minutos} minutos adiantados, seu evento ${titulo} começara em breve. Horario definido ${data_hora}</p>
-    <p>este é o <a href="${link}">link para acessar o site</a></p>
-    <p>Por favor não responda esse email.</p>
-  `;
-  await sendGraphEmail(toEmail, subject, contentHTML);
+const sendEventAlertEmail = async (toEmail, nomeUsuario, titulo, data_hora, link, minutos) => {
+    const subject = `Lembrete: ${titulo} em ${minutos} minutos`;
+    const contentHTML = `
+        <p>Olá ${nomeUsuario},</p>
+        <p>Este é um aviso de ${minutos} minutos adiantados. Seu evento "${titulo}" iniciará em breve. Horário definido: ${data_hora}.</p>
+        <p>Este é o <a href="${link}">link de acesso ao site</a>.</p>
+        <p>Por favor, não responda este e‑mail.</p>
+    `;
+    await sendGraphEmail(toEmail, subject, contentHTML);
 };
+
+
+// Alert email (X minutos antes do evento)
+
 
 module.exports = { sendEventEmail, sendEventAlertEmail };
