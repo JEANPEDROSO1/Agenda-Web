@@ -140,13 +140,18 @@ pool.getConnection((err, connection) => {
             }
           }
         );
-            hora_evento TIME NOT NULL,
-            id_usuario INT NOT NULL,
-            urgencia VARCHAR(20) NOT NULL DEFAULT 'normal',
-            cor VARCHAR(7) NOT NULL DEFAULT '#3b82f6',
-            FOREIGN KEY (id_usuario) REFERENCES usuarios(id_usuario) ON DELETE CASCADE
-          )`,
-          (err) => {
+pool.query(`
+  CREATE TABLE IF NOT EXISTS eventos (
+    id_evento INT AUTO_INCREMENT PRIMARY KEY,
+    nome VARCHAR(255) NOT NULL,
+    data_evento DATE NOT NULL,
+    hora_evento TIME NOT NULL,
+    id_usuario INT NOT NULL,
+    urgencia VARCHAR(20) NOT NULL DEFAULT 'normal',
+    cor VARCHAR(7) NOT NULL DEFAULT '#3b82f6',
+    FOREIGN KEY (id_usuario) REFERENCES usuarios(id_usuario) ON DELETE CASCADE
+  )
+`, (err) => {
             if (err) {
               console.error('Erro ao criar/atualizar tabela eventos:', err);
               return;
