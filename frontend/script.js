@@ -90,8 +90,10 @@ function initPasswordToggles() {
 // Cadastro
 document.getElementById('cadastroForm')?.addEventListener('submit', async (e) => {
   e.preventDefault();
-  const nome = document.getElementById('nome').value;
-  const email = document.getElementById('email').value;
+  // Capture inputs and format name (capitalize each word)
+  let nomeRaw = document.getElementById('nome').value.trim();
+  const nome = nomeRaw.split(/\s+/).map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase()).join(' ');
+  const email = document.getElementById('email').value.trim();
   const senha = document.getElementById('senha').value;
 
   // Desabilitar botão durante o processamento
