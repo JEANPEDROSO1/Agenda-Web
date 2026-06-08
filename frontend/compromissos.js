@@ -281,17 +281,22 @@ async function loadCompromissos() {
 
       card.innerHTML = `
         <div class="compromisso-header">
-          <span class="urgencia-badge ${item.urgencia}" style="display: inline-flex; align-items: center;">
-            ${item.urgencia === 'urgente' 
-              ? `<i data-lucide="alert-triangle" class="icon-inline" style="width: 12px; height: 12px; stroke-width: 2.5; display: inline-block; vertical-align: middle; margin-right: 4px;"></i>Urgente` 
-              : `<i data-lucide="pin" class="icon-inline" style="width: 12px; height: 12px; stroke-width: 2.5; display: inline-block; vertical-align: middle; margin-right: 4px;"></i>Normal`}
-          </span>
-          ${repeticaoBadge}
-          ${alertaBadge}
+          <div class="compromisso-badges">
+            <span class="urgencia-badge ${item.urgencia}">
+              ${item.urgencia === 'urgente' 
+                ? `<i data-lucide="alert-triangle" class="icon-inline" style="width: 12px; height: 12px; stroke-width: 2.5; display: inline-block; vertical-align: middle; margin-right: 4px;"></i>Urgente` 
+                : `<i data-lucide="pin" class="icon-inline" style="width: 12px; height: 12px; stroke-width: 2.5; display: inline-block; vertical-align: middle; margin-right: 4px;"></i>Normal`}
+            </span>
+            ${repeticaoBadge}
+            ${alertaBadge}
+          </div>
           <h3>${item.titulo}</h3>
         </div>
         <p class="compromisso-descricao">${item.descricao || 'Sem descrição'}</p>
-        <p class="compromisso-data" style="display: flex; align-items: center; gap: 4px;"><i data-lucide="calendar" class="icon-inline" style="width: 14px; height: 14px; stroke-width: 2.5; display: inline-block; vertical-align: middle;"></i> ${date} às ${item.hora_evento}</p>
+        <div class="compromisso-data">
+          <i data-lucide="calendar" class="icon-inline"></i>
+          <span>${date} às ${item.hora_evento}</span>
+        </div>
         <div class="compromisso-actions">
           ${editButton}
           <button class="btn-delete" onclick="deletarCompromisso(${item.id_evento})">Excluir</button>

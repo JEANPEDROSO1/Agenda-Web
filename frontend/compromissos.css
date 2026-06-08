@@ -54,6 +54,8 @@ body {
   display: flex; align-items: center; gap: 10px; font-size: 1.25rem; font-weight: 800;
   background: linear-gradient(135deg, #fff 0%, #cbd5e1 100%);
   -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  text-decoration: none;
+  cursor: pointer;
 }
 .nav-logo svg { width: 24px; height: 24px; color: var(--primary); }
 
@@ -206,12 +208,18 @@ input:-webkit-autofill:active {
 .list-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; border-bottom: 1px solid var(--glass-border); padding-bottom: 15px; }
 .compromissos-count { font-size: 0.9rem; color: var(--text-muted); font-weight: 600; }
 
-.compromissos-list { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 20px; }
+.compromissos-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(280px, 100%), 1fr));
+  gap: 20px;
+}
 
 .compromisso-item {
   background: var(--glass-bg); border: 1px solid var(--glass-border);
   border-radius: 20px; padding: 20px; border-left: 6px solid var(--event-color, var(--primary));
   transition: all 0.3s ease;
+  display: flex;
+  flex-direction: column;
 }
 .compromisso-item.past-event {
   opacity: 0.5;
@@ -219,14 +227,85 @@ input:-webkit-autofill:active {
 }
 .compromisso-item:hover { transform: translateY(-5px); background: rgba(255, 255, 255, 0.05); }
 
-.compromisso-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 10px; }
-.compromisso-header h3 { font-size: 1.15rem; font-weight: 700; }
-.urgencia-badge { font-size: 0.7rem; font-weight: 800; padding: 4px 10px; border-radius: 6px; text-transform: uppercase; }
-.urgencia-badge.urgente { background: rgba(239, 68, 68, 0.2); color: #ef4444; }
-.urgencia-badge.normal { background: rgba(16, 185, 129, 0.2); color: #10b981; }
+.compromisso-header {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 8px;
+  margin-bottom: 12px;
+}
 
-.compromisso-descricao { font-size: 0.95rem; color: var(--text-muted); margin: 12px 0; line-height: 1.5; }
-.compromisso-data { font-size: 0.9rem; font-weight: 600; color: var(--primary); }
+.compromisso-badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  align-items: center;
+  width: 100%;
+}
+
+.compromisso-header h3 {
+  font-size: 1.25rem;
+  font-weight: 700;
+  line-height: 1.4;
+  margin: 0;
+  color: var(--text-main);
+  word-break: break-word;
+  overflow-wrap: break-word;
+}
+
+.urgencia-badge {
+  font-size: 0.7rem;
+  font-weight: 800;
+  padding: 4px 10px;
+  border-radius: 6px;
+  text-transform: uppercase;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+.urgencia-badge.urgente {
+  background: rgba(239, 68, 68, 0.2);
+  color: #ef4444;
+  border: 1px solid rgba(239, 68, 68, 0.3);
+}
+.urgencia-badge.normal {
+  background: rgba(16, 185, 129, 0.2);
+  color: #10b981;
+  border: 1px solid rgba(16, 185, 129, 0.3);
+}
+
+.compromisso-descricao {
+  font-size: 0.95rem;
+  color: var(--text-muted);
+  margin: 12px 0;
+  line-height: 1.5;
+  word-break: break-word;
+  overflow-wrap: break-word;
+  flex-grow: 1;
+}
+
+.compromisso-data {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--primary);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 16px;
+  background: rgba(59, 130, 246, 0.08);
+  border: 1px solid rgba(59, 130, 246, 0.15);
+  padding: 6px 12px;
+  border-radius: 8px;
+  width: fit-content;
+  max-width: 100%;
+  flex-wrap: wrap;
+}
+
+.compromisso-data svg, .compromisso-data i {
+  width: 14px;
+  height: 14px;
+  stroke-width: 2.5;
+}
 
 .compromisso-actions { display: flex; gap: 12px; margin-top: 20px; }
 .btn-edit, .btn-delete {
@@ -365,6 +444,22 @@ input:-webkit-autofill:active {
   input, textarea, select {
     padding: 10px 14px;
     font-size: 0.95rem;
+  }
+
+  .compromissos-list {
+    grid-template-columns: 1fr !important;
+    gap: 16px;
+  }
+
+  .compromisso-item {
+    padding: 16px;
+    border-radius: 16px;
+  }
+
+  .compromisso-data {
+    padding: 6px 10px;
+    font-size: 0.8rem;
+    margin-top: 12px;
   }
 }
 
