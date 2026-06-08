@@ -168,12 +168,23 @@ body {
 .btn-close { background: none; border: none; color: var(--text-muted); font-size: 1.5rem; cursor: pointer; }
 
 /* ===== FORMS ===== */
-.form-group { margin-bottom: 20px; }
+.form-group { margin-bottom: 20px; min-width: 0; }
 .form-group label { display: block; font-size: 0.85rem; font-weight: 700; color: var(--text-muted); margin-bottom: 8px; text-transform: uppercase; letter-spacing: 0.5px; }
 input, textarea, select {
-  width: 100%; background-color: rgba(255, 255, 255, 0.05); border: 1px solid var(--glass-border);
+  width: 100%; min-width: 0; max-width: 100%; box-sizing: border-box; background-color: rgba(255, 255, 255, 0.05); border: 1px solid var(--glass-border);
   border-radius: 12px; padding: 12px 18px; color: white; font-family: var(--font-main);
   font-size: 1rem; transition: all 0.3s ease;
+}
+input[type="date"]::-webkit-calendar-picker-indicator,
+input[type="time"]::-webkit-calendar-picker-indicator {
+  filter: invert(1);
+  cursor: pointer;
+  opacity: 0.7;
+  transition: opacity 0.2s ease;
+}
+input[type="date"]::-webkit-calendar-picker-indicator:hover,
+input[type="time"]::-webkit-calendar-picker-indicator:hover {
+  opacity: 1;
 }
 select {
   appearance: none;
@@ -201,7 +212,7 @@ input:-webkit-autofill:active {
   -webkit-text-fill-color: white !important;
 }
 
-.form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+.form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; width: 100%; min-width: 0; }
 
 /* ===== LIST ===== */
 .compromissos-list-section { margin-top: 40px; }
@@ -444,6 +455,12 @@ input:-webkit-autofill:active {
   input, textarea, select {
     padding: 10px 14px;
     font-size: 0.95rem;
+    min-width: 0;
+  }
+
+  input[type="date"], input[type="time"] {
+    padding-left: 8px;
+    padding-right: 8px;
   }
 
   .compromissos-list {
