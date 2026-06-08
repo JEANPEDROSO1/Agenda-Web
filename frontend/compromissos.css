@@ -318,9 +318,6 @@ input:-webkit-autofill:active {
   max-width: 100%;
   flex-wrap: wrap;
   line-height: 1.2;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
 }
 
 .compromisso-data svg, .compromisso-data i {
