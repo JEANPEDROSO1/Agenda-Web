@@ -175,6 +175,13 @@ input, textarea, select {
   border-radius: 12px; padding: 12px 18px; color: white; font-family: var(--font-main);
   font-size: 1rem; transition: all 0.3s ease;
 }
+input:not([type="checkbox"]):not([type="radio"]), select {
+  height: 48px;
+}
+input[type="date"], input[type="time"] {
+  padding-top: 0;
+  padding-bottom: 0;
+}
 input[type="date"]::-webkit-calendar-picker-indicator,
 input[type="time"]::-webkit-calendar-picker-indicator {
   filter: invert(1);
@@ -463,10 +470,10 @@ input:-webkit-autofill:active {
   }
 
   input[type="date"], input[type="time"] {
-    padding-left: 8px;
-    padding-right: 8px;
-    font-size: 0.9rem;
-  }
+  height: 48px;
+  padding: 12px 18px;
+  font-size: 1rem;
+}
 
   .compromissos-list {
     grid-template-columns: 1fr !important;
