@@ -2,7 +2,7 @@
 console.log('Compromissos.js carregado');
 
 // Verificar autenticação e carregar dados
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', function () {
   const token = localStorage.getItem('token');
   const userId = localStorage.getItem('userId');
 
@@ -99,7 +99,7 @@ async function criarCompromisso(e) {
       },
       body: JSON.stringify({ titulo, descricao, data_evento, hora_evento, urgencia, cor, repeticao, alerta_minutos })
     });
-    
+
     showNotification('Compromisso criado!', 'success');
     e.target.reset();
     loadCompromissos();
@@ -115,7 +115,7 @@ async function criarCompromisso(e) {
 let currentEditId = null;
 let currentFilter = 'todos'; // 'todos' | 'ativos' | 'desativados'
 
-window.setFilter = function(filter) {
+window.setFilter = function (filter) {
   currentFilter = filter;
 
   // Atualiza botões
@@ -129,7 +129,7 @@ window.setFilter = function(filter) {
 function getNextOccurrence(dateStr, timeStr, repeticao) {
   const now = new Date();
   let nextDate = new Date(`${dateStr}T${timeStr || '00:00'}`);
-  
+
   if (!repeticao || repeticao === 'nenhuma') return nextDate;
 
   while (nextDate < now) {
@@ -150,7 +150,7 @@ async function loadCompromissos() {
   const userId = localStorage.getItem('userId');
   const countSpan = document.getElementById('compromissosCount');
   const list = document.getElementById('compromissosList');
-  
+
   try {
     // Adiciona cache buster para evitar respostas cacheadas pelo navegador
     const compromissos = await apiRequest(`${API_BASE}/events?_=${Date.now()}`, {
@@ -199,20 +199,20 @@ async function loadCompromissos() {
           const deleteAllModal = document.getElementById('deleteAllModal');
           const confirmBtn = document.getElementById('confirmDeleteAll');
           const cancelBtn = document.getElementById('cancelDeleteAll');
-          
+
           if (deleteAllModal) {
             deleteAllModal.style.display = 'flex';
-            
+
             // Remove listeners antigos
             const newConfirmBtn = confirmBtn.cloneNode(true);
             const newCancelBtn = cancelBtn.cloneNode(true);
             confirmBtn.parentNode.replaceChild(newConfirmBtn, confirmBtn);
             cancelBtn.parentNode.replaceChild(newCancelBtn, cancelBtn);
-            
+
             newCancelBtn.onclick = () => {
               deleteAllModal.style.display = 'none';
             };
-            
+
             newConfirmBtn.onclick = async () => {
               const originalText = newConfirmBtn.textContent;
               newConfirmBtn.textContent = 'Excluir';
@@ -249,7 +249,7 @@ async function loadCompromissos() {
     filtered.forEach(item => {
       const card = document.createElement('div');
       card.className = 'compromisso-item';
-      
+
       const nextDate = getNextOccurrence(item.data_evento.substring(0, 10), item.hora_evento, item.repeticao);
       const isPast = nextDate < now && (!item.repeticao || item.repeticao === 'nenhuma');
 
@@ -258,13 +258,13 @@ async function loadCompromissos() {
       }
 
       card.style.setProperty('--event-color', item.cor || '#3b82f6');
-      
+
       const date = nextDate.toLocaleDateString('pt-BR');
 
       // Botão editar só aparece para eventos ativos (não passados)
       const editButton = isPast
         ? ''
-        : `<button class="btn-edit" onclick="abrirEdicao(${item.id_evento}, '${item.titulo.replace(/'/g, "\\'")}', '${(item.descricao || '').replace(/'/g, "\\'")  }', '${item.data_evento.substring(0, 10)}', '${item.hora_evento}', '${item.urgencia}', '${item.cor}', '${item.repeticao || 'nenhuma'}', ${item.alerta_minutos || 0})">Editar</button>`;
+        : `<button class="btn-edit" onclick="abrirEdicao(${item.id_evento}, '${item.titulo.replace(/'/g, "\\'")}', '${(item.descricao || '').replace(/'/g, "\\'")}', '${item.data_evento.substring(0, 10)}', '${item.hora_evento}', '${item.urgencia}', '${item.cor}', '${item.repeticao || 'nenhuma'}', ${item.alerta_minutos || 0})">Editar</button>`;
 
       const repeticaoLabel = {
         'semanal': `<i data-lucide="repeat" class="icon-inline" style="width: 12px; height: 12px; stroke-width: 2.5; display: inline-block; vertical-align: middle; margin-right: 4px; margin-top: -2px;"></i>Semanal`,
@@ -283,9 +283,9 @@ async function loadCompromissos() {
         <div class="compromisso-header">
           <div class="compromisso-badges">
             <span class="urgencia-badge ${item.urgencia}">
-              ${item.urgencia === 'urgente' 
-                ? `<i data-lucide="alert-triangle" class="icon-inline" style="width: 12px; height: 12px; stroke-width: 2.5; display: inline-block; vertical-align: middle; margin-right: 4px;"></i>Urgente` 
-                : `<i data-lucide="pin" class="icon-inline" style="width: 12px; height: 12px; stroke-width: 2.5; display: inline-block; vertical-align: middle; margin-right: 4px;"></i>Normal`}
+              ${item.urgencia === 'urgente'
+          ? `<i data-lucide="alert-triangle" class="icon-inline" style="width: 12px; height: 12px; stroke-width: 2.5; display: inline-block; vertical-align: middle; margin-right: 4px;"></i>Urgente`
+          : `<i data-lucide="pin" class="icon-inline" style="width: 12px; height: 12px; stroke-width: 2.5; display: inline-block; vertical-align: middle; margin-right: 4px;"></i>Normal`}
             </span>
             ${repeticaoBadge}
             ${alertaBadge}
@@ -319,7 +319,7 @@ async function loadCompromissos() {
   }
 }
 
-window.abrirEdicao = function(id, titulo, descricao, data, hora, urgencia, cor, repeticao, alerta_minutos) {
+window.abrirEdicao = function (id, titulo, descricao, data, hora, urgencia, cor, repeticao, alerta_minutos) {
   currentEditId = id;
   document.getElementById('editTitulo').value = titulo;
   document.getElementById('editDescricao').value = descricao;
@@ -360,7 +360,7 @@ async function salvarEdicaoCompromisso(e) {
 
 let currentDeleteId = null;
 
-window.deletarCompromisso = function(id) {
+window.deletarCompromisso = function (id) {
   currentDeleteId = id;
   const deleteModal = document.getElementById('deleteModal');
   if (deleteModal) {
