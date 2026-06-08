@@ -179,8 +179,9 @@ input:not([type="checkbox"]):not([type="radio"]), select {
   height: 48px;
 }
 input[type="date"], input[type="time"] {
-  padding-top: 0;
-  padding-bottom: 0;
+  padding: 12px 18px;
+  height: 48px;
+  line-height: 1.2;
 }
 input[type="date"]::-webkit-calendar-picker-indicator,
 input[type="time"]::-webkit-calendar-picker-indicator {
@@ -306,18 +307,22 @@ input:-webkit-autofill:active {
   font-size: 0.8rem;
   font-weight: 600;
   color: var(--primary);
-  display: flex;
+  display: inline-flex;
   align-items: center;
-  gap: 5px;
+  gap: 6px;
   margin-top: 12px;
   background: rgba(59, 130, 246, 0.08);
   border: 1px solid rgba(59, 130, 246, 0.15);
-  padding: 5px 10px;
-  border-radius: 8px;
-  width: fit-content;
+  padding: 6px 10px;
+  border-radius: 12px;
   max-width: 100%;
   flex-wrap: wrap;
   line-height: 1.2;
+  box-sizing: border-box;
+}
+
+.compromisso-data span {
+  min-width: 0;
 }
 
 .compromisso-data svg, .compromisso-data i {
@@ -326,6 +331,11 @@ input:-webkit-autofill:active {
   stroke-width: 2.5;
   flex-shrink: 0;
 }
+
+.compromisso-data span {
+  white-space: normal;
+}
+
 
 .compromisso-actions { display: flex; gap: 12px; margin-top: 20px; }
 .btn-edit, .btn-delete {
@@ -492,6 +502,12 @@ input:-webkit-autofill:active {
     font-size: 0.75rem;
     margin-top: 10px;
     gap: 4px;
+    width: auto;
+    max-width: 100%;
+  }
+
+  .compromisso-data span {
+    min-width: 0;
   }
 }
 
