@@ -100,7 +100,8 @@ pool.getConnection((err, connection) => {
         // Garantir colunas de verificação na tabela usuarios
         const userCols = [
           { name: 'codigo_verificacao', def: "VARCHAR(6) DEFAULT NULL" },
-          { name: 'verificado', def: "TINYINT(1) NOT NULL DEFAULT 0" }
+          { name: 'verificado', def: "TINYINT(1) NOT NULL DEFAULT 0" },
+          { name: 'codigo_expiracao', def: "DATETIME DEFAULT NULL" }
         ];
         let pendingUser = userCols.length;
         const checkUserDone = () => {

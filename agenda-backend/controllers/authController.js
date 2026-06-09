@@ -33,9 +33,9 @@ exports.register = async (req, res) => {
         console.log("Usuário salvo no banco");
         // Gerar código de verificação de 6 dígitos
         const codigoVerificacao = Math.floor(100000 + Math.random() * 900000).toString();
-        // Atualizar coluna
+        // Atualizar colunas de verificação e expiração (10 minutos de validade)
         db.query(
-          'UPDATE usuarios SET codigo_verificacao = ?, verificado = 0 WHERE email = ?',
+          'UPDATE usuarios SET codigo_verificacao = ?, verificado = 0, codigo_expiracao = DATE_ADD(NOW(), INTERVAL 10 MINUTE) WHERE email = ?',
           [codigoVerificacao, email],
           async (err2) => {
             if (err2) {
@@ -106,7 +106,7 @@ exports.verify = async (req, res) => {
   }
   try {
     db.query(
-      'SELECT id_usuario, codigo_verificacao, verificado, nome FROM usuarios WHERE email = ?',
+      'SELECT id_usuario, codigo_verificacao, verificado, nome, (codigo_expiracao IS NULL OR codigo_expiracao < NOW()) AS expirado FROM usuarios WHERE email = ?',
       [email],
       async (err, results) => {
         if (err) {
@@ -123,9 +123,12 @@ exports.verify = async (req, res) => {
         if (user.codigo_verificacao !== codigo) {
           return res.status(400).json({ error: 'Código de verificação inválido' });
         }
+        if (user.expirado) {
+          return res.status(400).json({ error: 'Código de verificação expirado. Solicite um novo código.' });
+        }
         // Atualizar status
         db.query(
-          'UPDATE usuarios SET verificado = 1, codigo_verificacao = NULL WHERE email = ?',
+          'UPDATE usuarios SET verificado = 1, codigo_verificacao = NULL, codigo_expiracao = NULL WHERE email = ?',
           [email],
           (err2) => {
             if (err2) {
@@ -161,7 +164,7 @@ exports.resendCode = async (req, res) => {
       }
       const nome = results[0].nome;
       const codigoVerificacao = Math.floor(100000 + Math.random() * 900000).toString();
-      db.query('UPDATE usuarios SET codigo_verificacao = ?, verificado = 0 WHERE email = ?', [codigoVerificacao, email], async (err2) => {
+      db.query('UPDATE usuarios SET codigo_verificacao = ?, verificado = 0, codigo_expiracao = DATE_ADD(NOW(), INTERVAL 10 MINUTE) WHERE email = ?', [codigoVerificacao, email], async (err2) => {
         if (err2) {
           console.error('Erro ao atualizar código de verificação:', err2);
           return res.status(500).json({ error: 'Erro ao gerar novo código' });

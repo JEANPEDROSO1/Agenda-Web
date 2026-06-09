@@ -157,6 +157,15 @@ document.getElementById('loginForm')?.addEventListener('submit', async (e) => {
         const parsed = JSON.parse(errorText);
         errorMessage = parsed.error || parsed.message || errorText;
       } catch (e) {}
+
+      if (response.status === 403) {
+        sessionStorage.setItem('pendingVerificationEmail', email);
+        showNotification(errorMessage || 'E-mail ainda não confirmado. Redirecionando...', 'error');
+        setTimeout(() => {
+          window.location.href = 'verify.html';
+        }, 2000);
+        return;
+      }
       
       throw new Error(errorMessage);
     }

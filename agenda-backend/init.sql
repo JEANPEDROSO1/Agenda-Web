@@ -7,7 +7,10 @@ CREATE TABLE IF NOT EXISTS usuarios (
   id_usuario INT AUTO_INCREMENT PRIMARY KEY,
   nome VARCHAR(255) NOT NULL,
   email VARCHAR(255) UNIQUE NOT NULL,
-  senha VARCHAR(255) NOT NULL
+  senha VARCHAR(255) NOT NULL,
+  codigo_verificacao VARCHAR(6) DEFAULT NULL,
+  verificado TINYINT(1) NOT NULL DEFAULT 0,
+  codigo_expiracao DATETIME DEFAULT NULL
 );
 
 -- Tabela eventos

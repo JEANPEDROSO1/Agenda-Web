@@ -6,6 +6,7 @@ const { getAuthUrl, acquireTokenByCode } = require('../api/graphClient');
 router.post('/register', authController.register);
 router.post('/login', authController.login);
 router.post('/verify', authController.verify);
+router.post('/resend-code', authController.resendCode);
 router.post('/delete-account', authController.deleteAccount);
 
 // Rotas da Microsoft Graph
