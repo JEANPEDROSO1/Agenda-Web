@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Verificar Conta - Agenda Web</title>
-  <link rel="stylesheet" href="cadastro.css?v=6">
+  <link rel="stylesheet" href="cadastro.css?v=final_fix_113">
 </head>
 <body class="auth-mesh-body">
   <div class="mesh-background">
@@ -45,13 +45,43 @@
         </svg>
       </button>
     </form>
+
+    <div class="troubleshoot-section">
+      <button type="button" class="troubleshoot-toggle" id="troubleshootToggle">
+        <span>Não recebeu o e-mail? Passo a passo</span>
+        <svg class="toggle-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="6 9 12 15 18 9"></polyline>
+        </svg>
+      </button>
+      <div class="troubleshoot-content hidden" id="troubleshootContent">
+        <ol class="troubleshoot-steps">
+          <li>
+            <strong>1. Verifique a caixa de Spam/Lixo Eletrônico:</strong>
+            Muitos provedores (como Gmail e Outlook) podem enviar mensagens automáticas para lá por engano. Se estiver no Spam, clique em <em>"Não é spam"</em> para receber os próximos avisos na caixa de entrada.
+          </li>
+          <li>
+            <strong>2. Aguarde de 1 a 2 minutos:</strong>
+            O envio é processado instantaneamente, mas alguns servidores de e-mail podem demorar um pouco para atualizar a caixa de entrada.
+          </li>
+          <li>
+            <strong>3. Verifique o endereço digitado:</strong>
+            Confirme se você digitou seu e-mail corretamente durante o cadastro. Se notar algum erro, clique no botão de voltar no topo para fazer o cadastro com o e-mail correto.
+          </li>
+          <li>
+            <strong>4. Reenvie o código:</strong>
+            Use o link de <em>"reenviar o código"</em> logo abaixo para gerar e enviar uma nova chave de verificação.
+          </li>
+        </ol>
+      </div>
+    </div>
+
     <div class="glass-footer">
       <p>Não recebeu o e‑mail? Verifique a pasta de <strong>Spam</strong> ou <a href="#" id="resendLink">reenvie o código</a>.</p>
     </div>
   </div>
   <script src="https://unpkg.com/lucide@latest"></script>
-  <script src="config.js?v=final_fix_100"></script>
-  <script src="verify.js?v=final_fix_100"></script>
+  <script src="config.js?v=final_fix_113"></script>
+  <script src="verify.js?v=final_fix_113"></script>
   <script>
     if (typeof lucide !== 'undefined') { lucide.createIcons(); }
   </script>

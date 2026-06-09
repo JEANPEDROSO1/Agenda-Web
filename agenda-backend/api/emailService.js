@@ -42,15 +42,11 @@ const sendGraphEmail = async (toEmail, subject, contentHTML) => {
       // Generate a simple plain‑text version by stripping HTML tags
       const plainText = contentHTML.replace(/<[^>]*>/g, '').replace(/\s+/g, ' ').trim();
       await transporter.sendMail({
-        from: process.env.SENDER_EMAIL || process.env.EMAIL_USER,
+        from: `"Agenda Web" <${process.env.SENDER_EMAIL || process.env.EMAIL_USER}>`,
         to: toEmail,
         subject: subject,
         text: plainText,
-        html: contentHTML,
-        headers: {
-          'X-Priority': '1 (Highest)',
-          'X-MSMail-Priority': 'High',
-        },
+        html: contentHTML
       });
       console.log(`[SMTP] Email enviado para ${toEmail} via fallback.`);
     } catch (smtpErr) {
@@ -98,10 +94,37 @@ const sendEventAlertEmail = async (toEmail, nomeUsuario, titulo, data_hora, link
 const sendVerificationEmail = async (toEmail, nomeUsuario, codigo) => {
   const subject = `Código de Verificação da Agenda Web`;
   const contentHTML = `
-    <p>Olá ${nomeUsuario}!</p>
-    <p>Seu código de verificação é: <strong>${codigo}</strong></p>
-    <p>Utilize este código para ativar sua conta. Caso não tenha solicitado, ignore este e‑mail.</p>
-    <p>Por favor, não responda este e‑mail.</p>
+    <div style="font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; max-width: 600px; margin: 0 auto; background-color: #f9fafb; border: 1px solid #e5e7eb; border-radius: 16px; padding: 40px; color: #1f2937;">
+      <div style="text-align: center; margin-bottom: 30px;">
+        <span style="font-size: 24px; font-weight: 800; color: #1d4ed8; font-family: sans-serif; letter-spacing: -0.5px;">Agenda Web</span>
+      </div>
+      
+      <h2 style="font-size: 20px; font-weight: 700; color: #111827; margin-top: 0; margin-bottom: 16px; text-align: center;">Confirmar seu endereço de e-mail</h2>
+      
+      <p style="font-size: 15px; line-height: 1.6; color: #4b5563; margin-bottom: 20px;">
+        Olá, <strong>${nomeUsuario}</strong>! Obrigado por criar sua conta na Agenda Web.
+      </p>
+      
+      <p style="font-size: 15px; line-height: 1.6; color: #4b5563; margin-bottom: 24px;">
+        Para ativar sua conta e começar a gerenciar seus compromissos, por favor insira o código de verificação de uso único abaixo na página de ativação:
+      </p>
+      
+      <div style="text-align: center; margin: 30px 0; padding: 22px; background-color: #f3f4f6; border-radius: 14px; border: 1px dashed #cbd5e1;">
+        <span style="font-size: 34px; font-weight: 800; letter-spacing: 8px; color: #1e3a8a; font-family: monospace; padding-left: 8px;">${codigo}</span>
+      </div>
+      
+      <p style="font-size: 13px; line-height: 1.5; color: #6b7280; margin-bottom: 24px; text-align: center; background-color: #fffbeb; border: 1px solid #fef3c7; padding: 12px; border-radius: 8px;">
+        Este código é de uso único. Caso você não tenha solicitado este cadastro, ignore e exclua este e-mail com segurança.
+      </p>
+      
+      <hr style="border: 0; border-top: 1px solid #e5e7eb; margin: 30px 0;">
+      
+      <div style="text-align: center; font-size: 12px; color: #9ca3af; line-height: 1.5;">
+        <p style="margin: 0 0 4px 0; font-weight: 600;">Agenda Web - Organização de Compromissos</p>
+        <p style="margin: 0 0 12px 0;">Este é um e-mail automático gerado pelo sistema. Por favor, não responda a esta mensagem.</p>
+        <p style="margin: 0;">© 2026 Agenda Web. Todos os direitos reservados.</p>
+      </div>
+    </div>
   `;
   await sendGraphEmail(toEmail, subject, contentHTML);
 };

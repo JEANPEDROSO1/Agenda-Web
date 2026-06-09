@@ -74,4 +74,20 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     });
   }
+
+  // Alternar visualização do guia de passo a passo de ajuda
+  const troubleshootToggle = document.getElementById('troubleshootToggle');
+  const troubleshootContent = document.getElementById('troubleshootContent');
+  if (troubleshootToggle && troubleshootContent) {
+    troubleshootToggle.addEventListener('click', () => {
+      const isHidden = troubleshootContent.classList.contains('hidden');
+      if (isHidden) {
+        troubleshootContent.classList.remove('hidden');
+        troubleshootToggle.classList.add('active');
+      } else {
+        troubleshootContent.classList.add('hidden');
+        troubleshootToggle.classList.remove('active');
+      }
+    });
+  }
 });

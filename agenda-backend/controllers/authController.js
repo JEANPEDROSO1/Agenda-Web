@@ -106,7 +106,7 @@ exports.verify = async (req, res) => {
   }
   try {
     db.query(
-      'SELECT codigo_verificacao, verificado, nome FROM usuarios WHERE email = ?',
+      'SELECT id_usuario, codigo_verificacao, verificado, nome FROM usuarios WHERE email = ?',
       [email],
       async (err, results) => {
         if (err) {
