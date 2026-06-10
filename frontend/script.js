@@ -96,12 +96,15 @@ document.getElementById('cadastroForm')?.addEventListener('submit', async (e) =>
   const email = document.getElementById('email').value.trim();
   const senha = document.getElementById('senha').value;
 
-  // Desabilitar botão durante o processamento
-  const button = e.target.querySelector('button');
-  const originalText = button.textContent;
+  // Desabilitar botão de submit correto durante o processamento
+  const button = e.target.querySelector('.glass-submit-btn');
+  if (!button) return;
+
+  const originalContent = button.innerHTML;
   button.textContent = 'Criando conta...';
   button.disabled = true;
 
+  let success = false;
   try {
     await apiRequest(`${API_BASE}/auth/register`, {
       method: 'POST',
@@ -109,6 +112,7 @@ document.getElementById('cadastroForm')?.addEventListener('submit', async (e) =>
       body: JSON.stringify({ nome, email, senha })
     });
 
+    success = true;
     // Store email for verification step
     sessionStorage.setItem('pendingVerificationEmail', email);
     showNotification('Cadastro concluído. Verifique seu e‑mail para ativar a conta.', 'success');
@@ -119,8 +123,10 @@ document.getElementById('cadastroForm')?.addEventListener('submit', async (e) =>
     console.error('Erro no cadastro:', error);
     showNotification('Erro no cadastro: ' + error.message, 'error');
   } finally {
-    button.textContent = originalText;
-    button.disabled = false;
+    if (!success) {
+      button.innerHTML = originalContent;
+      button.disabled = false;
+    }
   }
 });
 

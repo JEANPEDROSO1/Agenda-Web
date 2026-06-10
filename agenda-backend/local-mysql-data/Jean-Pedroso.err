@@ -1,0 +1,64 @@
+2026-06-10T02:37:28.344846Z 0 [System] [MY-013169] [Server] C:\Program Files\MySQL\MySQL Server 8.0\bin\mysqld.exe (mysqld 8.0.45) initializing of server in progress as process 3780
+2026-06-10T02:37:32.100081Z 1 [System] [MY-013576] [InnoDB] InnoDB initialization has started.
+2026-06-10T02:37:46.947059Z 1 [System] [MY-013577] [InnoDB] InnoDB initialization has ended.
+2026-06-10T02:37:57.495555Z 0 [System] [MY-010116] [Server] C:\Program Files\MySQL\MySQL Server 8.0\bin\mysqld.exe (mysqld 8.0.45) starting as process 14236
+2026-06-10T02:37:57.586480Z 1 [System] [MY-013576] [InnoDB] InnoDB initialization has started.
+2026-06-10T02:37:57.608644Z 1 [ERROR] [MY-012271] [InnoDB] The innodb_system data file 'ibdata1' must be writable
+2026-06-10T02:37:57.609058Z 1 [ERROR] [MY-012278] [InnoDB] The innodb_system data file 'ibdata1' must be writable
+2026-06-10T02:37:57.609460Z 1 [ERROR] [MY-010334] [Server] Failed to initialize DD Storage Engine
+2026-06-10T02:37:57.610286Z 0 [ERROR] [MY-010020] [Server] Data Dictionary initialization failed.
+2026-06-10T02:37:57.610650Z 0 [ERROR] [MY-010119] [Server] Aborting
+2026-06-10T02:37:57.611503Z 0 [System] [MY-010910] [Server] C:\Program Files\MySQL\MySQL Server 8.0\bin\mysqld.exe: Shutdown complete (mysqld 8.0.45)  MySQL Community Server - GPL.
+2026-06-10T02:38:03.530428Z 6 [Warning] [MY-010453] [Server] root@localhost is created with an empty password ! Please consider switching off the --initialize-insecure option.
+2026-06-10T02:40:12.699015Z 0 [System] [MY-010116] [Server] C:\Program Files\MySQL\MySQL Server 8.0\bin\mysqld.exe (mysqld 8.0.45) starting as process 16704
+2026-06-10T02:40:14.459404Z 1 [System] [MY-013576] [InnoDB] InnoDB initialization has started.
+2026-06-10T02:40:22.680441Z 1 [System] [MY-013577] [InnoDB] InnoDB initialization has ended.
+2026-06-10T02:40:26.398168Z 0 [Warning] [MY-010068] [Server] CA certificate ca.pem is self signed.
+2026-06-10T02:40:26.398548Z 0 [System] [MY-013602] [Server] Channel mysql_main configured to support TLS. Encrypted connections are now supported for this channel.
+2026-06-10T02:40:26.661043Z 0 [System] [MY-011323] [Server] X Plugin ready for connections. Bind-address: '::' port: 33060
+2026-06-10T02:40:26.661105Z 0 [System] [MY-010931] [Server] C:\Program Files\MySQL\MySQL Server 8.0\bin\mysqld.exe: ready for connections. Version: '8.0.45'  socket: ''  port: 3306  MySQL Community Server - GPL.
+2026-06-10T02:49:54.763331Z 23 [ERROR] [MY-012611] [InnoDB] Operating system error number 32 in a file operation.
+2026-06-10T02:49:54.763813Z 23 [ERROR] [MY-012615] [InnoDB] The error means that another program is using InnoDB's files. This might be a backup or antivirus software or another instance of MySQL. Please close it to get rid of this error.
+2026-06-10T02:50:04.766769Z 23 [ERROR] [MY-013183] [InnoDB] Assertion failure: handler0alter.cc:7090:error == DB_SUCCESS thread 2852
+InnoDB: We intentionally generate a memory trap.
+InnoDB: Submit a detailed bug report to http://bugs.mysql.com.
+InnoDB: If you get repeated assertion failures or crashes, even
+InnoDB: immediately after the mysqld startup, there may be
+InnoDB: corruption in the InnoDB tablespace. Please refer to
+InnoDB: http://dev.mysql.com/doc/refman/8.0/en/forcing-innodb-recovery.html
+InnoDB: about forcing recovery.
+2026-06-10T02:50:04Z UTC - mysqld got exception 0x16 ;
+Most likely, you have hit a bug, but this error can also be caused by malfunctioning hardware.
+Thread pointer: 0x179452a64c0
+Attempting backtrace. You can use the following information to find out
+where mysqld died. If you see no messages after this, something went
+terribly wrong...
+7ff75d154ba8    mysqld.exe!?my_print_stacktrace@@YAXPEBEK@Z()
+7ff75c2c4541    mysqld.exe!?print_fatal_signal@@YAXH@Z()
+7ff75c2c4283    mysqld.exe!?my_server_abort@@YAXXZ()
+7ff75d13a95a    mysqld.exe!?my_abort@@YAXXZ()
+7ff75d30f9a9    mysqld.exe!?do_reset@Zstd_dec@compression@transaction@binary_log@@EEAAXXZ()
+7ff75d3ac352    mysqld.exe!?do_reset@Zstd_dec@compression@transaction@binary_log@@EEAAXXZ()
+7ff75d3b77d1    mysqld.exe!?do_reset@Zstd_dec@compression@transaction@binary_log@@EEAAXXZ()
+7ff75c2a0094    mysqld.exe!?mysql_discard_or_import_tablespace@Sql_cmd_discard_import_tablespace@@AEAA_NPEAVTHD@@PEAVTable_ref@@@Z()
+7ff75c29b12e    mysqld.exe!?mysql_alter_table@@YA_NPEAVTHD@@PEBD1PEAUHA_CREATE_INFO@@PEAVTable_ref@@PEAVAlter_info@@@Z()
+7ff75c4ffc74    mysqld.exe!?execute@Sql_cmd_alter_table@@UEAA_NPEAVTHD@@@Z()
+7ff75c27c95a    mysqld.exe!?mysql_execute_command@@YAHPEAVTHD@@_N@Z()
+7ff75c2776f3    mysqld.exe!?dispatch_sql_command@@YAXPEAVTHD@@PEAVParser_state@@@Z()
+7ff75c2762b9    mysqld.exe!?dispatch_command@@YA_NPEAVTHD@@PEBTCOM_DATA@@W4enum_server_command@@@Z()
+7ff75c277acc    mysqld.exe!?do_command@@YA_NPEAVTHD@@@Z()
+7ff75c0adc28    mysqld.exe!?thread_id@THD@@QEBAIXZ()
+7ff75d6f2409    mysqld.exe!?my_init_dynamic_array@@YA_NPEAUDYNAMIC_ARRAY@@IIPEAXII@Z()
+7ff75d14538c    mysqld.exe!?my_thread_self_setname@@YAXPEBD@Z()
+7ffb7983cd30    ucrtbase.dll!wcsrchr()
+7ffb7c2ae957    KERNEL32.DLL!BaseThreadInitThunk()
+7ffb7c607c1c    ntdll.dll!RtlUserThreadStart()
+
+Trying to get some variables.
+Some pointers may be invalid and cause the dump to abort.
+Query (1795fc90030): ALTER TABLE eventos ADD COLUMN ultimo_alerta_enviado VARCHAR(10) DEFAULT NULL
+Connection ID (thread ID): 23
+Status: NOT_KILLED
+
+The manual page at http://dev.mysql.com/doc/mysql/en/crashing.html contains
+information that should help you find out what is causing the crash.

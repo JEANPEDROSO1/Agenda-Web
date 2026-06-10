@@ -12,51 +12,71 @@ exports.register = async (req, res) => {
     return res.status(400).json({ error: 'Nome, email e senha são obrigatórios' });
   }
 
-  try {
-    console.log("Antes do bcrypt");
-    const senhaHash = await bcrypt.hash(senha, 10);
-    console.log("Depois do bcrypt");
+  // 1. Verificar se já existe um usuário com o mesmo e-mail
+  console.time('check-email');
+  db.query(
+    'SELECT 1 FROM usuarios WHERE email = ?',
+    [email],
+    async (errCheck, resultsCheck) => {
+      console.timeEnd('check-email');
+      if (errCheck) {
+        console.error('Erro ao verificar duplicidade de e-mail:', errCheck);
+        return res.status(500).json({ error: 'Erro interno ao verificar cadastro' });
+      }
 
-    // Inserir usuário
-    db.query(
-      'INSERT INTO usuarios (nome, email, senha) VALUES (?, ?, ?)',
-      [nome, email, senhaHash],
-      async (err) => {
-        if (err) {
-          console.error(err);
-          if (err.code === 'ER_DUP_ENTRY') {
-            return res.status(409).json({ error: 'Este email já está cadastrado' });
-          }
-          return res.status(500).json({ error: 'Erro ao cadastrar' });
-        }
+      if (resultsCheck && resultsCheck.length > 0) {
+        console.log('Email já cadastrado (consulta prévia):', email);
+        return res.status(400).json({ error: 'Já existe uma conta cadastrada com este e-mail.' });
+      }
 
-        console.log("Usuário salvo no banco");
-        // Gerar código de verificação de 6 dígitos
+      try {
+        // 2. Gerar hash da senha
+        console.time('bcrypt');
+        const senhaHash = await bcrypt.hash(senha, 10);
+        console.timeEnd('bcrypt');
+
+        // 3. Gerar código de verificação de 6 dígitos
         const codigoVerificacao = Math.floor(100000 + Math.random() * 900000).toString();
-        // Atualizar colunas de verificação e expiração (10 minutos de validade)
+
+        // 4. Salvar usuário no banco (um único INSERT com colunas de verificação)
+        console.time('insert-user');
         db.query(
-          'UPDATE usuarios SET codigo_verificacao = ?, verificado = 0, codigo_expiracao = DATE_ADD(NOW(), INTERVAL 10 MINUTE) WHERE email = ?',
-          [codigoVerificacao, email],
-          async (err2) => {
-            if (err2) {
-              console.error('Erro ao salvar código de verificação:', err2);
-            } else {
-              try {
-                await sendVerificationEmail(email, nome, codigoVerificacao);
-              } catch (e) {
-                console.error('Falha ao enviar e‑mail de verificação:', e);
+          'INSERT INTO usuarios (nome, email, senha, codigo_verificacao, verificado, codigo_expiracao) VALUES (?, ?, ?, ?, 0, DATE_ADD(NOW(), INTERVAL 10 MINUTE))',
+          [nome, email, senhaHash, codigoVerificacao],
+          (errInsert) => {
+            console.timeEnd('insert-user');
+            if (errInsert) {
+              console.error('Erro ao inserir usuário:', errInsert);
+              if (errInsert.code === 'ER_DUP_ENTRY') {
+                return res.status(400).json({ error: 'Já existe uma conta cadastrada com este e-mail.' });
               }
+              return res.status(500).json({ error: 'Erro ao cadastrar' });
             }
-            // Responder ao cliente que a conta foi criada e precisa verificar
+
+            console.log("Usuário salvo no banco");
+
+            // 5. Retornar sucesso para o frontend imediatamente
             res.json({ message: 'Usuário cadastrado. Verifique o e‑mail para ativar a conta.' });
+
+            // 6. Enviar e-mail de verificação em segundo plano sem bloquear a resposta
+            console.time('send-email');
+            sendVerificationEmail(email, nome, codigoVerificacao)
+              .then(() => {
+                console.timeEnd('send-email');
+                console.log('E-mail de verificação enviado com sucesso em segundo plano.');
+              })
+              .catch((e) => {
+                console.timeEnd('send-email');
+                console.error('Falha ao enviar e‑mail de verificação em segundo plano:', e);
+              });
           }
         );
+      } catch (error) {
+        console.error('Erro no fluxo de registro:', error);
+        res.status(500).json({ error: 'Erro interno' });
       }
-    );
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ error: 'Erro interno' });
-  }
+    }
+  );
 };
 
 exports.login = async (req, res) => {

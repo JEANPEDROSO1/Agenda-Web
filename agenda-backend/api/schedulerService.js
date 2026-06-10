@@ -136,7 +136,7 @@ const checkAndSendEmails = () => {
                             // Link de acesso ao site conforme especificado pelo usuário
                             const link = 'https://agendaweb360.vercel.app';
                             
-                            // Formatar data em padrão brasileiro para ficar profissional e legível (DD/MM/YYYY)
+                            // Formatar data em padrão brasileiro para ficar assim (DD/MM/YYYY)
                             let formattedDate = '';
                             if (event.data_evento instanceof Date) {
                                 const dy = String(event.data_evento.getDate()).padStart(2, '0');

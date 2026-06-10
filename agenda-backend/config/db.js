@@ -1,7 +1,7 @@
 const path = require('path');
 
 // Limpar variáveis do OS que vieram como strings vazias, para que o dotenv ou o fallback possam funcionar
-const envKeysToClean = ['DATABASE_URL', 'DB_HOST', 'DB_USER', 'DB_PASS', 'DB_NAME', 'DB_PORT'];
+const envKeysToClean = ['DATABASE_URL', 'DB_HOST', 'DB_USER', 'DB_NAME', 'DB_PORT'];
 envKeysToClean.forEach(key => {
   if (process.env[key] === '') {
     delete process.env[key];
@@ -66,7 +66,7 @@ const pool = process.env.DATABASE_URL
   : mysql.createPool({
       host: process.env.DB_HOST || 'localhost',
       user: process.env.DB_USER || 'root',
-      password: process.env.DB_PASS || 'root',
+      password: process.env.DB_PASS !== undefined ? process.env.DB_PASS : 'root',
       database: process.env.DB_NAME || 'agenda_web',
       port: process.env.DB_PORT || 3306,
       ssl: (process.env.DB_HOST && process.env.DB_HOST !== 'localhost') ? { rejectUnauthorized: false } : undefined,
@@ -141,18 +141,19 @@ pool.getConnection((err, connection) => {
             }
           }
         );
-pool.query(`
-  CREATE TABLE IF NOT EXISTS eventos (
-    id_evento INT AUTO_INCREMENT PRIMARY KEY,
-    nome VARCHAR(255) NOT NULL,
-    data_evento DATE NOT NULL,
-    hora_evento TIME NOT NULL,
-    id_usuario INT NOT NULL,
-    urgencia VARCHAR(20) NOT NULL DEFAULT 'normal',
-    cor VARCHAR(7) NOT NULL DEFAULT '#3b82f6',
-    FOREIGN KEY (id_usuario) REFERENCES usuarios(id_usuario) ON DELETE CASCADE
-  )
-`, (err) => {
+        pool.query(`
+          CREATE TABLE IF NOT EXISTS eventos (
+            id_evento INT AUTO_INCREMENT PRIMARY KEY,
+            titulo VARCHAR(255) NOT NULL,
+            descricao TEXT,
+            data_evento DATE NOT NULL,
+            hora_evento TIME NOT NULL,
+            id_usuario INT NOT NULL,
+            urgencia VARCHAR(20) NOT NULL DEFAULT 'normal',
+            cor VARCHAR(7) NOT NULL DEFAULT '#3b82f6',
+            FOREIGN KEY (id_usuario) REFERENCES usuarios(id_usuario) ON DELETE CASCADE
+          )
+        `, (err) => {
             if (err) {
               console.error('Erro ao criar/atualizar tabela eventos:', err);
               return;

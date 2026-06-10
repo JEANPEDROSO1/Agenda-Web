@@ -1,4 +1,4 @@
-const envKeysToClean = ['DATABASE_URL', 'DB_HOST', 'DB_USER', 'DB_PASS', 'DB_NAME', 'DB_PORT'];
+const envKeysToClean = ['DATABASE_URL', 'DB_HOST', 'DB_USER', 'DB_NAME', 'DB_PORT'];
 envKeysToClean.forEach(key => {
   if (process.env[key] === '') {
     delete process.env[key];
