@@ -95,6 +95,11 @@ document.getElementById('cadastroForm')?.addEventListener('submit', async (e) =>
   const nome = nomeRaw.split(/\s+/).map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase()).join(' ');
   const email = document.getElementById('email').value.trim();
   const senha = document.getElementById('senha').value;
+  const confirmarSenha = document.getElementById('confirmarSenha').value;
+  if (senha !== confirmarSenha) {
+    showNotification('As senhas informadas não são iguais. Verifique os campos de senha e tente novamente.', 'error');
+    return;
+  }
 
   // Desabilitar botão de submit correto durante o processamento
   const button = e.target.querySelector('.glass-submit-btn');
