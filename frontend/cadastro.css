@@ -107,16 +107,14 @@ button {
 /* ====================
    PREMIUM GLASS AUTH (Login/Cadastro)
 ==================== */
-
-
-/* Ensure the auth container covers full viewport and handles overscroll */
-.auth-mesh-body {
-  min-height: 100vh;
-  background-color: #0b0f19;
+html, body {
+  height: 100%;
   overflow-y: auto;
-  -webkit-overflow-scrolling: touch;
   overscroll-behavior-y: contain;
+  background: #0b0f19;
 }
+
+.auth-mesh-body {
   margin: 0;
   min-height: 100vh;
   display: flex;
@@ -126,6 +124,8 @@ button {
   position: relative;
   overflow-x: hidden;
   overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior-y: contain;
   font-family: 'Outfit', 'Inter', sans-serif;
   color: white;
 }
@@ -1271,7 +1271,8 @@ small {
 
   /* AUTH MOBILE ADJUSTMENTS */
   .auth-mesh-body {
-    align-items: flex-start;
+    align-items: center;
+    justify-content: center;
     padding: 20px 0;
   }
 
