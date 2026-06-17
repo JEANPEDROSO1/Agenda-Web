@@ -80,68 +80,65 @@ pool.getConnection((err, connection) => {
   if (err) {
     console.error('Erro ao conectar ao banco de dados via Pool:', err);
   } else {
-    console.log('Conectado ao MySQL via Pool 🚀');
+    console.log('Conectado ao MySQL via Pool');
     connection.release();
 
-    // 1. Criar tabela usuarios se não existir
-    pool.query(
-      `CREATE TABLE IF NOT EXISTS usuarios (
-        id_usuario INT AUTO_INCREMENT PRIMARY KEY,
-        nome VARCHAR(255) NOT NULL,
-        email VARCHAR(255) UNIQUE NOT NULL,
-        senha VARCHAR(255) NOT NULL
-      )`,
-      (err) => {
-        if (err) {
-          console.error('Erro ao criar/atualizar tabela usuarios:', err);
-          return;
-        }
+    const runQuery = (sql, params = []) => {
+      return new Promise((resolve, reject) => {
+        pool.query(sql, params, (err, results) => {
+          if (err) reject(err);
+          else resolve(results);
+        });
+      });
+    };
 
-        // Garantir colunas de verificação na tabela usuarios
+    async function initializeDatabase() {
+      try {
+        console.log('Iniciando criação de tabelas e colunas...');
+
+        // 1. Tabela usuarios
+        await runQuery(`
+          CREATE TABLE IF NOT EXISTS usuarios (
+            id_usuario INT AUTO_INCREMENT PRIMARY KEY,
+            nome VARCHAR(255) NOT NULL,
+            email VARCHAR(255) UNIQUE NOT NULL,
+            senha VARCHAR(255) NOT NULL
+          )
+        `);
+
+        // Garantir colunas de verificação e role na tabela usuarios
         const userCols = [
           { name: 'codigo_verificacao', def: "VARCHAR(6) DEFAULT NULL" },
           { name: 'verificado', def: "TINYINT(1) NOT NULL DEFAULT 0" },
-          { name: 'codigo_expiracao', def: "DATETIME DEFAULT NULL" }
+          { name: 'codigo_expiracao', def: "DATETIME DEFAULT NULL" },
+          { name: 'role', def: "VARCHAR(50) DEFAULT 'user'" },
+          { name: 'criado_em', def: "TIMESTAMP DEFAULT CURRENT_TIMESTAMP" }
         ];
-        let pendingUser = userCols.length;
-        const checkUserDone = () => {
-          pendingUser--;
-          if (pendingUser === 0) {
-            console.log('Colunas de verificação de usuários garantidas.');
+        for (const col of userCols) {
+          const results = await runQuery('SHOW COLUMNS FROM usuarios LIKE ?', [col.name]);
+          if (results.length === 0) {
+            console.log(`Adicionando coluna ${col.name} na tabela usuarios...`);
+            await runQuery(`ALTER TABLE usuarios ADD COLUMN ${col.name} ${col.def}`);
           }
-        };
-        userCols.forEach(col => {
-          pool.query('SHOW COLUMNS FROM usuarios LIKE ?', [col.name], (err, results) => {
-            if (err) {
-              console.error(`Erro ao verificar coluna ${col.name} na tabela usuarios:`, err);
-              return checkUserDone();
-            }
-            if (results.length === 0) {
-              pool.query(`ALTER TABLE usuarios ADD COLUMN ${col.name} ${col.def}`, err => {
-                if (err) console.error(`Erro ao adicionar coluna ${col.name} na tabela usuarios:`, err);
-                checkUserDone();
-              });
-            } else {
-              checkUserDone();
-            }
-          });
-        });
+        }
 
-        // Criar tabela de cache MSAL para persistência no banco
-        pool.query(
-          `CREATE TABLE IF NOT EXISTS msal_cache (
+        // Promover automaticamente o primeiro usuário cadastrado caso não exista nenhum admin
+        const admins = await runQuery("SELECT COUNT(*) as count FROM usuarios WHERE role = 'admin'");
+        if (admins[0].count === 0) {
+          console.log('Nenhum admin encontrado. Promovendo o primeiro usuário cadastrado...');
+          await runQuery("UPDATE usuarios SET role = 'admin' WHERE id_usuario = (SELECT min_id FROM (SELECT MIN(id_usuario) AS min_id FROM usuarios) AS tmp) AND role != 'admin'");
+        }
+
+        // 2. Tabela msal_cache
+        await runQuery(`
+          CREATE TABLE IF NOT EXISTS msal_cache (
             id INT PRIMARY KEY,
             cache_data LONGTEXT NOT NULL
-          )`,
-          (errCache) => {
-            if (errCache) {
-              console.error('Erro ao criar tabela msal_cache:', errCache);
-            } else {
-              console.log('Tabela msal_cache verificada/criada com sucesso 🛡️');
-            }
-          }
-        );
-        pool.query(`
+          )
+        `);
+
+        // 3. Tabela eventos (pessoais)
+        await runQuery(`
           CREATE TABLE IF NOT EXISTS eventos (
             id_evento INT AUTO_INCREMENT PRIMARY KEY,
             titulo VARCHAR(255) NOT NULL,
@@ -151,63 +148,176 @@ pool.getConnection((err, connection) => {
             id_usuario INT NOT NULL,
             urgencia VARCHAR(20) NOT NULL DEFAULT 'normal',
             cor VARCHAR(7) NOT NULL DEFAULT '#3b82f6',
+            repeticao VARCHAR(20) NOT NULL DEFAULT 'nenhuma',
+            alerta_minutos INT NOT NULL DEFAULT 0,
+            ultimo_alerta_enviado VARCHAR(10) DEFAULT NULL,
+            ultimo_inicio_enviado VARCHAR(10) DEFAULT NULL,
             FOREIGN KEY (id_usuario) REFERENCES usuarios(id_usuario) ON DELETE CASCADE
           )
-        `, (err) => {
-            if (err) {
-              console.error('Erro ao criar/atualizar tabela eventos:', err);
-              return;
-            }
+        `);
 
-            // 3. Verificar/Adicionar colunas extras na tabela eventos
-            const columns = [
-              { name: 'urgencia', def: "VARCHAR(20) NOT NULL DEFAULT 'normal'" },
-              { name: 'cor', def: "VARCHAR(7) NOT NULL DEFAULT '#3b82f6'" },
-              { name: 'repeticao', def: "VARCHAR(20) NOT NULL DEFAULT 'nenhuma'" },
-              { name: 'alerta_minutos', def: "INT NOT NULL DEFAULT 0" },
-              { name: 'ultimo_alerta_enviado', def: "VARCHAR(10) DEFAULT NULL" },
-              { name: 'ultimo_inicio_enviado', def: "VARCHAR(10) DEFAULT NULL" }
-            ];
-
-            let pending = columns.length;
-            const checkFinished = () => {
-              pending--;
-              if (pending === 0) {
-                console.log('Banco de dados totalmente inicializado e tabelas verificadas! 🚀');
-                pool.isInitialized = true;
-              }
-            };
-
-            columns.forEach(col => {
-              pool.query(
-                'SHOW COLUMNS FROM eventos LIKE ?',
-                [col.name],
-                (err, results) => {
-                  if (err) {
-                    console.error(`Erro ao verificar coluna ${col.name} em eventos:`, err);
-                    checkFinished();
-                    return;
-                  }
-                  if (results.length === 0) {
-                    pool.query(
-                      `ALTER TABLE eventos ADD COLUMN ${col.name} ${col.def}`,
-                      (err) => {
-                        if (err) {
-                          console.error(`Erro ao adicionar coluna ${col.name} em eventos:`, err);
-                        }
-                        checkFinished();
-                      }
-                    );
-                  } else {
-                    checkFinished();
-                  }
-                }
-              );
-            });
+        // Garantir colunas extras em eventos
+        const eventCols = [
+          { name: 'urgencia', def: "VARCHAR(20) NOT NULL DEFAULT 'normal'" },
+          { name: 'cor', def: "VARCHAR(7) NOT NULL DEFAULT '#3b82f6'" },
+          { name: 'repeticao', def: "VARCHAR(20) NOT NULL DEFAULT 'nenhuma'" },
+          { name: 'alerta_minutos', def: "INT NOT NULL DEFAULT 0" },
+          { name: 'ultimo_alerta_enviado', def: "VARCHAR(10) DEFAULT NULL" },
+          { name: 'ultimo_inicio_enviado', def: "VARCHAR(10) DEFAULT NULL" }
+        ];
+        for (const col of eventCols) {
+          const results = await runQuery('SHOW COLUMNS FROM eventos LIKE ?', [col.name]);
+          if (results.length === 0) {
+            console.log(`Adicionando coluna ${col.name} na tabela eventos...`);
+            await runQuery(`ALTER TABLE eventos ADD COLUMN ${col.name} ${col.def}`);
           }
-        );
+        }
+
+        // 4. Tabela refresh_tokens
+        await runQuery(`
+          CREATE TABLE IF NOT EXISTS refresh_tokens (
+            id INT AUTO_INCREMENT PRIMARY KEY,
+            id_usuario INT NOT NULL,
+            token VARCHAR(500) UNIQUE NOT NULL,
+            expira_em DATETIME NOT NULL,
+            FOREIGN KEY (id_usuario) REFERENCES usuarios(id_usuario) ON DELETE CASCADE
+          )
+        `);
+
+        // 5. Tabela perfis
+        await runQuery(`
+          CREATE TABLE IF NOT EXISTS perfis (
+            id_perfil INT AUTO_INCREMENT PRIMARY KEY,
+            id_usuario INT UNIQUE NOT NULL,
+            foto_caminho VARCHAR(500) DEFAULT NULL,
+            FOREIGN KEY (id_usuario) REFERENCES usuarios(id_usuario) ON DELETE CASCADE
+          )
+        `);
+
+        // 6. Tabela grupos
+        await runQuery(`
+          CREATE TABLE IF NOT EXISTS grupos (
+            id_grupo INT AUTO_INCREMENT PRIMARY KEY,
+            nome VARCHAR(255) NOT NULL,
+            id_criador INT NOT NULL,
+            FOREIGN KEY (id_criador) REFERENCES usuarios(id_usuario) ON DELETE CASCADE
+          )
+        `);
+
+        // 7. Tabela grupo_participantes
+        await runQuery(`
+          CREATE TABLE IF NOT EXISTS grupo_participantes (
+            id_participante INT AUTO_INCREMENT PRIMARY KEY,
+            id_grupo INT NOT NULL,
+            id_usuario INT NOT NULL,
+            funcao VARCHAR(50) NOT NULL DEFAULT 'membro',
+            FOREIGN KEY (id_grupo) REFERENCES grupos(id_grupo) ON DELETE CASCADE,
+            FOREIGN KEY (id_usuario) REFERENCES usuarios(id_usuario) ON DELETE CASCADE,
+            UNIQUE KEY unique_grupo_usuario (id_grupo, id_usuario)
+          )
+        `);
+
+        // 8. Tabela grupo_eventos
+        await runQuery(`
+          CREATE TABLE IF NOT EXISTS grupo_eventos (
+            id_grupo_evento INT AUTO_INCREMENT PRIMARY KEY,
+            id_grupo INT NOT NULL,
+            titulo VARCHAR(255) NOT NULL,
+            descricao TEXT,
+            data_evento DATE NOT NULL,
+            hora_evento TIME NOT NULL,
+            local VARCHAR(255) DEFAULT NULL,
+            id_criador INT NOT NULL,
+            cor VARCHAR(7) NOT NULL DEFAULT '#8b5cf6',
+            urgencia VARCHAR(20) NOT NULL DEFAULT 'normal',
+            repeticao VARCHAR(20) NOT NULL DEFAULT 'nenhuma',
+            alerta_minutos INT NOT NULL DEFAULT 0,
+            FOREIGN KEY (id_grupo) REFERENCES grupos(id_grupo) ON DELETE CASCADE,
+            FOREIGN KEY (id_criador) REFERENCES usuarios(id_usuario) ON DELETE CASCADE
+          )
+        `);
+
+        // Garantir colunas extras em grupo_eventos
+        const groupEventCols = [
+          { name: 'urgencia', def: "VARCHAR(20) NOT NULL DEFAULT 'normal'" },
+          { name: 'cor', def: "VARCHAR(7) NOT NULL DEFAULT '#8b5cf6'" },
+          { name: 'repeticao', def: "VARCHAR(20) NOT NULL DEFAULT 'nenhuma'" },
+          { name: 'alerta_minutos', def: "INT NOT NULL DEFAULT 0" }
+        ];
+        for (const col of groupEventCols) {
+          const results = await runQuery('SHOW COLUMNS FROM grupo_eventos LIKE ?', [col.name]);
+          if (results.length === 0) {
+            console.log(`Adicionando coluna ${col.name} na tabela grupo_eventos...`);
+            await runQuery(`ALTER TABLE grupo_eventos ADD COLUMN ${col.name} ${col.def}`);
+          }
+        }
+
+        // 9. Tabela trello_quadros
+        await runQuery(`
+          CREATE TABLE IF NOT EXISTS trello_quadros (
+            id_quadro INT AUTO_INCREMENT PRIMARY KEY,
+            id_grupo INT NOT NULL,
+            nome VARCHAR(255) NOT NULL,
+            FOREIGN KEY (id_grupo) REFERENCES grupos(id_grupo) ON DELETE CASCADE
+          )
+        `);
+
+        // 10. Tabela trello_listas
+        await runQuery(`
+          CREATE TABLE IF NOT EXISTS trello_listas (
+            id_lista INT AUTO_INCREMENT PRIMARY KEY,
+            id_quadro INT NOT NULL,
+            nome VARCHAR(255) NOT NULL,
+            posicao INT NOT NULL DEFAULT 0,
+            FOREIGN KEY (id_quadro) REFERENCES trello_quadros(id_quadro) ON DELETE CASCADE
+          )
+        `);
+
+        // 11. Tabela trello_cartoes
+        await runQuery(`
+          CREATE TABLE IF NOT EXISTS trello_cartoes (
+            id_cartao INT AUTO_INCREMENT PRIMARY KEY,
+            id_lista INT NOT NULL,
+            titulo VARCHAR(255) NOT NULL,
+            descricao TEXT,
+            prazo DATE DEFAULT NULL,
+            concluido TINYINT(1) NOT NULL DEFAULT 0,
+            posicao INT NOT NULL DEFAULT 0,
+            FOREIGN KEY (id_lista) REFERENCES trello_listas(id_lista) ON DELETE CASCADE
+          )
+        `);
+
+        // 12. Tabela trello_cartao_responsaveis
+        await runQuery(`
+          CREATE TABLE IF NOT EXISTS trello_cartao_responsaveis (
+            id_cartao_responsavel INT AUTO_INCREMENT PRIMARY KEY,
+            id_cartao INT NOT NULL,
+            id_usuario INT NOT NULL,
+            FOREIGN KEY (id_cartao) REFERENCES trello_cartoes(id_cartao) ON DELETE CASCADE,
+            FOREIGN KEY (id_usuario) REFERENCES usuarios(id_usuario) ON DELETE CASCADE,
+            UNIQUE KEY unique_cartao_responsavel (id_cartao, id_usuario)
+          )
+        `);
+
+        // 13. Tabela recuperacao_senha
+        await runQuery(`
+          CREATE TABLE IF NOT EXISTS recuperacao_senha (
+            id INT AUTO_INCREMENT PRIMARY KEY,
+            email VARCHAR(255) NOT NULL,
+            codigo VARCHAR(6) NOT NULL,
+            expira_em DATETIME NOT NULL,
+            verificado TINYINT(1) NOT NULL DEFAULT 0
+          )
+        `);
+
+        console.log('Banco de dados totalmente inicializado e tabelas verificadas!');
+        pool.isInitialized = true;
+      } catch (error) {
+        console.error('Erro na inicialização do Banco de Dados:', error);
       }
-    );
+    }
+
+    initializeDatabase();
   }
 });
 

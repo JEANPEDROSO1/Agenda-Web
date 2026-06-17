@@ -1,0 +1,484 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Grupos - Agenda Web</title>
+  <meta name="description" content="Colabore em grupos, compartilhe eventos no calendário coletivo e organize compromissos.">
+  <link rel="icon" type="image/png" href="logo.png">
+  <link rel="stylesheet" href="dashboard.css?v=final_fix_115">
+  <link rel="stylesheet" href="grupos.css?v=final_fix_115">
+</head>
+<body class="auth-mesh-body">
+  <!-- Fundo Animado -->
+  <div class="mesh-background">
+    <div class="mesh-blob blob-1"></div>
+    <div class="mesh-blob blob-2"></div>
+    <div class="mesh-blob blob-3"></div>
+  </div>
+
+  <!-- Barra de Navegação -->
+  <nav class="glass-nav">
+    <div class="nav-container">
+      <a href="dashboard.html" class="nav-logo">
+        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        <span>Agenda Web</span>
+      </a>
+      
+      <button class="hamburger" id="hamburgerBtn" aria-label="Menu">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+
+      <ul class="nav-links" id="navbarMenu">
+        <li><a href="dashboard.html">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+          Início
+        </a></li>
+        <li><a href="compromissos.html">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>
+          Compromissos
+        </a></li>
+        <li><a href="grupos.html" class="active">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+          Grupos
+        </a></li>
+        <li><a href="perfil.html" style="display: flex; align-items: center; gap: 8px;">
+          <div style="width: 24px; height: 24px; border-radius: 50%; overflow: hidden; display: flex; align-items: center; justify-content: center; background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); flex-shrink: 0;">
+            <img id="navUserAvatarImg" src="" style="width: 100%; height: 100%; object-fit: cover; display: none;">
+            <svg id="navUserAvatarPlaceholder" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 16px; height: 16px; margin: 0;"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+          </div>
+          Perfil
+        </a></li>
+        <li id="adminNavLink" style="display: none;"><a href="admin.html">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="9"></rect><rect x="14" y="3" width="7" height="5"></rect><rect x="14" y="12" width="7" height="9"></rect><rect x="3" y="16" width="7" height="5"></rect></svg>
+          Admin
+        </a></li>
+        <li><button id="logoutLink" class="nav-logout">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg>
+          Sair
+        </button></li>
+      </ul>
+    </div>
+  </nav>
+
+  <!-- Container Principal -->
+  <div class="groups-container">
+    
+    <!-- SEÇÃO 1: LISTAGEM DE GRUPOS -->
+    <section id="groupsListSection">
+      
+      <!-- Criar Novo Grupo -->
+      <div class="glass-card create-group-card">
+        <h2 style="font-size: 1.4rem; font-weight: 800; color: #fff;">Criar Novo Grupo de Trabalho</h2>
+        <p style="font-size: 0.9rem; color: var(--text-muted);">Organize compromissos coletivos com seus colegas e compartilhe uma agenda comum.</p>
+        
+        <form id="createGroupForm" class="create-group-form">
+          <input type="text" id="newGroupName" required placeholder="Digite o nome do grupo..." maxlength="100">
+          <button type="submit" id="btnCreateGroup">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 18px; height: 18px;"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+            Criar Grupo
+          </button>
+        </form>
+      </div>
+
+      <!-- Grid de Grupos do Usuário -->
+      <h2 style="font-size: 1.4rem; font-weight: 800; color: #fff; margin-bottom: 20px;">Meus Grupos</h2>
+      <div class="groups-grid" id="groupsGrid">
+        <!-- Injetado dinamicamente -->
+        <p style="color: var(--text-muted);">Carregando grupos...</p>
+      </div>
+
+    </section>
+
+    <!-- SEÇÃO 2: DETALHES DO GRUPO (SPA) -->
+    <section id="singleGroupSection" style="display: none;">
+      
+      <div class="group-detail-header">
+        <div style="display: flex; align-items: center; gap: 15px;">
+          <button class="btn-back" id="btnBackToGroups">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 18px; height: 18px;"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
+            Voltar
+          </button>
+          <div>
+            <h1 id="groupDetailName" style="font-size: 1.8rem; font-weight: 800; color: #fff; margin: 0;">Nome do Grupo</h1>
+            <span class="group-badge" id="groupDetailRole">Membro</span>
+          </div>
+        </div>
+
+        <div style="display: flex; gap: 12px;" id="groupActionButtons">
+          <!-- Botões dinâmicos como Excluir Grupo ou Sair do Grupo -->
+        </div>
+      </div>
+
+      <!-- Controles de Abas (Tabs) -->
+      <div style="display: flex; gap: 15px; margin-bottom: 25px; border-bottom: 1px solid rgba(255, 255, 255, 0.08); padding-bottom: 10px;">
+        <button id="tabBtnAgenda" class="btn-profile-save" style="padding: 8px 20px; font-size: 0.9rem; border-radius: 8px;">Agenda do Grupo</button>
+        <button id="tabBtnTrello" class="btn-profile-save" style="padding: 8px 20px; font-size: 0.9rem; border-radius: 8px; background: rgba(255, 255, 255, 0.05); border: 1px solid var(--glass-border); color: #fff; box-shadow: none;">Quadro de Tarefas (Kanban)</button>
+      </div>
+
+      <!-- ABA 1: AGENDA DO GRUPO -->
+      <div id="groupAgendaTab">
+        <div class="group-detail-grid">
+          <!-- COLUNA 1: MEMBROS E CONVITES -->
+          <div class="glass-card detail-card">
+            <h2 class="section-title">Participantes</h2>
+            
+            <!-- Formulário para Convidar (Apenas Admins do Grupo) -->
+            <div id="inviteMemberContainer" style="display: none; margin-bottom: 25px;">
+              <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 8px;">Adicionar participante por e-mail:</p>
+              <form id="inviteMemberForm" style="display: flex; gap: 10px;">
+                <input type="email" id="inviteEmail" required placeholder="usuario@email.com" style="flex: 1; padding: 10px 14px; background: rgba(255, 255, 255, 0.05); border: 1px solid var(--glass-border); border-radius: 8px; color: #fff; font-family: inherit; font-size: 14px; outline: none;">
+                <button type="submit" style="padding: 10px 18px; background: var(--primary); border: none; border-radius: 8px; color: #fff; font-weight: 600; cursor: pointer;">
+                  Adicionar
+                </button>
+              </form>
+            </div>
+
+            <div class="members-list" id="groupMembersList">
+              <!-- Injetado dinamicamente -->
+            </div>
+          </div>
+
+          <!-- COLUNA 2: CALENDÁRIO COMPARTILHADO -->
+          <div class="glass-card detail-card" style="display: flex; flex-direction: column; gap: 20px;">
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+              <h2 class="section-title" style="margin-bottom: 0;">Calendário Compartilhado</h2>
+              <button class="btn-profile-save" id="btnOpenAddEventModal" style="padding: 8px 16px; font-size: 0.85rem; display: none;">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 14px; height: 14px; margin-right: 4px;"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+                Agendar Evento
+              </button>
+            </div>
+
+            <!-- Grid do Calendário Mensal -->
+            <div class="group-calendar-container" style="background: rgba(0,0,0,0.15); border: 1px solid rgba(255,255,255,0.05); padding: 15px; border-radius: 12px;">
+              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+                <div style="display: flex; align-items: center; gap: 10px;">
+                  <button type="button" class="nav-btn" id="groupPrevMonth" style="background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); width: 32px; height: 32px; border-radius: 8px; color: #fff; cursor: pointer; display: flex; align-items: center; justify-content: center;">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="width: 16px; height: 16px;"><polyline points="15 18 9 12 15 6"></polyline></svg>
+                  </button>
+                  <h3 id="groupMonthYear" style="margin: 0; font-size: 1.1rem; font-weight: 700; color: #fff; text-transform: capitalize; width: 140px; text-align: center;">Mês Ano</h3>
+                  <button type="button" class="nav-btn" id="groupNextMonth" style="background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); width: 32px; height: 32px; border-radius: 8px; color: #fff; cursor: pointer; display: flex; align-items: center; justify-content: center;">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="width: 16px; height: 16px;"><polyline points="9 18 15 12 9 6"></polyline></svg>
+                  </button>
+                </div>
+                <button type="button" class="glass-btn-secondary" id="groupToday" style="padding: 6px 12px; font-size: 0.8rem;">Hoje</button>
+              </div>
+
+              <!-- Calendário Grid -->
+              <div class="calendar-grid">
+                <div class="weekdays-grid" style="display: grid; grid-template-columns: repeat(7, 1fr); text-align: center; font-size: 0.8rem; font-weight: 600; color: var(--text-muted); margin-bottom: 8px;">
+                  <div>Dom</div><div>Seg</div><div>Ter</div><div>Qua</div><div>Qui</div><div>Sex</div><div>Sáb</div>
+                </div>
+                <div id="groupCalendarDays" style="display: grid; grid-template-columns: repeat(7, 1fr); gap: 5px;"></div>
+              </div>
+            </div>
+
+            <!-- Listagem de Eventos do Dia Selecionado -->
+            <div>
+              <h3 style="font-size: 1rem; font-weight: 700; color: #fff; margin-bottom: 12px; display: flex; align-items: center; gap: 8px;">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width: 16px; height: 16px;"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+                Compromissos de: <span id="selectedGroupDayLabel" style="color: #8b5cf6;">Selecione um dia</span>
+              </h3>
+              <div class="group-events-list" id="groupEventsList" style="display: flex; flex-direction: column; gap: 12px; max-height: 250px; overflow-y: auto; padding-right: 5px;">
+                <p style="color: var(--text-muted); font-size: 0.9rem; text-align: center; padding: 20px;">Selecione um dia no calendário para ver os compromissos agendados.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ABA 2: QUADRO DE TAREFAS (TRELLO) -->
+      <div id="groupTrelloTab" style="display: none;">
+        <!-- Se o quadro não estiver inicializado -->
+        <div id="trelloUninitialized" class="glass-card" style="padding: 50px; text-align: center; display: none;">
+          <h3 style="font-size: 1.4rem; font-weight: 700; color: #fff; margin-bottom: 10px;">Quadro de Tarefas do Grupo</h3>
+          <p style="color: var(--text-muted); margin-bottom: 25px; max-width: 500px; margin-left: auto; margin-right: auto;">
+            Gerencie tarefas, atribua responsáveis e acompanhe os prazos do grupo com um quadro de estilo Kanban.
+          </p>
+          <button class="btn-profile-save" id="btnInitializeBoard">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 18px; height: 18px; margin-right: 6px;"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><line x1="9" y1="3" x2="9" y2="21"></line><line x1="15" y1="3" x2="15" y2="21"></line></svg>
+            Inicializar Quadro Kanban
+          </button>
+        </div>
+
+        <!-- Se o quadro estiver inicializado -->
+        <div id="trelloBoardContainer" style="display: none;">
+          <div class="trello-board-header" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+            <h2 id="trelloBoardTitle" style="font-size: 1.4rem; font-weight: 800; color: #fff; margin: 0;">Quadro Kanban</h2>
+            <form id="createListForm" style="display: flex; gap: 10px;">
+              <input type="text" id="newListTitle" required placeholder="Nova lista..." style="padding: 8px 12px; background: rgba(255, 255, 255, 0.05); border: 1px solid var(--glass-border); border-radius: 8px; color: #fff; font-size: 13px; outline: none; width: 160px;">
+              <button type="submit" class="btn-profile-save" style="padding: 8px 16px; font-size: 0.85rem;">
+                + Criar Lista
+              </button>
+            </form>
+          </div>
+
+          <!-- Horizontal scrolling Kanban board canvas -->
+          <div class="trello-board-canvas" id="trelloBoardCanvas" style="display: flex; gap: 20px; overflow-x: auto; padding-bottom: 15px; align-items: flex-start;">
+            <!-- Injetado dinamicamente -->
+          </div>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+  <!-- MODAL: CADASTRAR/EDITAR COMPROMISSO DE GRUPO -->
+  <div id="addEventModal" class="glass-modal-overlay" style="display: none;">
+    <div class="glass-modal-card" style="width: min(100% - 32px, 500px); text-align: left;">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+        <h2 id="groupEventModalTitle" style="margin: 0;">Agendar no Grupo</h2>
+        <button type="button" id="btnCancelAddEvent" style="background: none; border: none; color: #fff; cursor: pointer; display: flex; align-items: center; justify-content: center;"><i data-lucide="x" style="width: 24px; height: 24px;"></i></button>
+      </div>
+      
+      <form id="addGroupEventForm">
+        <input type="hidden" id="eventGroupId">
+        <input type="hidden" id="editEventId">
+
+        <div class="form-group-profile">
+          <label for="eventTitulo">Título do Compromisso</label>
+          <div class="profile-input-wrapper">
+            <input type="text" id="eventTitulo" required placeholder="Ex: Reunião com o time">
+          </div>
+        </div>
+
+        <div class="form-group-profile">
+          <label for="eventDescricao">Descrição</label>
+          <div class="profile-input-wrapper">
+            <textarea id="eventDescricao" placeholder="Sobre o que é o compromisso..." rows="3" style="width: 100%; min-height: 80px; padding: 14px; background: rgba(255, 255, 255, 0.05); border: 1px solid var(--glass-border); border-radius: 12px; color: #fff; font-family: inherit; font-size: 15px; outline: none; resize: vertical;"></textarea>
+          </div>
+        </div>
+
+        <div class="form-grid-modal">
+          <div class="form-group-profile">
+            <label for="eventData">Data</label>
+            <div class="profile-input-wrapper">
+              <input type="date" id="eventData" required>
+            </div>
+          </div>
+          <div class="form-group-profile">
+            <label for="eventHora">Hora</label>
+            <div class="profile-input-wrapper">
+              <input type="time" id="eventHora" required>
+            </div>
+          </div>
+        </div>
+
+        <div class="form-grid-modal">
+          <div class="form-group-profile">
+            <label for="eventUrgencia">Urgência</label>
+            <div class="profile-input-wrapper">
+              <select id="eventUrgencia" style="width: 100%; padding: 14px; background: rgba(25,25,30,0.9); border: 1px solid var(--glass-border); border-radius: 12px; color: #fff; font-family: inherit; font-size: 15px; outline: none;">
+                <option value="normal">Normal</option>
+                <option value="urgente">Urgente</option>
+              </select>
+            </div>
+          </div>
+          <div class="form-group-profile">
+            <label for="eventCor">Cor</label>
+            <div class="profile-input-wrapper">
+              <select id="eventCor" style="width: 100%; padding: 14px; background: rgba(25,25,30,0.9); border: 1px solid var(--glass-border); border-radius: 12px; color: #fff; font-family: inherit; font-size: 15px; outline: none;">
+                <option value="#3b82f6">Azul</option>
+                <option value="#10b981">Verde</option>
+                <option value="#f59e0b">Amarelo</option>
+                <option value="#ef4444">Vermelho</option>
+                <option value="#8b5cf6">Roxo</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <div class="form-grid-modal">
+          <div class="form-group-profile">
+            <label for="eventRepeticao">Repetição</label>
+            <div class="profile-input-wrapper">
+              <select id="eventRepeticao" style="width: 100%; padding: 14px; background: rgba(25,25,30,0.9); border: 1px solid var(--glass-border); border-radius: 12px; color: #fff; font-family: inherit; font-size: 15px; outline: none;">
+                <option value="nenhuma">Nenhuma</option>
+                <option value="semanal">Semanal</option>
+                <option value="mensal">Mensal</option>
+                <option value="anual">Anual</option>
+              </select>
+            </div>
+          </div>
+          <div class="form-group-profile">
+            <label for="eventAlerta">Alerta por E-mail</label>
+            <div class="profile-input-wrapper">
+              <select id="eventAlerta" style="width: 100%; padding: 14px; background: rgba(25,25,30,0.9); border: 1px solid var(--glass-border); border-radius: 12px; color: #fff; font-family: inherit; font-size: 15px; outline: none;">
+                <option value="0">Sem alerta antecipado</option>
+                <option value="5">5 minutos antes</option>
+                <option value="10">10 minutos antes</option>
+                <option value="20">20 minutos antes</option>
+                <option value="30">30 minutos antes</option>
+                <option value="60">1 hora antes</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <div class="form-group-profile" style="margin-top: 10px;">
+          <label for="eventLocal">Local/Link</label>
+          <div class="profile-input-wrapper">
+            <input type="text" id="eventLocal" placeholder="Teams, Zoom, Sala 3, etc.">
+          </div>
+        </div>
+
+        <div class="modal-footer" style="justify-content: flex-end; margin-top: 20px; display: flex; gap: 10px;">
+          <button type="button" id="btnDeleteEvent" class="glass-btn-danger" style="display: none; margin-right: auto;">Excluir</button>
+          <button type="button" id="btnCancelAddEventReal" class="glass-btn-secondary">Cancelar</button>
+          <button type="submit" class="btn-profile-save" id="btnSaveGroupEvent">Agendar</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- MODAL: TRANSFERIR PROPRIEDADE -->
+  <div id="transferOwnerModal" class="glass-modal-overlay" style="display: none;">
+    <div class="glass-modal-card">
+      <h2>Transferir Propriedade</h2>
+      <p>Selecione o membro que se tornará o novo proprietário do grupo. Você deixará de ser o dono, mas continuará como administrador.</p>
+      
+      <div class="form-group-profile" style="text-align: left;">
+        <label for="transferSelect">Novo Proprietário</label>
+        <div class="profile-input-wrapper">
+          <select id="transferSelect" style="width: 100%; padding: 14px; background: rgba(25,25,30,0.9); border: 1px solid var(--glass-border); border-radius: 12px; color: #fff; font-family: inherit; font-size: 15px; outline: none;"></select>
+        </div>
+      </div>
+
+      <div class="modal-footer" style="margin-top: 25px;">
+        <button id="btnCancelTransfer" class="glass-btn-secondary">Cancelar</button>
+        <button id="btnConfirmTransfer" class="glass-btn-danger">Transferir</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL: DETALHES DO CARTÃO (TRELLO) -->
+  <div id="cardDetailsModal" class="glass-modal-overlay" style="display: none;">
+    <div class="glass-modal-card" style="width: min(100% - 32px, 550px); text-align: left;">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+        <h2 style="margin: 0;">Detalhes da Tarefa</h2>
+        <button id="btnDeleteCard" class="btn-danger-glass" style="padding: 6px 12px; font-size: 0.8rem;">Excluir Tarefa</button>
+      </div>
+
+      <form id="cardDetailsForm">
+        <div class="form-group-profile">
+          <label for="cardTitleInput">Título</label>
+          <div class="profile-input-wrapper">
+            <input type="text" id="cardTitleInput" required>
+          </div>
+        </div>
+
+        <div class="form-group-profile">
+          <label for="cardDescInput">Descrição</label>
+          <div class="profile-input-wrapper">
+            <textarea id="cardDescInput" placeholder="Adicione uma descrição detalhada..." style="width: 100%; min-height: 80px; padding: 14px; background: rgba(255, 255, 255, 0.05); border: 1px solid var(--glass-border); border-radius: 12px; color: #fff; font-family: inherit; font-size: 15px; outline: none; resize: vertical;"></textarea>
+          </div>
+        </div>
+
+        <div class="form-grid-modal">
+          <div class="form-group-profile">
+            <label for="cardPrazoInput">Prazo de Entrega</label>
+            <div class="profile-input-wrapper">
+              <input type="date" id="cardPrazoInput">
+            </div>
+          </div>
+          <div class="form-group-profile">
+            <label for="cardStatusInput" style="margin-bottom: 12px;">Situação</label>
+            <div style="display: flex; align-items: center; gap: 8px; margin-top: 10px;">
+              <input type="checkbox" id="cardStatusInput" style="width: 20px; height: 20px; cursor: pointer;">
+              <label for="cardStatusInput" style="margin: 0; text-transform: none; font-size: 0.95rem; font-weight: normal; color: #fff;">Concluído</label>
+            </div>
+          </div>
+        </div>
+
+        <div class="form-group-profile" style="margin-top: 15px;">
+          <label>Atribuir Responsáveis</label>
+          <div id="cardAssigneesList" style="display: flex; flex-direction: column; gap: 10px; margin-top: 10px; max-height: 150px; overflow-y: auto; padding-right: 5px; background: rgba(0,0,0,0.1); padding: 10px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.05);">
+            <!-- Injetado dinamicamente com checkboxes -->
+          </div>
+        </div>
+
+        <div class="modal-footer" style="justify-content: flex-end; margin-top: 25px;">
+          <button type="button" id="btnCancelCardDetails" class="glass-btn-secondary">Cancelar</button>
+          <button type="submit" class="btn-profile-save">Salvar Alterações</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Modal Logout -->
+  <div id="logoutModal" class="glass-modal-overlay" style="display: none;">
+    <div class="glass-modal-card">
+      <h2>Sair da Conta</h2>
+      <p>Tem certeza que deseja encerrar sua sessão?</p>
+      <div class="modal-footer">
+        <button id="cancelLogout" class="glass-btn-secondary">Cancelar</button>
+        <button id="confirmLogout" class="glass-btn-danger">Sair</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal Confirmação Excluir Grupo -->
+  <div id="deleteGroupConfirmModal" class="glass-modal-overlay" style="display: none;">
+    <div class="glass-modal-card" style="max-width: 400px;">
+      <h2>Excluir Grupo</h2>
+      <p style="color: var(--text-muted); font-size: 0.95rem; margin-top: 10px;">Esta ação é irrecuperável e excluirá permanentemente todos os eventos, tarefas e dados deste grupo.</p>
+      <div class="modal-footer" style="margin-top: 20px;">
+        <button id="cancelDeleteGroup" class="glass-btn-secondary">Cancelar</button>
+        <button id="confirmDeleteGroup" class="glass-btn-danger">Excluir Grupo</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal Confirmação Excluir Evento -->
+  <div id="deleteEventConfirmModal" class="glass-modal-overlay" style="display: none;">
+    <div class="glass-modal-card" style="max-width: 400px;">
+      <h2>Excluir Compromisso</h2>
+      <p style="color: var(--text-muted); font-size: 0.95rem; margin-top: 10px;">Tem certeza que deseja excluir permanentemente este compromisso compartilhado do grupo?</p>
+      <div class="modal-footer" style="margin-top: 20px;">
+        <button id="cancelDeleteEvent" class="glass-btn-secondary">Cancelar</button>
+        <button id="confirmDeleteEvent" class="glass-btn-danger">Excluir</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal Confirmação Sair do Grupo -->
+  <div id="leaveGroupConfirmModal" class="glass-modal-overlay" style="display: none;">
+    <div class="glass-modal-card" style="max-width: 400px;">
+      <h2>Sair do Grupo</h2>
+      <p style="color: var(--text-muted); font-size: 0.95rem; margin-top: 10px;">Tem certeza que deseja sair deste grupo? Você não terá mais acesso às tarefas e eventos compartilhados.</p>
+      <div class="modal-footer" style="margin-top: 20px;">
+        <button id="cancelLeaveGroup" class="glass-btn-secondary">Cancelar</button>
+        <button id="confirmLeaveGroup" class="glass-btn-danger">Sair do Grupo</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal Confirmação Remover Membro -->
+  <div id="removeMemberConfirmModal" class="glass-modal-overlay" style="display: none;">
+    <div class="glass-modal-card" style="max-width: 400px;">
+      <h2>Remover Membro</h2>
+      <p id="removeMemberText" style="color: var(--text-muted); font-size: 0.95rem; margin-top: 10px;">Tem certeza que deseja remover este membro do grupo?</p>
+      <div class="modal-footer" style="margin-top: 20px;">
+        <button id="cancelRemoveMember" class="glass-btn-secondary">Cancelar</button>
+        <button id="confirmRemoveMember" class="glass-btn-danger">Remover</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <script src="config.js?v=final_fix_115"></script>
+  <script src="script.js?v=final_fix_115"></script>
+  <script src="menu.js?v=final_fix_115"></script>
+  <script src="grupos.js?v=final_fix_115"></script>
+  <script>
+    if (typeof lucide !== 'undefined') {
+      lucide.createIcons();
+    }
+  </script>
+</body>
+</html>

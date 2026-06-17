@@ -1,10 +1,12 @@
-// reset-db.js – wipe all data (eventos and usuarios) safely
+// reset-db.js – wipe all data safely
 // Run with: node reset-db.js
 
 const db = require('./config/db');
 
 async function resetDatabase() {
-  // Disable foreign key checks to allow truncation order
+  console.log('Iniciando limpeza total do Banco de Dados...');
+
+  // Desativar verificação de chaves estrangeiras
   await new Promise((resolve, reject) => {
     db.query('SET FOREIGN_KEY_CHECKS = 0', err => {
       if (err) return reject(err);
@@ -12,24 +14,36 @@ async function resetDatabase() {
     });
   });
 
-  // Delete rows from eventos and usuarios
-  await new Promise((resolve, reject) => {
-    db.query('DELETE FROM eventos', err => {
-      if (err) return reject(err);
-      console.log('All eventos cleared.');
-      resolve();
-    });
-  });
+  const tables = [
+    'trello_cartao_responsaveis',
+    'trello_cartoes',
+    'trello_listas',
+    'trello_quadros',
+    'grupo_eventos',
+    'grupo_participantes',
+    'grupos',
+    'perfis',
+    'refresh_tokens',
+    'recuperacao_senha',
+    'eventos',
+    'usuarios'
+  ];
 
-  await new Promise((resolve, reject) => {
-    db.query('DELETE FROM usuarios', err => {
-      if (err) return reject(err);
-      console.log('All usuarios cleared.');
-      resolve();
+  for (const table of tables) {
+    await new Promise((resolve, reject) => {
+      db.query(`DELETE FROM ${table}`, err => {
+        if (err) {
+          // Ignorar se a tabela não existir ainda
+          console.warn(`Aviso: não foi possível limpar tabela ${table}:`, err.message);
+        } else {
+          console.log(`Tabela ${table} limpa.`);
+        }
+        resolve();
+      });
     });
-  });
+  }
 
-  // Re‑enable foreign key checks
+  // Re-ativar chaves estrangeiras
   await new Promise((resolve, reject) => {
     db.query('SET FOREIGN_KEY_CHECKS = 1', err => {
       if (err) return reject(err);
@@ -37,11 +51,11 @@ async function resetDatabase() {
     });
   });
 
-  console.log('Database reset complete.');
+  console.log('Reset do banco de dados concluído com sucesso!');
   process.exit(0);
 }
 
 resetDatabase().catch(err => {
-  console.error('Error resetting database:', err);
+  console.error('Erro ao resetar o banco de dados:', err);
   process.exit(1);
 });

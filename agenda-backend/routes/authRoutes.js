@@ -2,12 +2,21 @@ const express = require('express');
 const router = express.Router();
 const authController = require('../controllers/authController');
 const { getAuthUrl, acquireTokenByCode } = require('../api/graphClient');
+const authenticateToken = require('../middleware/auth');
 
 router.post('/register', authController.register);
 router.post('/login', authController.login);
 router.post('/verify', authController.verify);
 router.post('/resend-code', authController.resendCode);
 router.post('/delete-account', authController.deleteAccount);
+router.post('/refresh', authController.refresh);
+router.post('/logout', authController.logout);
+router.get('/me', authenticateToken, authController.me);
+
+// Rotas de recuperação de senha
+router.post('/forgot-password', authController.forgotPassword);
+router.post('/verify-recovery-code', authController.verifyRecoveryCode);
+router.post('/reset-password', authController.resetPassword);
 
 // Rotas da Microsoft Graph
 router.get('/microsoft', async (req, res) => {

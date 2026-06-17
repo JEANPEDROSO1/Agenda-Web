@@ -15,8 +15,17 @@ require('./config/db');
 
 const express = require('express');
 const cors = require('cors');
+const cookieParser = require('cookie-parser');
+const path = require('path');
+const fs = require('fs');
 
 const app = express();
+
+// Garantir que a pasta de uploads existe
+const uploadsDir = path.join(__dirname, 'uploads');
+if (!fs.existsSync(uploadsDir)) {
+  fs.mkdirSync(uploadsDir, { recursive: true });
+}
 
 // Configuração CORS mais permissiva para desenvolvimento
 app.use(cors({
@@ -25,6 +34,8 @@ app.use(cors({
 }));
 
 app.use(express.json());
+app.use(cookieParser());
+app.use('/uploads', express.static(uploadsDir));
 
 app.get('/', (req, res) => {
   res.json({
@@ -67,11 +78,23 @@ app.use('/auth', authRoutes);
 const eventRoutes = require('./routes/eventRoutes');
 app.use('/events', eventRoutes);
 
+const profileRoutes = require('./routes/profileRoutes');
+app.use('/profile', profileRoutes);
+
+const groupRoutes = require('./routes/groupRoutes');
+app.use('/groups', groupRoutes);
+
+const trelloRoutes = require('./routes/trelloRoutes');
+app.use('/groups/:groupId/trello', trelloRoutes);
+
+const adminRoutes = require('./routes/adminRoutes');
+app.use('/admin', adminRoutes);
+
 const { startScheduler } = require('./api/schedulerService');
 
 const PORT = process.env.PORT || 8080;
 
 app.listen(PORT, () => {
-  console.log(`Servidor rodando na porta ${PORT} 🚀`);
+  console.log(`Servidor rodando na porta ${PORT}`);
   startScheduler();
 });

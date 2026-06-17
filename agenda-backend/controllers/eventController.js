@@ -44,7 +44,7 @@ exports.createEvent = async (req, res) => {
         throw err;
       }
     }
-    res.json({ message: 'Evento criado com sucesso 🚀' });
+    res.json({ message: 'Evento criado com sucesso' });
   // Verifica imediatamente se há e‑mails a enviar após a criação
   checkAndSendEmails();
   } catch (error) {
@@ -120,7 +120,7 @@ exports.updateEvent = (req, res) => {
         console.error(err);
         return res.status(500).json({ error: 'Erro ao atualizar evento' });
       }
-      res.json({ message: 'Evento atualizado com sucesso 🚀' });
+      res.json({ message: 'Evento atualizado com sucesso' });
     }
   );
 };
@@ -136,7 +136,7 @@ exports.deleteEvent = (req, res) => {
         console.error(err);
         return res.status(500).json({ error: 'Erro ao excluir evento' });
       }
-      res.json({ message: 'Evento excluído com sucesso 🚀' });
+      res.json({ message: 'Evento excluído com sucesso' });
     }
   );
 };

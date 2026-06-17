@@ -195,7 +195,7 @@ const checkAndSendEmails = () => {
 };
 
 const startScheduler = () => {
-    console.log('[Scheduler] Serviço de agendamento de e-mails iniciado ⏰');
+    console.log('[Scheduler] Serviço de agendamento de e-mails iniciado');
     
     // Espera o banco de dados inicializar antes de começar a verificação
     const checkDbReady = setInterval(() => {

@@ -50,7 +50,12 @@ function initMenuHandler() {
   // Confirmar logout
   const confirmLogout = document.getElementById('confirmLogout');
   if (confirmLogout) {
-    confirmLogout.addEventListener('click', () => {
+    confirmLogout.addEventListener('click', async () => {
+      try {
+        await apiRequest(`${API_BASE}/auth/logout`, { method: 'POST' });
+      } catch (err) {
+        console.error('Erro no logout do servidor:', err);
+      }
       localStorage.removeItem('token');
       localStorage.removeItem('userId');
       window.location.href = 'login.html';
@@ -80,4 +85,49 @@ function initMenuHandler() {
 }
 
 // Inicializar quando o DOM estiver pronto
-document.addEventListener('DOMContentLoaded', initMenuHandler);
+document.addEventListener('DOMContentLoaded', () => {
+  initMenuHandler();
+  
+  // Exibir link de administrador se o token contiver a role correspondente
+  const token = localStorage.getItem('token');
+  if (token) {
+    try {
+      const payload = JSON.parse(atob(token.split('.')[1]));
+      if (payload.role === 'admin') {
+        const adminLink = document.getElementById('adminNavLink');
+        if (adminLink) {
+          adminLink.style.display = 'inline-block';
+        }
+      }
+    } catch (err) {
+      console.warn('Erro ao decodificar role do menu:', err);
+    }
+
+    // Carregar foto de perfil no menu
+    apiRequest(`${API_BASE}/profile`)
+      .then(data => {
+        const profile = data.profile;
+        const navImg = document.getElementById('navUserAvatarImg');
+        const navPlaceholder = document.getElementById('navUserAvatarPlaceholder');
+        if (navImg && navPlaceholder && profile.foto_caminho) {
+          navImg.src = `${API_BASE}${profile.foto_caminho}`;
+          navImg.style.display = 'block';
+          navPlaceholder.style.display = 'none';
+        }
+      })
+      .catch(err => {
+        console.warn('Erro ao buscar foto de perfil para o menu:', err);
+      });
+  }
+
+  // Ouvir evento customizado de atualização do avatar
+  window.addEventListener('avatarUpdated', (e) => {
+    const navImg = document.getElementById('navUserAvatarImg');
+    const navPlaceholder = document.getElementById('navUserAvatarPlaceholder');
+    if (navImg && navPlaceholder) {
+      navImg.src = `${API_BASE}${e.detail}?t=${Date.now()}`;
+      navImg.style.display = 'block';
+      navPlaceholder.style.display = 'none';
+    }
+  });
+});

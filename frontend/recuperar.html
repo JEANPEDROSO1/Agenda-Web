@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Recuperar Senha - Agenda Web</title>
+  <meta name="description" content="Recupere a senha da sua conta de forma rápida e segura na Agenda Web.">
+  <link rel="icon" type="image/png" href="logo.png">
+  <link rel="stylesheet" href="login.css?v=7">
+  <style>
+    /* Estilos extras específicos para o fluxo de passos */
+    .step-container {
+      transition: all 0.3s ease;
+    }
+    .hidden {
+      display: none !important;
+    }
+    .step-indicator {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 25px;
+      padding: 0 10px;
+    }
+    .step-dot {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.15);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      position: relative;
+    }
+    .step-dot.active {
+      background: #6366f1;
+      box-shadow: 0 0 10px #6366f1;
+      border-color: #818cf8;
+    }
+    .step-dot.completed {
+      background: #10b981;
+      border-color: #34d399;
+      box-shadow: 0 0 10px #10b981;
+    }
+    .code-inputs {
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+      margin: 20px 0;
+    }
+    .code-digit {
+      width: 45px;
+      height: 55px;
+      font-size: 24px;
+      font-weight: 700;
+      text-align: center;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1.5px solid rgba(255, 255, 255, 0.1);
+      border-radius: 10px;
+      color: #fff;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+    .code-digit:focus {
+      border-color: #6366f1;
+      box-shadow: 0 0 10px rgba(99, 102, 241, 0.3);
+    }
+  </style>
+</head>
+<body class="auth-mesh-body">
+  <!-- Fundo Animado -->
+  <div class="mesh-background">
+    <div class="mesh-blob blob-1"></div>
+    <div class="mesh-blob blob-2"></div>
+    <div class="mesh-blob blob-3"></div>
+  </div>
+
+  <div class="glass-auth-container">
+    <a href="login.html" class="glass-back-btn" aria-label="Voltar para o Login">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M15 18L9 12L15 6"/>
+      </svg>
+    </a>
+
+    <div class="glass-header">
+      <div class="logo-box">
+        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </div>
+      <h1 id="recoveryTitle">Recuperar Senha</h1>
+      <p id="recoverySubtitle">Siga os passos para redefinir sua senha</p>
+    </div>
+
+    <!-- Indicador de Passos -->
+    <div class="step-indicator">
+      <div class="step-dot active" id="dot1"></div>
+      <div class="step-dot" id="dot2"></div>
+      <div class="step-dot" id="dot3"></div>
+    </div>
+
+    <!-- PASSO 1: Informar E-mail -->
+    <div class="step-container" id="step1">
+      <form id="forgotForm" class="glass-form">
+        <div class="glass-input-group">
+          <label for="email">E-mail Cadastrado</label>
+          <div class="input-wrapper">
+            <svg class="input-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M4 4H20V20H4V4Z" stroke-linecap="round" stroke-linejoin="round"/>
+              <path d="M7 9H17" stroke-linecap="round"/>
+              <path d="M7 13H13" stroke-linecap="round"/>
+            </svg>
+            <input type="email" id="email" placeholder="Digite seu e-mail" required>
+          </div>
+        </div>
+
+        <button type="submit" class="glass-submit-btn">
+          Enviar Código
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="5" y1="12" x2="19" y2="12"></line>
+            <polyline points="12 5 19 12 12 19"></polyline>
+          </svg>
+        </button>
+      </form>
+    </div>
+
+    <!-- PASSO 2: Validar Código de 6 Dígitos -->
+    <div class="step-container hidden" id="step2">
+      <form id="verifyCodeForm" class="glass-form">
+        <p style="text-align: center; color: #94a3b8; font-size: 14px; margin-bottom: 15px;">
+          Enviamos um código de 6 dígitos para o e-mail informado. Insira-o abaixo:
+        </p>
+        
+        <div class="code-inputs">
+          <input type="text" class="code-digit" maxlength="1" required pattern="[0-9]">
+          <input type="text" class="code-digit" maxlength="1" required pattern="[0-9]">
+          <input type="text" class="code-digit" maxlength="1" required pattern="[0-9]">
+          <input type="text" class="code-digit" maxlength="1" required pattern="[0-9]">
+          <input type="text" class="code-digit" maxlength="1" required pattern="[0-9]">
+          <input type="text" class="code-digit" maxlength="1" required pattern="[0-9]">
+        </div>
+
+        <button type="submit" class="glass-submit-btn">
+          Validar Código
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="5" y1="12" x2="19" y2="12"></line>
+            <polyline points="12 5 19 12 12 19"></polyline>
+          </svg>
+        </button>
+      </form>
+    </div>
+
+    <!-- PASSO 3: Criar Nova Senha -->
+    <div class="step-container hidden" id="step3">
+      <form id="resetPasswordForm" class="glass-form">
+        <div class="glass-input-group">
+          <label for="novaSenha">Nova Senha</label>
+          <div class="input-wrapper">
+            <svg class="input-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <rect x="6" y="10" width="12" height="8" rx="2"/>
+              <path d="M9 10V7C9 5.34315 10.3431 4 12 4C13.6569 4 15 5.34315 15 7V10" stroke-linecap="round"/>
+            </svg>
+            <input type="password" id="novaSenha" placeholder="Mínimo 6 caracteres" required minlength="6">
+            <button type="button" class="password-toggle" data-target="novaSenha">
+              <!-- Ícone dinâmico do script.js -->
+            </button>
+          </div>
+        </div>
+
+        <div class="glass-input-group">
+          <label for="confirmarNovaSenha">Confirmar Nova Senha</label>
+          <div class="input-wrapper">
+            <svg class="input-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <rect x="6" y="10" width="12" height="8" rx="2"/>
+              <path d="M9 10V7C9 5.34315 10.3431 4 12 4C13.6569 4 15 5.34315 15 7V10" stroke-linecap="round"/>
+            </svg>
+            <input type="password" id="confirmarNovaSenha" placeholder="Confirme a nova senha" required minlength="6">
+            <button type="button" class="password-toggle" data-target="confirmarNovaSenha">
+              <!-- Ícone dinâmico do script.js -->
+            </button>
+          </div>
+        </div>
+
+        <button type="submit" class="glass-submit-btn">
+          Salvar Nova Senha
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="5" y1="12" x2="19" y2="12"></line>
+            <polyline points="12 5 19 12 12 19"></polyline>
+          </svg>
+        </button>
+      </form>
+    </div>
+
+    <div class="glass-footer">
+      <p>Lembrou a senha? <a href="login.html">Fazer Login</a></p>
+    </div>
+  </div>
+
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <script src="config.js?v=final_fix_101"></script>
+  <script src="script.js?v=final_fix_101"></script>
+  <script src="recuperar.js?v=final_fix_101"></script>
+  <script>
+    if (typeof lucide !== 'undefined') {
+      lucide.createIcons();
+    }
+  </script>
+</body>
+</html>

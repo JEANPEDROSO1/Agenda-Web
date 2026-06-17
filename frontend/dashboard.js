@@ -130,9 +130,13 @@ function renderCalendar() {
       return eventDateStr === dateStr;
     });
     if (dayEvents.length > 0) {
-      dayDiv.classList.add('has-event');
-      const eventColor = dayEvents[0].cor || '#3b82f6';
-      dayDiv.style.setProperty('--event-color', eventColor);
+      if (dayEvents.some(e => e.isGroup)) {
+        dayDiv.classList.add('has-group-event');
+      } else {
+        dayDiv.classList.add('has-event');
+        const eventColor = dayEvents[0].cor || '#3b82f6';
+        dayDiv.style.setProperty('--event-color', eventColor);
+      }
     }
     
     calendar.appendChild(dayDiv);
@@ -148,35 +152,6 @@ function getMonthName(month) {
   return months[month];
 }
 
-// Função para fazer requisições com melhor tratamento de erro
-async function apiRequest(url, options = {}) {
-  try {
-    const response = await fetch(url, {
-      ...options,
-      headers: {
-        'Content-Type': 'application/json',
-        ...options.headers
-      }
-    });
-
-    if (!response.ok) {
-      if (response.status === 401 || response.status === 403) {
-        localStorage.removeItem('token');
-        localStorage.removeItem('userId');
-        window.location.href = 'login.html';
-        throw new Error('Sessão expirada. Redirecionando para o login...');
-      }
-      const errorData = await response.text();
-      throw new Error(`Erro ${response.status}: ${errorData}`);
-    }
-
-    const data = await response.json();
-    return data;
-  } catch (error) {
-    console.error('Erro na requisição:', error);
-    throw error;
-  }
-}
 
 // Carregar eventos para a dashboard (apenas visualização)
 async function loadDashboardEvents() {
@@ -184,11 +159,10 @@ async function loadDashboardEvents() {
   console.log('Carregando eventos...');
   
   try {
-    const eventsData = await apiRequest(`${API_BASE}/events?_=${Date.now()}`, {
-      headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` }
-    });
+    // 1. Carregar eventos pessoais
+    const eventsData = await apiRequest(`${API_BASE}/events?_=${Date.now()}`);
     
-    console.log('Eventos recebidos:', eventsData);
+    console.log('Eventos pessoais recebidos:', eventsData);
     
     // Expandir eventos recorrentes em ocorrências virtuais
     const expandedEvents = [];
@@ -313,9 +287,14 @@ function renderEventsList() {
     const repeticaoLabels = { 'semanal': 'Semanal', 'mensal': 'Mensal', 'anual': 'Anual' };
     const rep = event.repeticao;
     const repeatBadge = (rep && rep !== 'nenhuma' && group.count > 1)
-      ? `<div style="margin-top: 6px; display: inline-flex; align-items: center; background: rgba(139, 92, 246, 0.2); color: #a78bfa; font-size: 0.75rem; font-weight: 700; padding: 3px 10px; border-radius: 6px;"><i data-lucide="repeat" class="icon-inline" style="width: 12px; height: 12px; stroke-width: 2.5; margin-right: 4px;"></i>${repeticaoLabels[rep] || rep} · ${group.count}x neste mês</div>`
+      ? `<div style="display: inline-flex; align-items: center; background: rgba(139, 92, 246, 0.2); color: #a78bfa; font-size: 0.75rem; font-weight: 700; padding: 3px 10px; border-radius: 6px;"><i data-lucide="repeat" class="icon-inline" style="width: 12px; height: 12px; stroke-width: 2.5; margin-right: 4px;"></i>${repeticaoLabels[rep] || rep} · ${group.count}x neste mês</div>`
       : '';
     
+    // Badge de grupo
+    const groupBadge = event.isGroup
+      ? `<div style="display: inline-flex; align-items: center; background: rgba(99, 102, 241, 0.2); color: #c084fc; font-size: 0.75rem; font-weight: 700; padding: 3px 10px; border-radius: 6px;"><i data-lucide="users" class="icon-inline" style="width: 12px; height: 12px; stroke-width: 2.5; margin-right: 4px;"></i>Grupo: ${event.groupName}</div>`
+      : '';
+
     const urgenciaBadge = event.urgencia === 'urgente'
       ? `<i data-lucide="alert-triangle" class="icon-inline" style="width: 14px; height: 14px; stroke-width: 2.5; color: #ef4444; margin-right: 4px; vertical-align: middle;"></i>URGENTE`
       : `<i data-lucide="pin" class="icon-inline" style="width: 14px; height: 14px; stroke-width: 2.5; color: #10b981; margin-right: 4px; vertical-align: middle;"></i>NORMAL`;
@@ -324,7 +303,10 @@ function renderEventsList() {
       <span class="event-time">${dataFormatada} às ${event.hora_evento}</span>
       <h3>${event.titulo}</h3>
       <p>${event.descricao || 'Sem descrição'}</p>
-      ${repeatBadge}
+      <div style="margin-top: 6px; display: flex; flex-wrap: wrap; gap: 8px;">
+        ${groupBadge}
+        ${repeatBadge}
+      </div>
       <div style="margin-top: 10px; font-size: 0.8rem; font-weight: 700; color: ${event.urgencia === 'urgente' ? '#ef4444' : '#10b981'}; display: flex; align-items: center;">
         ${urgenciaBadge}
       </div>

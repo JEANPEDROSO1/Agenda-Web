@@ -1,4 +1,16 @@
 const { getGraphClient } = require('./graphClient');
+const {
+  getVerificationTemplate,
+  getRecoveryTemplate,
+  getPasswordChangeAlertTemplate,
+  getEventAlertTemplate,
+  getEventStartedTemplate,
+  getGroupEventCreatedTemplate,
+  getGroupInviteTemplate,
+  getGroupEventUpdatedTemplate,
+  getGroupEventDeletedTemplate
+} = require('./emailTemplates');
+
 require('dotenv').config();
 if (!process.env.AZURE_CLIENT_ID) {
   const path = require('path');
@@ -57,76 +69,75 @@ const sendGraphEmail = async (toEmail, subject, contentHTML) => {
 
 // Immediate start email (evento já começou)
 const sendEventEmail = async (toEmail, nomeUsuario, titulo, data_hora, link, isUrgente) => {
-    const subject = isUrgente ? `URGENTE: ${titulo}` : `Lembrete: ${titulo}`;
-    const eventText = isUrgente 
-        ? `Seu compromisso "${titulo}" é URGENTE e começou agora.` 
-        : `Seu compromisso "${titulo}" começou agora.`;
-
-    const contentHTML = `
-        <p>Olá ${nomeUsuario}!</p>
-        <p>${eventText} Agendado para: ${data_hora}.</p>
-        <p>Este é o link para acessar o site: ${link} ou clique em "Acessar o compromisso" abaixo.</p>
-        <p><a href="${link}">Acessar o compromisso</a>.</p>
-        <p>Por favor, não responda este e‑mail.</p>
-    `;
-    await sendGraphEmail(toEmail, subject, contentHTML);
-};
-
-const sendEventAlertEmail = async (toEmail, nomeUsuario, titulo, data_hora, link, minutos, isUrgente) => {
-    const subject = isUrgente ? `URGENTE: ${titulo} em ${minutos} minutos` : `Lembrete: ${titulo} em ${minutos} minutos`;
-    const alertText = isUrgente 
-        ? `Este é um aviso de ${minutos} minutos adiantados do evento URGENTE. Seu evento "${titulo}" iniciará em breve.` 
-        : `Este é um aviso de ${minutos} minutos adiantados. Seu evento "${titulo}" iniciará em breve.`;
-
-    const contentHTML = `
-        <p>Olá ${nomeUsuario}!</p>
-        <p>${alertText} Agendado para: ${data_hora}.</p>
-        <p>Este é o link para acessar o site: ${link} ou clique em "Acessar o compromisso" abaixo.</p>
-        <p><a href="${link}">Acessar o compromisso</a>.</p>
-        <p>Por favor, não responda este e‑mail.</p>
-    `;
-    await sendGraphEmail(toEmail, subject, contentHTML);
-};
-
-
-// Alert email (X minutos antes do evento)
-// Verification email (code)
-const sendVerificationEmail = async (toEmail, nomeUsuario, codigo) => {
-  const subject = `Código de Verificação da Agenda Web`;
-  const contentHTML = `
-    <div style="font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; max-width: 600px; margin: 0 auto; background-color: #f9fafb; border: 1px solid #e5e7eb; border-radius: 16px; padding: 40px; color: #1f2937;">
-      <div style="text-align: center; margin-bottom: 30px;">
-        <span style="font-size: 24px; font-weight: 800; color: #1d4ed8; font-family: sans-serif; letter-spacing: -0.5px;">Agenda Web</span>
-      </div>
-      
-      <h2 style="font-size: 20px; font-weight: 700; color: #111827; margin-top: 0; margin-bottom: 16px; text-align: center;">Confirmar seu endereço de e-mail</h2>
-      
-      <p style="font-size: 15px; line-height: 1.6; color: #4b5563; margin-bottom: 20px;">
-        Olá, <strong>${nomeUsuario}</strong>! Obrigado por criar sua conta na Agenda Web.
-      </p>
-      
-      <p style="font-size: 15px; line-height: 1.6; color: #4b5563; margin-bottom: 24px;">
-        Para ativar sua conta e começar a gerenciar seus compromissos, por favor insira o código de verificação de uso único abaixo na página de ativação:
-      </p>
-      
-      <div style="text-align: center; margin: 30px 0; padding: 22px; background-color: #f3f4f6; border-radius: 14px; border: 1px dashed #cbd5e1;">
-        <span style="font-size: 34px; font-weight: 800; letter-spacing: 8px; color: #1e3a8a; font-family: monospace; padding-left: 8px;">${codigo}</span>
-      </div>
-      
-      <p style="font-size: 13px; line-height: 1.5; color: #6b7280; margin-bottom: 24px; text-align: center; background-color: #fffbeb; border: 1px solid #fef3c7; padding: 12px; border-radius: 8px;">
-        Este código é de uso único. Caso você não tenha solicitado este cadastro, ignore e exclua este e-mail com segurança.
-      </p>
-      
-      <hr style="border: 0; border-top: 1px solid #e5e7eb; margin: 30px 0;">
-      
-      <div style="text-align: center; font-size: 12px; color: #9ca3af; line-height: 1.5;">
-        <p style="margin: 0 0 4px 0; font-weight: 600;">Agenda Web - Organização de Compromissos</p>
-        <p style="margin: 0 0 12px 0;">Este é um e-mail automático gerado pelo sistema. Por favor, não responda a esta mensagem.</p>
-        <p style="margin: 0;">© 2026 Agenda Web. Todos os direitos reservados.</p>
-      </div>
-    </div>
-  `;
+  const subject = isUrgente ? `URGENTE: ${titulo}` : `Lembrete: ${titulo}`;
+  const contentHTML = getEventStartedTemplate(nomeUsuario, titulo, data_hora, link, isUrgente);
   await sendGraphEmail(toEmail, subject, contentHTML);
 };
 
-module.exports = { sendEventEmail, sendEventAlertEmail, sendVerificationEmail };
+// Alert email (X minutos antes do evento)
+const sendEventAlertEmail = async (toEmail, nomeUsuario, titulo, data_hora, link, minutos, isUrgente) => {
+  const subject = isUrgente ? `URGENTE: ${titulo} em ${minutos} minutos` : `Lembrete: ${titulo} em ${minutos} minutos`;
+  const contentHTML = getEventAlertTemplate(nomeUsuario, titulo, data_hora, link, minutos, isUrgente);
+  await sendGraphEmail(toEmail, subject, contentHTML);
+};
+
+// Verification email (code)
+const sendVerificationEmail = async (toEmail, nomeUsuario, codigo) => {
+  const subject = `Código de Verificação da Agenda Web`;
+  const contentHTML = getVerificationTemplate(nomeUsuario, codigo);
+  await sendGraphEmail(toEmail, subject, contentHTML);
+};
+
+// Password Recovery email
+const sendRecoveryEmail = async (toEmail, nomeUsuario, codigo) => {
+  const subject = `Código de Segurança para Recuperação de Senha`;
+  const contentHTML = getRecoveryTemplate(nomeUsuario, codigo);
+  await sendGraphEmail(toEmail, subject, contentHTML);
+};
+
+// Password change security alert
+const sendPasswordChangeAlert = async (toEmail, nomeUsuario) => {
+  const subject = `Aviso de Segurança: Senha Alterada`;
+  const contentHTML = getPasswordChangeAlertTemplate(nomeUsuario);
+  await sendGraphEmail(toEmail, subject, contentHTML);
+};
+
+// Group event creation alert
+const sendGroupEventCreatedEmail = async (toEmail, nomeMembro, nomeGrupo, titulo, data_hora, local, criador, link) => {
+  const subject = `Novo compromisso no grupo: ${titulo}`;
+  const contentHTML = getGroupEventCreatedTemplate(nomeMembro, nomeGrupo, titulo, data_hora, local, criador, link);
+  await sendGraphEmail(toEmail, subject, contentHTML);
+};
+
+// Group event update alert
+const sendGroupEventUpdatedEmail = async (toEmail, nomeMembro, nomeGrupo, titulo, data_hora, local, alteradoPor, link) => {
+  const subject = `Compromisso atualizado no grupo: ${titulo}`;
+  const contentHTML = getGroupEventUpdatedTemplate(nomeMembro, nomeGrupo, titulo, data_hora, local, alteradoPor, link);
+  await sendGraphEmail(toEmail, subject, contentHTML);
+};
+
+// Group event deletion/cancellation alert
+const sendGroupEventDeletedEmail = async (toEmail, nomeMembro, nomeGrupo, titulo, excluidoPor) => {
+  const subject = `Compromisso cancelado no grupo: ${titulo}`;
+  const contentHTML = getGroupEventDeletedTemplate(nomeMembro, nomeGrupo, titulo, excluidoPor);
+  await sendGraphEmail(toEmail, subject, contentHTML);
+};
+
+// Group invite alert
+const sendGroupInviteEmail = async (toEmail, nomeMembro, nomeGrupo, quemConvidou) => {
+  const subject = `Você foi adicionado ao grupo: ${nomeGrupo}`;
+  const contentHTML = getGroupInviteTemplate(nomeMembro, nomeGrupo, quemConvidou);
+  await sendGraphEmail(toEmail, subject, contentHTML);
+};
+
+module.exports = {
+  sendEventEmail,
+  sendEventAlertEmail,
+  sendVerificationEmail,
+  sendRecoveryEmail,
+  sendPasswordChangeAlert,
+  sendGroupEventCreatedEmail,
+  sendGroupEventUpdatedEmail,
+  sendGroupEventDeletedEmail,
+  sendGroupInviteEmail
+};

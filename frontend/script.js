@@ -3,25 +3,98 @@
 console.log('Script carregado, URL atual:', window.location.href);
 
 // Função para fazer requisições com melhor tratamento de erro
+let isRefreshing = false;
+let refreshSubscribers = [];
+
+function subscribeTokenRefresh(cb) {
+  refreshSubscribers.push(cb);
+}
+
+function onRefreshed(token) {
+  refreshSubscribers.forEach(cb => cb(token));
+  refreshSubscribers = [];
+}
+
+// Função para fazer requisições com melhor tratamento de erro
 async function apiRequest(url, options = {}) {
   try {
     console.log('Fazendo requisição para:', url);
-    const response = await fetch(url, {
+    
+    const token = localStorage.getItem('token');
+    const headers = {
+      'Authorization': token ? `Bearer ${token}` : '',
+      ...options.headers
+    };
+    if (!(options.body instanceof FormData)) {
+      headers['Content-Type'] = 'application/json';
+    }
+
+    const fetchOptions = {
       ...options,
-      headers: {
-        'Content-Type': 'application/json',
-        ...options.headers
-      }
-    });
+      credentials: 'include', // Envia e recebe cookies HttpOnly
+      headers: headers
+    };
+
+    const response = await fetch(url, fetchOptions);
 
     if (!response.ok) {
-      if (response.status === 401 || response.status === 403) {
-        localStorage.removeItem('token');
-        localStorage.removeItem('userId');
-        window.location.href = 'login.html';
-        throw new Error('Sessão expirada. Redirecionando para o login...');
+      // Se for 401 (Não autorizado ou expirado), tenta fazer refresh
+      if (response.status === 401) {
+        if (!isRefreshing) {
+          isRefreshing = true;
+          try {
+            console.log('Token expirado. Tentando renovar sessão...');
+            const refreshRes = await fetch(`${API_BASE}/auth/refresh`, {
+              method: 'POST',
+              credentials: 'include',
+              headers: { 'Content-Type': 'application/json' }
+            });
+
+            if (refreshRes.ok) {
+              const refreshData = await refreshRes.json();
+              localStorage.setItem('token', refreshData.token);
+              console.log('Sessão renovada com sucesso!');
+              isRefreshing = false;
+              onRefreshed(refreshData.token);
+            } else {
+              throw new Error('Falha ao renovar token');
+            }
+          } catch (refreshErr) {
+            console.error('Sessão expirada de fato:', refreshErr);
+            isRefreshing = false;
+            localStorage.removeItem('token');
+            localStorage.removeItem('userId');
+            window.location.href = 'login.html';
+            throw new Error('Sessão expirada. Faça login novamente.');
+          }
+        }
+
+        // Aguarda a renovação do token para refazer a requisição
+        const retryRequest = new Promise((resolve, reject) => {
+          subscribeTokenRefresh((newToken) => {
+            fetchOptions.headers['Authorization'] = `Bearer ${newToken}`;
+            fetch(url, fetchOptions)
+              .then(res => {
+                if (!res.ok) throw new Error('Falha ao refazer requisição');
+                return res.json();
+              })
+              .then(data => resolve(data))
+              .catch(err => reject(err));
+          });
+        });
+
+        return await retryRequest;
       }
       
+      // Se for 403 e a mensagem de erro indicar conta não verificada
+      if (response.status === 403) {
+        const errorText = await response.text();
+        if (errorText.toLowerCase().includes('não verificado') || errorText.toLowerCase().includes('confirmada')) {
+          window.location.href = 'verify.html';
+          return;
+        }
+      }
+
       const errorData = await response.text();
       console.error('Erro na resposta:', response.status, errorData);
       let message = response.statusText;
@@ -45,11 +118,15 @@ async function apiRequest(url, options = {}) {
 
 function storeAuthData(data) {
   localStorage.setItem('token', data.token);
-  try {
-    const payload = JSON.parse(atob(data.token.split('.')[1]));
-    localStorage.setItem('userId', payload.id);
-  } catch (error) {
-    console.error('Erro ao decodificar token:', error);
+  if (data.user && data.user.id) {
+    localStorage.setItem('userId', data.user.id);
+  } else {
+    try {
+      const payload = JSON.parse(atob(data.token.split('.')[1]));
+      localStorage.setItem('userId', payload.id_usuario || payload.id);
+    } catch (error) {
+      console.error('Erro ao decodificar token:', error);
+    }
   }
 }
 
@@ -152,6 +229,7 @@ document.getElementById('loginForm')?.addEventListener('submit', async (e) => {
     console.log('Fazendo requisição para:', `${API_BASE}/auth/login`);
     const response = await fetch(`${API_BASE}/auth/login`, {
       method: 'POST',
+      credentials: 'include',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ email, senha })
     });
@@ -236,3 +314,31 @@ function showNotification(message, type = 'info') {
   }, 4000);
 }
 
+// Auto-login se o usuário acessar a página de login tendo uma sessão ativa
+if (window.location.pathname.endsWith('login.html')) {
+  (async () => {
+    try {
+      const response = await fetch(`${API_BASE}/auth/refresh`, {
+        method: 'POST',
+        credentials: 'include'
+      });
+      if (response.ok) {
+        const data = await response.json();
+        localStorage.setItem('token', data.token);
+        
+        // Buscar dados do usuário para preencher localStorage.userId
+        const userRes = await fetch(`${API_BASE}/auth/me`, {
+          headers: { 'Authorization': `Bearer ${data.token}` },
+          credentials: 'include'
+        });
+        if (userRes.ok) {
+          const userData = await userRes.json();
+          localStorage.setItem('userId', userData.user.id_usuario);
+          window.location.href = 'dashboard.html';
+        }
+      }
+    } catch (e) {
+      console.log('Nenhuma sessão anterior ativa.');
+    }
+  })();
+}
