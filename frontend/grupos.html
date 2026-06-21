@@ -147,33 +147,31 @@
           <div class="glass-card detail-card" style="display: flex; flex-direction: column; gap: 20px;">
             <div style="display: flex; justify-content: space-between; align-items: center;">
               <h2 class="section-title" style="margin-bottom: 0;">Calendário Compartilhado</h2>
-              <button class="btn-profile-save" id="btnOpenAddEventModal" style="padding: 8px 16px; font-size: 0.85rem; display: none;">
+              <button class="btn-success-glass" id="btnOpenAddEventModal" style="padding: 8px 16px; font-size: 0.85rem; display: none;">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 14px; height: 14px; margin-right: 4px;"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
                 Agendar Evento
               </button>
             </div>
 
             <!-- Grid do Calendário Mensal -->
-            <div class="group-calendar-container" style="background: rgba(0,0,0,0.15); border: 1px solid rgba(255,255,255,0.05); padding: 15px; border-radius: 12px;">
-              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
-                <div style="display: flex; align-items: center; gap: 10px;">
-                  <button type="button" class="nav-btn" id="groupPrevMonth" style="background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); width: 32px; height: 32px; border-radius: 8px; color: #fff; cursor: pointer; display: flex; align-items: center; justify-content: center;">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="width: 16px; height: 16px;"><polyline points="15 18 9 12 15 6"></polyline></svg>
-                  </button>
-                  <h3 id="groupMonthYear" style="margin: 0; font-size: 1.1rem; font-weight: 700; color: #fff; text-transform: capitalize; width: 140px; text-align: center;">Mês Ano</h3>
-                  <button type="button" class="nav-btn" id="groupNextMonth" style="background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); width: 32px; height: 32px; border-radius: 8px; color: #fff; cursor: pointer; display: flex; align-items: center; justify-content: center;">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="width: 16px; height: 16px;"><polyline points="9 18 15 12 9 6"></polyline></svg>
-                  </button>
-                </div>
-                <button type="button" class="glass-btn-secondary" id="groupToday" style="padding: 6px 12px; font-size: 0.8rem;">Hoje</button>
+            <div class="calendar-card" style="padding: 0; background: transparent; border: none; box-shadow: none;">
+              <div class="card-header" style="justify-content: center; gap: 20px; margin-bottom: 25px;">
+                <button id="groupPrevMonth" class="month-nav-btn" aria-label="Mês anterior">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M15 18L9 12L15 6"/></svg>
+                </button>
+                <h2 id="groupMonthYear" style="font-size: 1.2rem;">Mês Ano</h2>
+                <button id="groupNextMonth" class="month-nav-btn" aria-label="Próximo mês">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M9 18L15 12L9 6"/></svg>
+                </button>
               </div>
-
-              <!-- Calendário Grid -->
-              <div class="calendar-grid">
-                <div class="weekdays-grid" style="display: grid; grid-template-columns: repeat(7, 1fr); text-align: center; font-size: 0.8rem; font-weight: 600; color: var(--text-muted); margin-bottom: 8px;">
-                  <div>Dom</div><div>Seg</div><div>Ter</div><div>Qua</div><div>Qui</div><div>Sex</div><div>Sáb</div>
+              
+              <div class="calendar-wrapper">
+                <div class="calendar-weekdays">
+                  <span>DOM</span><span>SEG</span><span>TER</span><span>QUA</span><span>QUI</span><span>SEX</span><span>SÁB</span>
                 </div>
-                <div id="groupCalendarDays" style="display: grid; grid-template-columns: repeat(7, 1fr); gap: 5px;"></div>
+                <div class="calendar-grid" id="groupCalendarDays">
+                  <!-- Gerado via JS -->
+                </div>
               </div>
             </div>
 

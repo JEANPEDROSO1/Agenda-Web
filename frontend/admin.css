@@ -293,3 +293,89 @@
     justify-content: space-between;
   }
 }
+
+/* Botões de Ação na Tabela */
+.action-btn-circle {
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: var(--text-muted);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.action-btn-circle svg {
+  width: 16px;
+  height: 16px;
+  transition: all 0.3s ease;
+}
+
+.action-btn-circle:hover {
+  background: rgba(59, 130, 246, 0.15);
+  border-color: rgba(59, 130, 246, 0.4);
+  color: #60a5fa;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 12px rgba(59, 130, 246, 0.2);
+}
+
+.action-btn-circle.danger:hover {
+  background: rgba(239, 68, 68, 0.15);
+  border-color: rgba(239, 68, 68, 0.4);
+  color: #f87171;
+  box-shadow: 0 6px 12px rgba(239, 68, 68, 0.2);
+}
+
+/* Botão de Sucesso Glassmorphism */
+.btn-success-glass {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 12px 28px;
+  background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+  color: #fff;
+  font-weight: 600;
+  font-size: 15px;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3);
+}
+
+.btn-success-glass:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(16, 185, 129, 0.4);
+}
+
+.btn-success-glass:active {
+  transform: translateY(0);
+}
+
+/* ===== RESPONSIVIDADE EXTREMA ===== */
+@media (max-width: 400px) {
+  .admin-container {
+    padding: 0 10px;
+  }
+  .admin-stat-card {
+    padding: 15px;
+    gap: 15px;
+  }
+  .admin-stat-icon {
+    width: 40px;
+    height: 40px;
+    font-size: 16px;
+  }
+  .admin-stat-number {
+    font-size: 1.5rem;
+  }
+  .chart-card {
+    padding: 15px;
+  }
+}

@@ -702,3 +702,50 @@ input:not([type="checkbox"]):not([type="radio"]):focus, textarea:focus, select:f
 .trello-add-card-form button:hover {
   background: var(--primary);
 }
+
+/* ===== RESPONSIVIDADE ===== */
+@media (max-width: 768px) {
+  .groups-container {
+    padding: 0 15px;
+  }
+  .create-group-form {
+    flex-direction: column;
+  }
+  .group-detail-grid {
+    grid-template-columns: 1fr;
+  }
+  .trello-board-container {
+    height: 400px;
+  }
+  .members-list {
+    max-height: 300px;
+  }
+  .trello-lists-wrapper {
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    padding-bottom: 10px;
+    scroll-snap-type: x mandatory;
+  }
+  .trello-list {
+    flex: 0 0 85vw;
+    scroll-snap-align: center;
+  }
+}
+
+@media (max-width: 400px) {
+  .groups-container {
+    padding: 0 10px;
+  }
+  .group-card {
+    padding: 20px;
+  }
+  .create-group-card {
+    padding: 20px;
+  }
+  .group-card-title {
+    font-size: 1.1rem;
+  }
+  .group-badge {
+    font-size: 0.65rem;
+  }
+}
