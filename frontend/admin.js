@@ -133,7 +133,7 @@ document.addEventListener('DOMContentLoaded', async () => {
           method: 'PUT',
           body: JSON.stringify({ nome, email, role, verificado })
         });
-        showNotification(data.message || 'Dados do usuário atualizados!', 'success');
+        showNotification('Alteração salva com sucesso!', 'success');
         editUserModal.style.display = 'none';
         await loadUsersList();
       } catch (err) {

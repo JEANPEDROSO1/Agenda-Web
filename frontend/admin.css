@@ -187,6 +187,64 @@
   border-color: var(--primary);
 }
 
+/* Formulário Glass do Modal */
+.glass-form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.glass-input-group label {
+  display: block;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--text-muted);
+  margin-bottom: 8px;
+}
+
+.glass-input-group .input-wrapper {
+  display: flex;
+  align-items: center;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  padding: 0 15px;
+  transition: all 0.3s ease;
+}
+
+.glass-input-group .input-wrapper:focus-within {
+  background: rgba(255, 255, 255, 0.08);
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
+}
+
+.glass-input-group .input-icon {
+  color: var(--text-muted);
+  margin-right: 10px;
+}
+
+.glass-input-group input,
+.glass-input-group select {
+  flex: 1;
+  background: transparent;
+  border: none;
+  color: #fff;
+  font-family: inherit;
+  font-size: 0.95rem;
+  padding: 14px 0;
+  outline: none;
+}
+
+.glass-input-group input:disabled {
+  color: rgba(255, 255, 255, 0.5);
+  cursor: not-allowed;
+}
+
+.glass-input-group select option {
+  background: #1f2937;
+  color: #fff;
+}
+
 .action-badge {
   display: inline-block;
   padding: 4px 10px;

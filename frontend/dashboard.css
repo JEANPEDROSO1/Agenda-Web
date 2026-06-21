@@ -350,6 +350,7 @@ body {
   transition: all 0.2s ease;
   position: relative;
   border: 1px solid transparent;
+  aspect-ratio: 1;
 }
 
 .calendar-day:hover {
@@ -484,7 +485,17 @@ body {
   border-radius: 32px;
   padding: 40px;
   width: min(100% - 32px, 440px);
+  max-height: 90vh;
+  overflow-y: auto;
   text-align: center;
+}
+
+.glass-modal-card::-webkit-scrollbar {
+  width: 6px;
+}
+.glass-modal-card::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 10px;
 }
 
 .glass-modal-card h2 {

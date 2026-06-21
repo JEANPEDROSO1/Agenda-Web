@@ -257,7 +257,7 @@ document.addEventListener('DOMContentLoaded', async () => {
           method: 'POST',
           body: JSON.stringify(payload)
         });
-        showNotification(data.message || 'Evento de grupo agendado!', 'success');
+        showNotification('Evento criado com sucesso!', 'success');
       }
 
       addEventModal.style.display = 'none';
@@ -361,6 +361,8 @@ async function loadGroups() {
     list.forEach(g => {
       const card = document.createElement('div');
       card.className = 'glass-card group-card';
+      card.style.cursor = 'pointer';
+      card.onclick = () => enterGroup(g.id_grupo);
 
       let roleLabel = 'Membro';
       let roleClass = 'membro';
@@ -383,7 +385,7 @@ async function loadGroups() {
             <span>${g.total_membros} ${g.total_membros === 1 ? 'membro' : 'membros'}</span>
           </div>
         </div>
-        <button class="group-card-btn" onclick="enterGroup(${g.id_grupo})">Gerenciar & Agenda</button>
+        <button class="group-card-btn">Gerenciar & Agenda</button>
       `;
       grid.appendChild(card);
     });
