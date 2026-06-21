@@ -798,36 +798,68 @@ function renderGroupEventsList() {
 
   filtered.forEach(e => {
     const card = document.createElement('div');
-    card.className = 'glass-card event-item group-event-card';
-    card.style.setProperty('--event-color', e.cor || '#8b5cf6');
-    card.style.cursor = isAdminOrOwner ? 'pointer' : 'default';
+    card.className = 'compromisso-item';
+    card.style.setProperty('--event-color', e.cor || '#3b82f6');
 
-    if (isAdminOrOwner) {
-      card.onclick = () => openEditEventModal(e);
+    let repeticaoBadge = '';
+    if (e.repeticao && e.repeticao !== 'nenhuma') {
+      const repeticaoLabel = {
+        'semanal': `<i data-lucide="repeat" class="icon-inline" style="width: 12px; height: 12px; stroke-width: 2.5; display: inline-block; vertical-align: middle; margin-right: 4px; margin-top: -2px;"></i>Semanal`,
+        'mensal': `<i data-lucide="repeat" class="icon-inline" style="width: 12px; height: 12px; stroke-width: 2.5; display: inline-block; vertical-align: middle; margin-right: 4px; margin-top: -2px;"></i>Mensal`,
+        'anual': `<i data-lucide="repeat" class="icon-inline" style="width: 12px; height: 12px; stroke-width: 2.5; display: inline-block; vertical-align: middle; margin-right: 4px; margin-top: -2px;"></i>Anual`
+      };
+      repeticaoBadge = `<span class="urgencia-badge normal" style="display: inline-flex; align-items: center;">${repeticaoLabel[e.repeticao] || e.repeticao}</span>`;
     }
 
-    const urgencyBadge = e.urgencia === 'urgente' 
-      ? `<span class="group-badge admin" style="background: rgba(239, 68, 68, 0.15); color: #fca5a5; border-color: rgba(239, 68, 68, 0.3); margin-left: 8px;">Urgente</span>` 
-      : '';
+    let alertaBadge = '';
+    if (e.alerta_minutos && e.alerta_minutos > 0) {
+      alertaBadge = `<span class="urgencia-badge normal" style="background: rgba(245, 158, 11, 0.1); color: #f59e0b; border: 1px solid rgba(245, 158, 11, 0.2); display: inline-flex; align-items: center;"><i data-lucide="bell" class="icon-inline" style="width: 12px; height: 12px; stroke-width: 2.5; display: inline-block; vertical-align: middle; margin-right: 4px;"></i>Alerta ${e.alerta_minutos === 60 ? '1h' : e.alerta_minutos + ' min'}</span>`;
+    }
+
+    const urgencyBadge = `<span class="urgencia-badge ${e.urgencia || 'normal'}">
+      ${e.urgencia === 'urgente'
+        ? `<i data-lucide="alert-triangle" class="icon-inline" style="width: 12px; height: 12px; stroke-width: 2.5; display: inline-block; vertical-align: middle; margin-right: 4px;"></i>Urgente`
+        : `<i data-lucide="pin" class="icon-inline" style="width: 12px; height: 12px; stroke-width: 2.5; display: inline-block; vertical-align: middle; margin-right: 4px;"></i>Normal`}
+    </span>`;
+
+    const formattedDate = `${String(d).padStart(2, '0')}/${String(m).padStart(2, '0')}/${y}`;
+    
+    let actionsHtml = '';
+    if (isAdminOrOwner) {
+      actionsHtml = `
+        <div class="compromisso-actions">
+          <button class="btn-edit" onclick='openEditEventModal(${JSON.stringify(e).replace(/'/g, "&apos;")})'>Editar</button>
+          <button class="btn-delete" onclick="deleteGroupEvent(${currentGroupData.group.id_grupo}, ${e.id_grupo_evento})">Excluir</button>
+        </div>
+      `;
+    }
+
+    const localInfo = e.local ? `<div style="margin-top: 8px; font-size: 0.85rem; color: var(--text-muted);"><i data-lucide="map-pin" style="width: 12px; height: 12px; vertical-align: middle; margin-right: 4px;"></i><strong>Local:</strong> ${e.local}</div>` : '';
 
     card.innerHTML = `
-      <div style="display: flex; align-items: flex-start; justify-content: space-between; width: 100%;">
-        <div>
-          <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 4px;">
-            <span class="event-time">${e.hora_evento.substring(0, 5)}</span>
-            ${urgencyBadge}
-          </div>
-          <h3 style="font-size: 1.05rem; font-weight: 700; color: #fff; margin-bottom: 4px;">${e.titulo}</h3>
-          <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 6px;">${e.descricao || 'Sem descrição'}</p>
-          <div class="group-event-meta" style="font-size: 0.8rem; color: var(--text-muted); display: flex; flex-direction: column; gap: 2px;">
-            <span><strong>Local:</strong> ${e.local || 'Não informado'}</span>
-            ${e.repeticao && e.repeticao !== 'nenhuma' ? `<span><strong>Repetição:</strong> ${e.repeticao}</span>` : ''}
-          </div>
+      <div class="compromisso-header">
+        <div class="compromisso-badges">
+          ${urgencyBadge}
+          ${repeticaoBadge}
+          ${alertaBadge}
         </div>
+        <h3>${e.titulo}</h3>
       </div>
+      <p class="compromisso-descricao">${e.descricao || 'Sem descrição'}</p>
+      ${localInfo}
+      <div class="compromisso-data">
+        <i data-lucide="calendar" class="icon-inline"></i>
+        <span>${formattedDate} às ${e.hora_evento.substring(0, 5)}</span>
+      </div>
+      ${actionsHtml}
     `;
+    
     eventsListEl.appendChild(card);
   });
+  
+  if (typeof lucide !== 'undefined') {
+    lucide.createIcons();
+  }
 }
 
 function openCreateEventModal() {

@@ -460,7 +460,7 @@ exports.forgotPassword = async (req, res) => {
       }
 
       if (results[0].verificado === 0) {
-        return res.status(403).json({ error: 'E-mail não verificado. Confirme seu e-mail antes de alterar a senha.' });
+        return res.status(400).json({ error: 'A conta precisa ser verificada primeiro. Não é possível recuperar a senha.' });
       }
 
       const nome = results[0].nome;

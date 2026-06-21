@@ -174,7 +174,7 @@ exports.getDashboardData = (req, res) => {
 // Listar todos os usuários do sistema
 exports.listUsers = (req, res) => {
   db.query(
-    `SELECT u.id_usuario, u.nome, u.email, u.role, u.verificado, u.criado_em,
+    `SELECT u.id_usuario, u.nome, u.email, u.role, u.verificado, DATE_FORMAT(u.criado_em, '%Y-%m-%d') as criado_em,
             (SELECT COUNT(*) FROM eventos e WHERE e.id_usuario = u.id_usuario) as total_eventos
      FROM usuarios u 
      ORDER BY u.id_usuario ASC`,

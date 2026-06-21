@@ -89,7 +89,7 @@ async function apiRequest(url, options = {}) {
       // Se for 403 e a mensagem de erro indicar conta não verificada
       if (response.status === 403) {
         const errorText = await response.text();
-        if (errorText.toLowerCase().includes('não verificado') || errorText.toLowerCase().includes('confirmada')) {
+        if ((errorText.toLowerCase().includes('não verificado') || errorText.toLowerCase().includes('confirmada')) && !window.location.pathname.includes('recuperar.html')) {
           window.location.href = 'verify.html';
           return;
         }

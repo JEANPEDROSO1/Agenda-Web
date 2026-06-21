@@ -10,6 +10,10 @@
   <link rel="stylesheet" href="admin.css?v=final_fix_115">
   <!-- Chart.js CDN para gráficos premium -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    body { opacity: 0; pointer-events: none; transition: opacity 0.3s ease; }
+    body.loaded { opacity: 1; pointer-events: auto; }
+  </style>
 </head>
 <body class="auth-mesh-body">
   <!-- Fundo Animado -->
@@ -227,53 +231,58 @@
 
   <!-- Modal Editar Detalhes do Usuário -->
   <div id="editUserModal" class="glass-modal-overlay" style="display: none;">
-    <div class="glass-modal-card" style="width: min(100% - 32px, 450px); text-align: left;">
-      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
-        <h2 style="margin: 0;">Editar Conta de Usuário</h2>
-        <button type="button" id="btnCancelEditUser" style="background: none; border: none; color: #fff; cursor: pointer; display: flex; align-items: center; justify-content: center;"><i data-lucide="x" style="width: 24px; height: 24px;"></i></button>
+    <div class="glass-modal-card" style="max-width: 450px; text-align: left;">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px;">
+        <h2 style="margin: 0; font-size: 1.5rem;">Editar Usuário</h2>
+        <button type="button" id="btnCancelEditUser" style="background: none; border: none; color: #fff; cursor: pointer; transition: color 0.3s;" onmouseover="this.style.color='#ef4444'" onmouseout="this.style.color='#fff'"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="width: 24px; height: 24px;"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg></button>
       </div>
       
-      <form id="editUserForm">
+      <form id="editUserForm" class="glass-form">
         <input type="hidden" id="editUserId">
 
-        <div class="form-group-profile">
+        <div class="glass-input-group">
           <label for="editUserName">Nome Completo</label>
-          <div class="profile-input-wrapper">
+          <div class="input-wrapper">
+            <svg class="input-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width: 20px; height: 20px;"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
             <input type="text" id="editUserName" required>
           </div>
         </div>
 
-        <div class="form-group-profile">
+        <div class="glass-input-group">
           <label for="editUserEmail">Endereço de E-mail</label>
-          <div class="profile-input-wrapper">
-            <input type="email" id="editUserEmail" disabled style="opacity: 0.6;">
+          <div class="input-wrapper" style="opacity: 0.7;">
+            <svg class="input-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width: 20px; height: 20px;"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>
+            <input type="email" id="editUserEmail" disabled>
           </div>
         </div>
 
-        <div class="form-grid-modal">
-          <div class="form-group-profile">
-            <label for="editUserStatus">Situação da Conta</label>
-            <div class="profile-input-wrapper">
-              <select id="editUserStatus" style="width: 100%; padding: 14px; background: rgba(25,25,30,0.9); border: 1px solid var(--glass-border); border-radius: 12px; color: #fff; font-family: inherit; font-size: 15px; outline: none;">
-                <option value="ativo">Ativo</option>
-                <option value="inativo">Inativo</option>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+          <div class="glass-input-group">
+            <label for="editUserStatus">Situação</label>
+            <div class="input-wrapper" style="padding: 0;">
+              <select id="editUserStatus" style="width: 100%; padding: 12px 15px; background: transparent; border: none; color: #fff; outline: none; cursor: pointer; -webkit-appearance: none; appearance: none;">
+                <option value="ativo" style="color: #000;">Ativo</option>
+                <option value="inativo" style="color: #000;">Inativo</option>
               </select>
             </div>
           </div>
-          <div class="form-group-profile">
-            <label for="editUserRole">Nível de Privilégio</label>
-            <div class="profile-input-wrapper">
-              <select id="editUserRole" style="width: 100%; padding: 14px; background: rgba(25,25,30,0.9); border: 1px solid var(--glass-border); border-radius: 12px; color: #fff; font-family: inherit; font-size: 15px; outline: none;">
-                <option value="usuario">Usuário Comum</option>
-                <option value="admin">Administrador</option>
+          <div class="glass-input-group">
+            <label for="editUserRole">Privilégio</label>
+            <div class="input-wrapper" style="padding: 0;">
+              <select id="editUserRole" style="width: 100%; padding: 12px 15px; background: transparent; border: none; color: #fff; outline: none; cursor: pointer; -webkit-appearance: none; appearance: none;">
+                <option value="user" style="color: #000;">Usuário Comum</option>
+                <option value="admin" style="color: #000;">Administrador</option>
               </select>
             </div>
           </div>
         </div>
 
-        <div class="modal-footer" style="justify-content: flex-end; margin-top: 25px; display: flex; gap: 10px;">
+        <div class="modal-footer" style="margin-top: 25px; display: flex; gap: 10px; justify-content: flex-end;">
           <button type="button" id="btnCancelEditUserReal" class="glass-btn-secondary">Cancelar</button>
-          <button type="submit" class="btn-profile-save">Salvar Alterações</button>
+          <button type="submit" class="glass-submit-btn" style="padding: 10px 20px; margin: 0; width: auto;">
+            Salvar
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width: 18px; height: 18px; margin-left: 5px;"><polyline points="20 6 9 17 4 12"></polyline></svg>
+          </button>
         </div>
       </form>
     </div>

@@ -334,15 +334,176 @@
   gap: 4px;
 }
 
-/* Modais Específicas de Grupos */
-.form-grid-modal {
+/* ===== CARDS DE EVENTOS (COMPROMISSOS) ESPELHADOS ===== */
+.compromissos-list {
   display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 15px;
+  grid-template-columns: repeat(auto-fill, minmax(min(280px, 100%), 1fr));
+  gap: 20px;
 }
 
+.compromisso-item {
+  background: var(--glass-bg, rgba(20, 20, 25, 0.4));
+  backdrop-filter: blur(24px);
+  border: 1px solid var(--glass-border);
+  border-radius: 20px;
+  padding: 20px;
+  border-left: 6px solid var(--event-color, var(--primary));
+  transition: all 0.3s ease;
+  display: flex;
+  flex-direction: column;
+}
+.compromisso-item.past-event {
+  opacity: 0.5;
+  filter: grayscale(100%);
+}
+.compromisso-item:hover { transform: translateY(-5px); background: rgba(255, 255, 255, 0.05); }
+
+.compromisso-header {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.compromisso-badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  align-items: center;
+  width: 100%;
+}
+
+.compromisso-header h3 {
+  font-size: 1.25rem;
+  font-weight: 700;
+  line-height: 1.4;
+  margin: 0;
+  color: #fff;
+  word-break: break-word;
+  overflow-wrap: break-word;
+}
+
+.urgencia-badge {
+  font-size: 0.7rem;
+  font-weight: 800;
+  padding: 4px 10px;
+  border-radius: 6px;
+  text-transform: uppercase;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+.urgencia-badge.urgente {
+  background: rgba(239, 68, 68, 0.2);
+  color: #ef4444;
+  border: 1px solid rgba(239, 68, 68, 0.3);
+}
+.urgencia-badge.normal {
+  background: rgba(16, 185, 129, 0.2);
+  color: #10b981;
+  border: 1px solid rgba(16, 185, 129, 0.3);
+}
+
+.compromisso-descricao {
+  font-size: 0.95rem;
+  color: var(--text-muted);
+  margin: 12px 0;
+  line-height: 1.5;
+  word-break: break-word;
+  overflow-wrap: break-word;
+  flex-grow: 1;
+}
+
+.compromisso-data {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--primary);
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 12px;
+  background: rgba(59, 130, 246, 0.08);
+  border: 1px solid rgba(59, 130, 246, 0.15);
+  padding: 6px 10px;
+  border-radius: 12px;
+  max-width: 100%;
+  flex-wrap: wrap;
+  line-height: 1.2;
+  box-sizing: border-box;
+}
+
+.compromisso-data span {
+  min-width: 0;
+}
+
+.compromisso-data svg, .compromisso-data i {
+  width: 12px;
+  height: 12px;
+  stroke-width: 2.5;
+  flex-shrink: 0;
+}
+
+.compromisso-actions { display: flex; gap: 12px; margin-top: 20px; }
+.btn-edit, .btn-delete {
+  background: rgba(255, 255, 255, 0.05); border: 1px solid var(--glass-border);
+  border-radius: 10px; padding: 8px 16px; color: white; font-size: 0.85rem;
+  font-weight: 600; cursor: pointer; transition: all 0.2s ease;
+}
+.btn-edit:hover { background: var(--primary); border-color: var(--primary); }
+.btn-delete:hover { background: var(--danger); border-color: var(--danger); }
+
+/* Modais Específicas de Grupos e Forms Glassmorphism */
+.form-group { margin-bottom: 20px; min-width: 0; }
+.form-group label { display: block; font-size: 0.85rem; font-weight: 700; color: var(--text-muted); margin-bottom: 8px; text-transform: uppercase; letter-spacing: 0.5px; }
+input:not(.create-group-form input):not(.trello-add-card-form input):not([type="checkbox"]):not([type="radio"]), 
+textarea, select {
+  width: 100%; min-width: 0; max-width: 100%; box-sizing: border-box; background-color: rgba(255, 255, 255, 0.05); border: 1px solid var(--glass-border);
+  border-radius: 12px; padding: 12px 18px; color: white; font-family: inherit;
+  font-size: 1rem; transition: all 0.3s ease;
+}
+input:not(.create-group-form input):not(.trello-add-card-form input):not([type="checkbox"]):not([type="radio"]), select { height: 48px; }
+input[type="date"], input[type="time"] {
+  padding: 12px 18px;
+  height: 48px;
+  line-height: 1.2;
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  display: block;
+  width: 100%;
+}
+input[type="date"]::-webkit-calendar-picker-indicator,
+input[type="time"]::-webkit-calendar-picker-indicator {
+  filter: invert(1);
+  cursor: pointer;
+  opacity: 0.7;
+}
+input[type="date"]::-webkit-calendar-picker-indicator:hover,
+input[type="time"]::-webkit-calendar-picker-indicator:hover {
+  opacity: 1;
+}
+select {
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 14px center;
+  padding-right: 40px;
+  cursor: pointer;
+}
+select option {
+  background: #1a1a2e;
+  color: white;
+  padding: 10px;
+}
+input:not([type="checkbox"]):not([type="radio"]):focus, textarea:focus, select:focus { outline: none; border-color: var(--primary); background-color: rgba(255, 255, 255, 0.1); }
+
+.form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; width: 100%; min-width: 0; }
+
 @media (max-width: 500px) {
-  .form-grid-modal {
+  .form-row {
     grid-template-columns: 1fr;
   }
 }

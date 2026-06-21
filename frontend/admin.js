@@ -31,6 +31,9 @@ document.addEventListener('DOMContentLoaded', async () => {
     return;
   }
 
+  // Remove o bloqueio visual após validação
+  document.body.classList.add('loaded');
+
   // Alternar abas do painel
   const tabBtnDashboard = document.getElementById('tabBtnDashboard');
   const tabBtnUsers = document.getElementById('tabBtnUsers');
@@ -115,23 +118,59 @@ document.addEventListener('DOMContentLoaded', async () => {
 
   document.getElementById('editUserForm')?.addEventListener('submit', async (e) => {
     e.preventDefault();
-    const userId = document.getElementById('editUserId').value;
+    const userId = parseInt(document.getElementById('editUserId').value);
     const nome = document.getElementById('editUserName').value.trim();
     const email = document.getElementById('editUserEmail').value.trim();
     const status = document.getElementById('editUserStatus').value;
     const role = document.getElementById('editUserRole').value;
     const verificado = status === 'ativo' ? 1 : 0;
+    
+    const userOrig = usersList.find(u => u.id_usuario === userId);
 
-    try {
-      const data = await apiRequest(`${API_BASE}/admin/users/${userId}`, {
-        method: 'PUT',
-        body: JSON.stringify({ nome, email, role, verificado })
-      });
-      showNotification(data.message || 'Dados do usuário atualizados!', 'success');
-      editUserModal.style.display = 'none';
-      await loadUsersList();
-    } catch (err) {
-      showNotification(err.message, 'error');
+    const performUpdate = async () => {
+      try {
+        const data = await apiRequest(`${API_BASE}/admin/users/${userId}`, {
+          method: 'PUT',
+          body: JSON.stringify({ nome, email, role, verificado })
+        });
+        showNotification(data.message || 'Dados do usuário atualizados!', 'success');
+        editUserModal.style.display = 'none';
+        await loadUsersList();
+      } catch (err) {
+        showNotification(err.message, 'error');
+      }
+    };
+
+    if (userOrig && userOrig.role !== role) {
+      const msg = role === 'admin' 
+        ? 'Tem certeza que deseja tornar este usuário administrador?' 
+        : 'Tem certeza que deseja remover o privilégio de administrador deste usuário?';
+      
+      const modal = document.getElementById('changeRoleConfirmModal');
+      document.getElementById('changeRoleModalText').textContent = msg;
+      
+      modal.style.display = 'flex';
+      
+      const btnConfirm = document.getElementById('confirmRoleChange');
+      const btnCancel = document.getElementById('cancelRoleChange');
+      
+      const onConfirm = () => {
+        cleanup();
+        performUpdate();
+      };
+      const onCancel = () => {
+        cleanup();
+      };
+      const cleanup = () => {
+        modal.style.display = 'none';
+        btnConfirm.removeEventListener('click', onConfirm);
+        btnCancel.removeEventListener('click', onCancel);
+      };
+      
+      btnConfirm.addEventListener('click', onConfirm);
+      btnCancel.addEventListener('click', onCancel);
+    } else {
+      performUpdate();
     }
   });
 
@@ -172,6 +211,69 @@ let currentDay = '';
 let currentWeekStart = '';
 let currentWeekEnd = '';
 
+function getPaddedData(dataArray, range) {
+  let padded = [];
+  const today = new Date();
+  
+  if (range === 'ano') {
+    // Ultimos 12 meses
+    for (let i = 11; i >= 0; i--) {
+      const d = new Date(today.getFullYear(), today.getMonth() - i, 1);
+      const label = `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}`;
+      padded.push({ data: label, count: 0 });
+    }
+  } else if (range === 'mes') {
+    // Dias do mes selecionado ou ultimos 30 dias
+    if (currentMonth) {
+      const [year, month] = currentMonth.split('-');
+      const daysInMonth = new Date(year, month, 0).getDate();
+      for (let i = 1; i <= daysInMonth; i++) {
+        const label = `${year}-${month}-${String(i).padStart(2,'0')}`;
+        padded.push({ data: label, count: 0 });
+      }
+    } else {
+      for (let i = 29; i >= 0; i--) {
+        const d = new Date();
+        d.setDate(d.getDate() - i);
+        const label = d.toISOString().split('T')[0];
+        padded.push({ data: label, count: 0 });
+      }
+    }
+  } else if (range === 'semana') {
+    // 7 dias da semana selecionada ou ultimos 7
+    if (currentWeekStart) {
+      const start = new Date(currentWeekStart + 'T12:00:00');
+      for (let i = 0; i < 7; i++) {
+        const d = new Date(start);
+        d.setDate(d.getDate() + i);
+        const label = d.toISOString().split('T')[0];
+        padded.push({ data: label, count: 0 });
+      }
+    } else {
+      for (let i = 6; i >= 0; i--) {
+        const d = new Date();
+        d.setDate(d.getDate() - i);
+        const label = d.toISOString().split('T')[0];
+        padded.push({ data: label, count: 0 });
+      }
+    }
+  } else if (range === 'dia') {
+    // 24 horas
+    for (let i = 0; i < 24; i++) {
+      const label = `${String(i).padStart(2,'0')}:00`;
+      padded.push({ data: label, count: 0 });
+    }
+  }
+
+  // Merge com os dados reais
+  dataArray.forEach(item => {
+    const found = padded.find(p => p.data === item.data);
+    if (found) found.count = item.count;
+  });
+
+  return padded;
+}
+
 async function loadDashboardStats() {
   try {
     let url = `${API_BASE}/admin/dashboard?range=${currentRange}`;
@@ -186,19 +288,12 @@ async function loadDashboardStats() {
     document.getElementById('statGroups').textContent = data.metrics.totalGroups;
     document.getElementById('statEvents').textContent = data.metrics.totalEvents;
 
-    // Se for 'dia', garantir 24h inteiras (00:00 - 23:00) para eventsChart
-    let distData = data.charts.eventDistribution;
-    if (currentRange === 'dia') {
-      const full24h = Array.from({length: 24}, (_, i) => ({ data: `${String(i).padStart(2, '0')}:00`, count: 0 }));
-      distData.forEach(d => {
-        const h = full24h.find(x => x.data === d.data);
-        if (h) h.count = d.count;
-      });
-      distData = full24h;
-    }
+    // Pad arrays para garantir valores 0 onde não há compromissos
+    const distData = getPaddedData(data.charts.eventDistribution, currentRange);
+    const userData = getPaddedData(data.charts.userTimeline, currentRange);
 
     // Renderizar Gráficos
-    renderUsersChart(data.charts.userTimeline);
+    renderUsersChart(userData);
     renderEventsChart(distData);
 
   } catch (err) {
@@ -312,19 +407,6 @@ function drillDownChart(rawDate) {
     updateActiveBtn('mes');
     loadDashboardStats();
   } else if (currentRange === 'mes') {
-    currentRange = 'semana';
-    const clickDate = new Date(rawDate + 'T12:00:00');
-    const dayOfWeek = clickDate.getDay();
-    const start = new Date(clickDate);
-    start.setDate(start.getDate() - dayOfWeek); // Domingo
-    const end = new Date(start);
-    end.setDate(end.getDate() + 6); // Sábado
-    
-    currentWeekStart = start.toISOString().split('T')[0];
-    currentWeekEnd = end.toISOString().split('T')[0];
-    updateActiveBtn('semana');
-    loadDashboardStats();
-  } else if (currentRange === 'semana') {
     currentRange = 'dia';
     currentDay = rawDate; // YYYY-MM-DD
     updateActiveBtn('dia');

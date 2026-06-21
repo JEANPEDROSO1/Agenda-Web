@@ -240,91 +240,73 @@
         <input type="hidden" id="eventGroupId">
         <input type="hidden" id="editEventId">
 
-        <div class="form-group-profile">
+        <div class="form-group">
           <label for="eventTitulo">Título do Compromisso</label>
-          <div class="profile-input-wrapper">
-            <input type="text" id="eventTitulo" required placeholder="Ex: Reunião com o time">
-          </div>
+          <input type="text" id="eventTitulo" required placeholder="Ex: Reunião com o time">
         </div>
 
-        <div class="form-group-profile">
+        <div class="form-group">
           <label for="eventDescricao">Descrição</label>
-          <div class="profile-input-wrapper">
-            <textarea id="eventDescricao" placeholder="Sobre o que é o compromisso..." rows="3" style="width: 100%; min-height: 80px; padding: 14px; background: rgba(255, 255, 255, 0.05); border: 1px solid var(--glass-border); border-radius: 12px; color: #fff; font-family: inherit; font-size: 15px; outline: none; resize: vertical;"></textarea>
-          </div>
+          <textarea id="eventDescricao" placeholder="Sobre o que é o compromisso..." rows="3"></textarea>
         </div>
 
-        <div class="form-grid-modal">
-          <div class="form-group-profile">
+        <div class="form-row">
+          <div class="form-group">
             <label for="eventData">Data</label>
-            <div class="profile-input-wrapper">
-              <input type="date" id="eventData" required>
-            </div>
+            <input type="date" id="eventData" required>
           </div>
-          <div class="form-group-profile">
+          <div class="form-group">
             <label for="eventHora">Hora</label>
-            <div class="profile-input-wrapper">
-              <input type="time" id="eventHora" required>
-            </div>
+            <input type="time" id="eventHora" required>
           </div>
         </div>
 
-        <div class="form-grid-modal">
-          <div class="form-group-profile">
+        <div class="form-row">
+          <div class="form-group">
             <label for="eventUrgencia">Urgência</label>
-            <div class="profile-input-wrapper">
-              <select id="eventUrgencia" style="width: 100%; padding: 14px; background: rgba(25,25,30,0.9); border: 1px solid var(--glass-border); border-radius: 12px; color: #fff; font-family: inherit; font-size: 15px; outline: none;">
-                <option value="normal">Normal</option>
-                <option value="urgente">Urgente</option>
-              </select>
-            </div>
+            <select id="eventUrgencia">
+              <option value="normal">Normal</option>
+              <option value="urgente">Urgente</option>
+            </select>
           </div>
-          <div class="form-group-profile">
+          <div class="form-group">
             <label for="eventCor">Cor</label>
-            <div class="profile-input-wrapper">
-              <select id="eventCor" style="width: 100%; padding: 14px; background: rgba(25,25,30,0.9); border: 1px solid var(--glass-border); border-radius: 12px; color: #fff; font-family: inherit; font-size: 15px; outline: none;">
-                <option value="#3b82f6">Azul</option>
-                <option value="#10b981">Verde</option>
-                <option value="#f59e0b">Amarelo</option>
-                <option value="#ef4444">Vermelho</option>
-                <option value="#8b5cf6">Roxo</option>
-              </select>
-            </div>
+            <select id="eventCor">
+              <option value="#3b82f6">Azul</option>
+              <option value="#10b981">Verde</option>
+              <option value="#f59e0b">Amarelo</option>
+              <option value="#ef4444">Vermelho</option>
+              <option value="#8b5cf6">Roxo</option>
+            </select>
           </div>
         </div>
 
-        <div class="form-grid-modal">
-          <div class="form-group-profile">
+        <div class="form-row">
+          <div class="form-group">
             <label for="eventRepeticao">Repetição</label>
-            <div class="profile-input-wrapper">
-              <select id="eventRepeticao" style="width: 100%; padding: 14px; background: rgba(25,25,30,0.9); border: 1px solid var(--glass-border); border-radius: 12px; color: #fff; font-family: inherit; font-size: 15px; outline: none;">
-                <option value="nenhuma">Nenhuma</option>
-                <option value="semanal">Semanal</option>
-                <option value="mensal">Mensal</option>
-                <option value="anual">Anual</option>
-              </select>
-            </div>
+            <select id="eventRepeticao">
+              <option value="nenhuma">Nenhuma</option>
+              <option value="semanal">Semanal</option>
+              <option value="mensal">Mensal</option>
+              <option value="anual">Anual</option>
+            </select>
           </div>
-          <div class="form-group-profile">
+          <div class="form-group">
             <label for="eventAlerta">Alerta por E-mail</label>
-            <div class="profile-input-wrapper">
-              <select id="eventAlerta" style="width: 100%; padding: 14px; background: rgba(25,25,30,0.9); border: 1px solid var(--glass-border); border-radius: 12px; color: #fff; font-family: inherit; font-size: 15px; outline: none;">
-                <option value="0">Sem alerta antecipado</option>
-                <option value="5">5 minutos antes</option>
-                <option value="10">10 minutos antes</option>
-                <option value="20">20 minutos antes</option>
-                <option value="30">30 minutos antes</option>
-                <option value="60">1 hora antes</option>
-              </select>
-            </div>
+            <select id="eventAlerta">
+              <option value="0">Sem alerta antecipado</option>
+              <option value="5">5 minutos antes</option>
+              <option value="10">10 minutos antes</option>
+              <option value="20">20 minutos antes</option>
+              <option value="30">30 minutos antes</option>
+              <option value="60">1 hora antes</option>
+            </select>
           </div>
         </div>
 
-        <div class="form-group-profile" style="margin-top: 10px;">
+        <div class="form-group" style="margin-top: 10px;">
           <label for="eventLocal">Local/Link</label>
-          <div class="profile-input-wrapper">
-            <input type="text" id="eventLocal" placeholder="Teams, Zoom, Sala 3, etc.">
-          </div>
+          <input type="text" id="eventLocal" placeholder="Teams, Zoom, Sala 3, etc.">
         </div>
 
         <div class="modal-footer" style="justify-content: flex-end; margin-top: 20px; display: flex; gap: 10px;">
@@ -340,13 +322,12 @@
   <div id="transferOwnerModal" class="glass-modal-overlay" style="display: none;">
     <div class="glass-modal-card">
       <h2>Transferir Propriedade</h2>
-      <p>Selecione o membro que se tornará o novo proprietário do grupo. Você deixará de ser o dono, mas continuará como administrador.</p>
+      <p style="color: var(--text-muted); font-size: 0.95rem; margin-top: 10px; font-weight: 600; color: #ef4444;">Tem certeza que deseja transferir a propriedade do grupo? Essa ação não poderá ser desfeita facilmente.</p>
+      <p style="color: var(--text-muted); font-size: 0.9rem; margin-top: 10px;">Selecione o membro que se tornará o novo proprietário do grupo. Você deixará de ser o dono, mas continuará como administrador.</p>
       
-      <div class="form-group-profile" style="text-align: left;">
+      <div class="form-group" style="text-align: left;">
         <label for="transferSelect">Novo Proprietário</label>
-        <div class="profile-input-wrapper">
-          <select id="transferSelect" style="width: 100%; padding: 14px; background: rgba(25,25,30,0.9); border: 1px solid var(--glass-border); border-radius: 12px; color: #fff; font-family: inherit; font-size: 15px; outline: none;"></select>
-        </div>
+        <select id="transferSelect"></select>
       </div>
 
       <div class="modal-footer" style="margin-top: 25px;">
@@ -365,37 +346,31 @@
       </div>
 
       <form id="cardDetailsForm">
-        <div class="form-group-profile">
+        <div class="form-group">
           <label for="cardTitleInput">Título</label>
-          <div class="profile-input-wrapper">
-            <input type="text" id="cardTitleInput" required>
-          </div>
+          <input type="text" id="cardTitleInput" required>
         </div>
 
-        <div class="form-group-profile">
+        <div class="form-group">
           <label for="cardDescInput">Descrição</label>
-          <div class="profile-input-wrapper">
-            <textarea id="cardDescInput" placeholder="Adicione uma descrição detalhada..." style="width: 100%; min-height: 80px; padding: 14px; background: rgba(255, 255, 255, 0.05); border: 1px solid var(--glass-border); border-radius: 12px; color: #fff; font-family: inherit; font-size: 15px; outline: none; resize: vertical;"></textarea>
-          </div>
+          <textarea id="cardDescInput" placeholder="Adicione uma descrição detalhada..." rows="3"></textarea>
         </div>
 
-        <div class="form-grid-modal">
-          <div class="form-group-profile">
+        <div class="form-row">
+          <div class="form-group">
             <label for="cardPrazoInput">Prazo de Entrega</label>
-            <div class="profile-input-wrapper">
-              <input type="date" id="cardPrazoInput">
-            </div>
+            <input type="date" id="cardPrazoInput">
           </div>
-          <div class="form-group-profile">
+          <div class="form-group">
             <label for="cardStatusInput" style="margin-bottom: 12px;">Situação</label>
             <div style="display: flex; align-items: center; gap: 8px; margin-top: 10px;">
-              <input type="checkbox" id="cardStatusInput" style="width: 20px; height: 20px; cursor: pointer;">
+              <input type="checkbox" id="cardStatusInput" style="width: 20px; height: 20px; cursor: pointer; flex-shrink: 0; min-width: auto; max-width: 20px;">
               <label for="cardStatusInput" style="margin: 0; text-transform: none; font-size: 0.95rem; font-weight: normal; color: #fff;">Concluído</label>
             </div>
           </div>
         </div>
 
-        <div class="form-group-profile" style="margin-top: 15px;">
+        <div class="form-group" style="margin-top: 15px;">
           <label>Atribuir Responsáveis</label>
           <div id="cardAssigneesList" style="display: flex; flex-direction: column; gap: 10px; margin-top: 10px; max-height: 150px; overflow-y: auto; padding-right: 5px; background: rgba(0,0,0,0.1); padding: 10px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.05);">
             <!-- Injetado dinamicamente com checkboxes -->

@@ -52,7 +52,6 @@ document.addEventListener('DOMContentLoaded', async () => {
   const cropCanvas = document.getElementById('cropCanvas');
   const cropCtx = cropCanvas.getContext('2d');
   const cropZoomRange = document.getElementById('cropZoomRange');
-  const btnCenterCrop = document.getElementById('btnCenterCrop');
   const btnCancelCrop = document.getElementById('btnCancelCrop');
   const btnConfirmCrop = document.getElementById('btnConfirmCrop');
   const cropDragArea = document.getElementById('cropDragArea');
@@ -168,15 +167,6 @@ document.addEventListener('DOMContentLoaded', async () => {
 
   cropDragArea.addEventListener('touchend', () => {
     isDragging = false;
-  });
-
-  btnCenterCrop.addEventListener('click', () => {
-    cropX = 0;
-    cropY = 0;
-    const minZoom = Math.max(250 / cropImg.width, 250 / cropImg.height);
-    cropZoom = minZoom;
-    cropZoomRange.value = minZoom.toFixed(2);
-    drawCrop();
   });
 
   btnCancelCrop.addEventListener('click', () => {
