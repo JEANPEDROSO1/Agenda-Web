@@ -205,30 +205,6 @@
 
   </div>
 
-  <!-- Modal Confirmação Alterar Status Usuário -->
-  <div id="changeStatusConfirmModal" class="glass-modal-overlay" style="display: none;">
-    <div class="glass-modal-card" style="max-width: 400px; text-align: center;">
-      <h2 id="changeStatusModalTitle">Alterar Status</h2>
-      <p id="changeStatusModalText" style="color: var(--text-muted); font-size: 0.95rem; margin-top: 10px;">Esta ação é irreversível e desativará permanentemente o acesso do usuário à plataforma.</p>
-      <div class="modal-footer" style="margin-top: 20px; justify-content: center; display: flex; gap: 10px;">
-        <button id="cancelStatusChange" class="glass-btn-secondary">Cancelar</button>
-        <button id="confirmStatusChange" class="glass-btn-danger">Confirmar</button>
-      </div>
-    </div>
-  </div>
-
-  <!-- Modal Confirmação Alterar Permissão Usuário -->
-  <div id="changeRoleConfirmModal" class="glass-modal-overlay" style="display: none;">
-    <div class="glass-modal-card" style="max-width: 400px; text-align: center;">
-      <h2 id="changeRoleModalTitle">Alterar Privilégio</h2>
-      <p id="changeRoleModalText" style="color: var(--text-muted); font-size: 0.95rem; margin-top: 10px;">Tem certeza de que deseja alterar o nível de acesso deste usuário?</p>
-      <div class="modal-footer" style="margin-top: 20px; justify-content: center; display: flex; gap: 10px;">
-        <button id="cancelRoleChange" class="glass-btn-secondary">Cancelar</button>
-        <button id="confirmRoleChange" class="glass-btn-primary">Alterar</button>
-      </div>
-    </div>
-  </div>
-
   <!-- Modal Editar Detalhes do Usuário -->
   <div id="editUserModal" class="glass-modal-overlay" style="display: none;">
     <div class="glass-modal-card" style="max-width: 450px; text-align: left;">
@@ -279,14 +255,36 @@
 
         <div class="modal-footer" style="margin-top: 25px; display: flex; gap: 10px; justify-content: flex-end;">
           <button type="button" id="btnCancelEditUserReal" class="glass-btn-secondary">Cancelar</button>
-          <button type="submit" class="btn-success-glass">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 18px; height: 18px; margin-right: 6px;"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path><polyline points="17 21 17 13 7 13 7 21"></polyline><polyline points="7 3 7 8 15 8"></polyline></svg>
-            Salvar Alterações
-          </button>
+          <button type="submit" class="glass-btn-primary" style="padding: 10px 24px;">Salvar Alterações</button>
         </div>
       </form>
     </div>
   </div>
+
+  <!-- Modal Confirmação Alterar Status Usuário -->
+  <div id="changeStatusConfirmModal" class="glass-modal-overlay" style="display: none;">
+    <div class="glass-modal-card" style="max-width: 400px; text-align: center;">
+      <h2 id="changeStatusModalTitle">Alterar Status</h2>
+      <p id="changeStatusModalText" style="color: var(--text-muted); font-size: 0.95rem; margin-top: 10px;">Esta ação é irreversível e desativará permanentemente o acesso do usuário à plataforma.</p>
+      <div class="modal-footer" style="margin-top: 20px; justify-content: center; display: flex; gap: 10px;">
+        <button id="cancelStatusChange" class="glass-btn-secondary">Cancelar</button>
+        <button id="confirmStatusChange" class="glass-btn-danger">Confirmar</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal Confirmação Alterar Permissão Usuário -->
+  <div id="changeRoleConfirmModal" class="glass-modal-overlay" style="display: none;">
+    <div class="glass-modal-card" style="max-width: 400px; text-align: center;">
+      <h2 id="changeRoleModalTitle">Alterar Privilégio</h2>
+      <p id="changeRoleModalText" style="color: var(--text-muted); font-size: 0.95rem; margin-top: 10px;">Tem certeza de que deseja alterar o nível de acesso deste usuário?</p>
+      <div class="modal-footer" style="margin-top: 20px; justify-content: center; display: flex; gap: 10px;">
+        <button id="cancelRoleChange" class="glass-btn-secondary">Cancelar</button>
+        <button id="confirmRoleChange" class="glass-btn-primary">Alterar</button>
+      </div>
+    </div>
+  </div>
+
 
   <!-- Modal Logout -->
   <div id="logoutModal" class="glass-modal-overlay" style="display: none;">
