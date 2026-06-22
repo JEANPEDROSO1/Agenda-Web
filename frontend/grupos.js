@@ -282,9 +282,6 @@ async function enterGroup(id_grupo) {
   document.getElementById('groupsListSection').style.display = 'none';
   document.getElementById('singleGroupSection').style.display = 'block';
   
-  // Garantir a aba Agenda como padrão ao entrar
-  document.getElementById('tabBtnAgenda').click();
-  
   await loadGroupDetails(id_grupo);
   await loadGroupEvents(id_grupo);
 }
