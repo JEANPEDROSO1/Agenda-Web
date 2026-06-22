@@ -97,7 +97,9 @@ document.addEventListener('DOMContentLoaded', () => {
         
         // Renderizar avatar se existir
         if (navImg && navPlaceholder && profile.foto_caminho) {
-          navImg.src = `${API_BASE}${profile.foto_caminho}`;
+          navImg.src = profile.foto_caminho.startsWith('data:') || profile.foto_caminho.startsWith('http')
+            ? profile.foto_caminho
+            : `${API_BASE}${profile.foto_caminho}`;
           navImg.style.display = 'block';
           navPlaceholder.style.display = 'none';
         }
@@ -121,7 +123,10 @@ document.addEventListener('DOMContentLoaded', () => {
     const navImg = document.getElementById('navUserAvatarImg');
     const navPlaceholder = document.getElementById('navUserAvatarPlaceholder');
     if (navImg && navPlaceholder) {
-      navImg.src = `${API_BASE}${e.detail}?t=${Date.now()}`;
+      const imgSrc = e.detail.startsWith('data:') || e.detail.startsWith('http')
+        ? e.detail
+        : `${API_BASE}${e.detail}?t=${Date.now()}`;
+      navImg.src = imgSrc;
       navImg.style.display = 'block';
       navPlaceholder.style.display = 'none';
     }

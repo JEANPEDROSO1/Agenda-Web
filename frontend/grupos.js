@@ -350,7 +350,10 @@ async function loadGroupDetails(id_grupo) {
 
       let avatarHTML = '';
       if (m.foto_caminho) {
-        avatarHTML = `<img src="${API_BASE}${m.foto_caminho}" alt="Foto de ${m.nome}">`;
+        const imgSrc = m.foto_caminho.startsWith('data:') || m.foto_caminho.startsWith('http')
+          ? m.foto_caminho
+          : `${API_BASE}${m.foto_caminho}`;
+        avatarHTML = `<img src="${imgSrc}" alt="Foto de ${m.nome}">`;
       } else {
         const initials = m.nome.split(/\s+/).map(n => n[0]).slice(0, 2).join('').toUpperCase();
         avatarHTML = `<span>${initials}</span>`;

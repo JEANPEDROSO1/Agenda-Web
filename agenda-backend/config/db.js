@@ -189,7 +189,7 @@ pool.getConnection((err, connection) => {
           CREATE TABLE IF NOT EXISTS perfis (
             id_perfil INT AUTO_INCREMENT PRIMARY KEY,
             id_usuario INT UNIQUE NOT NULL,
-            foto_caminho VARCHAR(500) DEFAULT NULL,
+            foto_caminho LONGTEXT DEFAULT NULL,
             FOREIGN KEY (id_usuario) REFERENCES usuarios(id_usuario) ON DELETE CASCADE
           )
         `);
@@ -250,6 +250,13 @@ pool.getConnection((err, connection) => {
             console.log(`Adicionando coluna ${col.name} na tabela grupo_eventos...`);
             await runQuery(`ALTER TABLE grupo_eventos ADD COLUMN ${col.name} ${col.def}`);
           }
+        }
+
+        // Garantir que foto_caminho suporte Base64 (LONGTEXT)
+        const profileCols = await runQuery("SHOW COLUMNS FROM perfis LIKE 'foto_caminho'");
+        if (profileCols.length > 0 && profileCols[0].Type !== 'longtext') {
+          console.log('Alterando coluna foto_caminho para LONGTEXT na tabela perfis...');
+          await runQuery('ALTER TABLE perfis MODIFY foto_caminho LONGTEXT');
         }
 
         // 9. Tabela trello_quadros

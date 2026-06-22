@@ -203,14 +203,17 @@ document.addEventListener('DOMContentLoaded', async () => {
         const imgEl = document.getElementById('userAvatarImg');
         const placeholderEl = document.getElementById('userAvatarPlaceholder');
 
-        imgEl.src = `${API_BASE}${data.foto_caminho}?t=${Date.now()}`;
+        const imgSrc = data.foto_caminho.startsWith('data:') || data.foto_caminho.startsWith('http') 
+          ? data.foto_caminho 
+          : `${API_BASE}${data.foto_caminho}?t=${Date.now()}`;
+        imgEl.src = imgSrc;
         imgEl.classList.remove('hidden');
         placeholderEl.classList.add('hidden');
 
         // Atualizar também nos menus se houver
         const navImg = document.getElementById('navUserAvatarImg');
         if (navImg) {
-          navImg.src = `${API_BASE}${data.foto_caminho}?t=${Date.now()}`;
+          navImg.src = imgSrc;
           navImg.style.display = 'block';
           const navPlaceholder = document.getElementById('navUserAvatarPlaceholder');
           if (navPlaceholder) navPlaceholder.style.display = 'none';
@@ -253,7 +256,9 @@ async function loadUserProfile() {
     const placeholderEl = document.getElementById('userAvatarPlaceholder');
 
     if (profile.foto_caminho) {
-      imgEl.src = `${API_BASE}${profile.foto_caminho}`;
+      imgEl.src = profile.foto_caminho.startsWith('data:') || profile.foto_caminho.startsWith('http')
+        ? profile.foto_caminho
+        : `${API_BASE}${profile.foto_caminho}`;
       imgEl.classList.remove('hidden');
       placeholderEl.classList.add('hidden');
     } else {

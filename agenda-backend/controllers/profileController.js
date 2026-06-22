@@ -122,51 +122,25 @@ exports.uploadPhoto = async (req, res) => {
     return res.status(400).json({ error: 'Nenhum arquivo enviado' });
   }
 
-  // O caminho que salvaremos no banco de dados e exporemos na API
-  const foto_caminho = `/uploads/${req.file.filename}`;
+  // Converter buffer para Base64
+  const base64Image = `data:${req.file.mimetype};base64,${req.file.buffer.toString('base64')}`;
 
-  // Verificar se já tem foto no banco para excluir o arquivo antigo do disco
+  // Inserir ou atualizar na tabela perfis com a string Base64 completa
   db.query(
-    'SELECT foto_caminho FROM perfis WHERE id_usuario = ?',
-    [id_usuario],
-    (err, results) => {
-      if (err) {
-        console.error('Erro ao buscar foto antiga:', err);
-        return res.status(500).json({ error: 'Erro interno' });
+    `INSERT INTO perfis (id_usuario, foto_caminho) 
+     VALUES (?, ?) 
+     ON DUPLICATE KEY UPDATE foto_caminho = VALUES(foto_caminho)`,
+    [id_usuario, base64Image],
+    (insErr) => {
+      if (insErr) {
+        console.error('Erro ao salvar foto no banco:', insErr);
+        return res.status(500).json({ error: 'Erro ao registrar foto no banco de dados' });
       }
 
-      if (results.length > 0 && results[0].foto_caminho) {
-        const antigaFotoPath = results[0].foto_caminho;
-        // Caminho absoluto do arquivo antigo no sistema
-        const absoluteOldPath = path.join(__dirname, '../uploads', path.basename(antigaFotoPath));
-        
-        fs.unlink(absoluteOldPath, (unlinkErr) => {
-          if (unlinkErr) {
-            console.warn('Não foi possível excluir a foto antiga:', unlinkErr.message);
-          } else {
-            console.log('Foto antiga excluída do disco:', absoluteOldPath);
-          }
-        });
-      }
-
-      // Inserir ou atualizar na tabela perfis
-      db.query(
-        `INSERT INTO perfis (id_usuario, foto_caminho) 
-         VALUES (?, ?) 
-         ON DUPLICATE KEY UPDATE foto_caminho = VALUES(foto_caminho)`,
-        [id_usuario, foto_caminho],
-        (insErr) => {
-          if (insErr) {
-            console.error('Erro ao salvar foto no banco:', insErr);
-            return res.status(500).json({ error: 'Erro ao registrar foto no banco de dados' });
-          }
-
-          res.json({ 
-            message: 'Foto de perfil atualizada com sucesso!', 
-            foto_caminho 
-          });
-        }
-      );
+      res.json({ 
+        message: 'Foto de perfil atualizada com sucesso!', 
+        foto_caminho: base64Image
+      });
     }
   );
 };

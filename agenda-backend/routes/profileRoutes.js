@@ -12,18 +12,8 @@ if (!fs.existsSync(uploadDir)) {
   fs.mkdirSync(uploadDir, { recursive: true });
 }
 
-// Configuração do Multer para armazenamento de fotos
-const storage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    cb(null, uploadDir);
-  },
-  filename: (req, file, cb) => {
-    const id_usuario = req.user.id || req.user.id_usuario;
-    const ext = path.extname(file.originalname).toLowerCase();
-    const timestamp = Date.now();
-    cb(null, `profile-${id_usuario}-${timestamp}${ext}`);
-  }
-});
+// Configuração do Multer para armazenamento de fotos (Memória)
+const storage = multer.memoryStorage();
 
 // Filtro de arquivos para aceitar apenas imagens comuns
 const fileFilter = (req, file, cb) => {
