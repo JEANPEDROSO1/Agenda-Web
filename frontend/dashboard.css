@@ -519,7 +519,7 @@ body {
   gap: 16px;
 }
 
-.glass-btn-secondary, .glass-btn-danger {
+.glass-btn-secondary, .glass-btn-danger, .glass-btn-primary-modal {
   flex: 1;
   padding: 14px;
   border-radius: 14px;
@@ -699,4 +699,21 @@ body {
 @keyframes slideOut {
   from { opacity: 1; transform: translateX(0); }
   to { opacity: 0; transform: translateX(40px); }
+}
+
+.glass-btn-primary-modal {
+  flex: 1;
+  padding: 14px;
+  border-radius: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  border: none;
+  background: var(--primary);
+  color: white;
+}
+
+.glass-btn-primary-modal:hover {
+  filter: brightness(1.1);
+  transform: translateY(-2px);
 }
