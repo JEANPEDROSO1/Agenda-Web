@@ -146,29 +146,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         ? 'Tem certeza que deseja tornar este usuário administrador?' 
         : 'Tem certeza que deseja remover o privilégio de administrador deste usuário?';
       
-      const modal = document.getElementById('changeRoleConfirmModal');
-      document.getElementById('changeRoleModalText').textContent = msg;
-      
-      modal.style.display = 'flex';
-      
-      const btnConfirm = document.getElementById('confirmRoleChange');
-      const btnCancel = document.getElementById('cancelRoleChange');
-      
-      const onConfirm = () => {
-        cleanup();
-        performUpdate();
-      };
-      const onCancel = () => {
-        cleanup();
-      };
-      const cleanup = () => {
-        modal.style.display = 'none';
-        btnConfirm.removeEventListener('click', onConfirm);
-        btnCancel.removeEventListener('click', onCancel);
-      };
-      
-      btnConfirm.addEventListener('click', onConfirm);
-      btnCancel.addEventListener('click', onCancel);
+      showAdminConfirmModal('changeRoleConfirmModal', performUpdate, 'Alterar Privilégio', msg);
     } else {
       performUpdate();
     }

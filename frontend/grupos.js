@@ -752,6 +752,19 @@ function renderGroupCalendar() {
       calendarDays.querySelectorAll('.calendar-day.selected').forEach(c => c.classList.remove('selected'));
       cell.classList.add('selected');
       renderGroupEventsList();
+
+      const isMobile = window.innerWidth <= 768;
+      if (!isMobile) {
+        // Abrir modal de agendar evento automaticamente no desktop
+        document.getElementById('eventTitulo').value = '';
+        document.getElementById('eventDescricao').value = '';
+        document.getElementById('eventData').value = cellDateStr;
+        document.getElementById('eventHora').value = '12:00';
+        document.getElementById('eventUrgencia').value = 'normal';
+        document.getElementById('editEventId').value = '';
+        document.getElementById('groupEventModalTitle').textContent = 'Agendar no Grupo';
+        document.getElementById('addEventModal').style.display = 'flex';
+      }
     });
 
     calendarDays.appendChild(cell);

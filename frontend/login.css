@@ -319,8 +319,9 @@ button {
 .input-wrapper input:-webkit-autofill:hover, 
 .input-wrapper input:-webkit-autofill:focus, 
 .input-wrapper input:-webkit-autofill:active {
-  transition: background-color 5000s ease-in-out 0s !important;
+  -webkit-box-shadow: 0 0 0 30px #11141e inset !important;
   -webkit-text-fill-color: white !important;
+  transition: background-color 5000s ease-in-out 0s !important;
 }
 
 .input-wrapper .password-toggle {
@@ -507,8 +508,9 @@ input:-webkit-autofill,
 input:-webkit-autofill:hover, 
 input:-webkit-autofill:focus, 
 input:-webkit-autofill:active {
-  transition: background-color 5000s ease-in-out 0s !important;
+  -webkit-box-shadow: 0 0 0 30px #f8fbff inset !important;
   -webkit-text-fill-color: var(--text) !important;
+  transition: background-color 5000s ease-in-out 0s !important;
 }
 
 
