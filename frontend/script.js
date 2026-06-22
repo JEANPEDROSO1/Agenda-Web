@@ -314,27 +314,49 @@ function showNotification(message, type = 'info') {
   }, 4000);
 }
 
-// Auto-login se o usuário acessar a página de login tendo uma sessão ativa
-if (window.location.pathname.endsWith('login.html')) {
+// Auto-login se o usuário acessar a página de login ou index tendo uma sessão ativa
+const currentPath = window.location.pathname;
+const isAuthPage = currentPath.endsWith('login.html') || 
+                   currentPath.endsWith('index.html') || 
+                   currentPath.endsWith('/') || 
+                   currentPath.endsWith('frontend/');
+
+if (isAuthPage) {
   (async () => {
     try {
+      // Verifica o token que está no localStorage para a página index
+      const localToken = localStorage.getItem('token');
+      
+      // Tenta usar o cookie via /refresh
       const response = await fetch(`${API_BASE}/auth/refresh`, {
         method: 'POST',
         credentials: 'include'
       });
+      
+      let finalToken = null;
       if (response.ok) {
         const data = await response.json();
-        localStorage.setItem('token', data.token);
-        
-        // Buscar dados do usuário para preencher localStorage.userId
+        finalToken = data.token;
+        localStorage.setItem('token', finalToken);
+      } else if (localToken) {
+        // Se refresh falhar mas temos token local, vamos testá-lo
+        finalToken = localToken;
+      }
+
+      if (finalToken) {
+        // Buscar dados do usuário para verificar se a sessão é válida mesmo
         const userRes = await fetch(`${API_BASE}/auth/me`, {
-          headers: { 'Authorization': `Bearer ${data.token}` },
+          headers: { 'Authorization': `Bearer ${finalToken}` },
           credentials: 'include'
         });
         if (userRes.ok) {
           const userData = await userRes.json();
           localStorage.setItem('userId', userData.user.id_usuario);
           window.location.href = 'dashboard.html';
+        } else {
+          // Token local também era inválido
+          localStorage.removeItem('token');
+          localStorage.removeItem('userId');
         }
       }
     } catch (e) {
