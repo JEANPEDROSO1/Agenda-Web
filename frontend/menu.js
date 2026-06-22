@@ -88,37 +88,33 @@ function initMenuHandler() {
 document.addEventListener('DOMContentLoaded', () => {
   initMenuHandler();
   
-  // Exibir link de administrador se o token contiver a role correspondente
-  const token = localStorage.getItem('token');
-  if (token) {
-    try {
-      const payload = JSON.parse(atob(token.split('.')[1]));
-      if (payload.role === 'admin') {
-        const adminLink = document.getElementById('adminNavLink');
-        if (adminLink) {
-          adminLink.style.display = 'inline-block';
-        }
-      }
-    } catch (err) {
-      console.warn('Erro ao decodificar role do menu:', err);
-    }
-
-    // Carregar foto de perfil no menu
+    // Carregar foto de perfil e verificar permissão real no banco
     apiRequest(`${API_BASE}/profile`)
       .then(data => {
         const profile = data.profile;
         const navImg = document.getElementById('navUserAvatarImg');
         const navPlaceholder = document.getElementById('navUserAvatarPlaceholder');
+        
+        // Renderizar avatar se existir
         if (navImg && navPlaceholder && profile.foto_caminho) {
           navImg.src = `${API_BASE}${profile.foto_caminho}`;
           navImg.style.display = 'block';
           navPlaceholder.style.display = 'none';
         }
+
+        // Definir de forma definitiva a visibilidade da aba Admin
+        const adminLink = document.getElementById('adminNavLink');
+        if (adminLink) {
+          if (profile.role === 'admin') {
+            adminLink.style.display = 'inline-block';
+          } else {
+            adminLink.style.display = 'none';
+          }
+        }
       })
       .catch(err => {
         console.warn('Erro ao buscar foto de perfil para o menu:', err);
       });
-  }
 
   // Ouvir evento customizado de atualização do avatar
   window.addEventListener('avatarUpdated', (e) => {

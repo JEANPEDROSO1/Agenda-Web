@@ -84,8 +84,6 @@ app.use('/profile', profileRoutes);
 const groupRoutes = require('./routes/groupRoutes');
 app.use('/groups', groupRoutes);
 
-const trelloRoutes = require('./routes/trelloRoutes');
-app.use('/groups/:groupId/trello', trelloRoutes);
 
 const adminRoutes = require('./routes/adminRoutes');
 app.use('/admin', adminRoutes);
