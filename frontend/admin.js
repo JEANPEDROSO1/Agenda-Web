@@ -125,7 +125,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     const role = document.getElementById('editUserRole').value;
     const verificado = status === 'ativo' ? 1 : 0;
     
-    const userOrig = usersList.find(u => u.id_usuario === userId);
+    const userOrig = usersList.find(u => String(u.id_usuario) === String(userId));
 
     const performUpdate = async () => {
       try {

@@ -749,3 +749,11 @@ input:not([type="checkbox"]):not([type="radio"]):focus, textarea:focus, select:f
     font-size: 0.65rem;
   }
 }
+
+.group-events-list::-webkit-scrollbar {
+  width: 6px;
+}
+.group-events-list::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 10px;
+}

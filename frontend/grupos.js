@@ -200,19 +200,19 @@ document.addEventListener('DOMContentLoaded', async () => {
 
   // Modal: Criar/Editar Evento Compartilhado
   const addEventModal = document.getElementById('addEventModal');
-  document.getElementById('btnOpenAddEventModal').addEventListener('click', () => {
+  document.getElementById('btnOpenAddEventModal')?.addEventListener('click', () => {
     openCreateEventModal();
   });
 
-  document.getElementById('btnCancelAddEvent').addEventListener('click', () => {
+  document.getElementById('btnCancelAddEvent')?.addEventListener('click', () => {
     addEventModal.style.display = 'none';
   });
 
-  document.getElementById('btnCancelAddEventReal').addEventListener('click', () => {
+  document.getElementById('btnCancelAddEventReal')?.addEventListener('click', () => {
     addEventModal.style.display = 'none';
   });
 
-  document.getElementById('btnDeleteEvent').addEventListener('click', () => {
+  document.getElementById('btnDeleteEvent')?.addEventListener('click', () => {
     const eventId = document.getElementById('editEventId').value;
     if (currentGroupId && eventId) {
       deleteGroupEvent(currentGroupId, eventId);
@@ -269,17 +269,17 @@ document.addEventListener('DOMContentLoaded', async () => {
   });
 
   // Navegação do Calendário
-  document.getElementById('groupPrevMonth').addEventListener('click', () => {
+  document.getElementById('groupPrevMonth')?.addEventListener('click', () => {
     groupCurrentDate.setMonth(groupCurrentDate.getMonth() - 1);
     renderGroupCalendar();
   });
 
-  document.getElementById('groupNextMonth').addEventListener('click', () => {
+  document.getElementById('groupNextMonth')?.addEventListener('click', () => {
     groupCurrentDate.setMonth(groupCurrentDate.getMonth() + 1);
     renderGroupCalendar();
   });
 
-  document.getElementById('groupToday').addEventListener('click', () => {
+  document.getElementById('groupToday')?.addEventListener('click', () => {
     groupCurrentDate = new Date();
     groupSelectedDate = new Date();
     renderGroupCalendar();
