@@ -232,6 +232,8 @@ pool.getConnection((err, connection) => {
             urgencia VARCHAR(20) NOT NULL DEFAULT 'normal',
             repeticao VARCHAR(20) NOT NULL DEFAULT 'nenhuma',
             alerta_minutos INT NOT NULL DEFAULT 0,
+            ultimo_alerta_enviado VARCHAR(10) DEFAULT NULL,
+            ultimo_inicio_enviado VARCHAR(10) DEFAULT NULL,
             FOREIGN KEY (id_grupo) REFERENCES grupos(id_grupo) ON DELETE CASCADE,
             FOREIGN KEY (id_criador) REFERENCES usuarios(id_usuario) ON DELETE CASCADE
           )
@@ -242,7 +244,9 @@ pool.getConnection((err, connection) => {
           { name: 'urgencia', def: "VARCHAR(20) NOT NULL DEFAULT 'normal'" },
           { name: 'cor', def: "VARCHAR(7) NOT NULL DEFAULT '#8b5cf6'" },
           { name: 'repeticao', def: "VARCHAR(20) NOT NULL DEFAULT 'nenhuma'" },
-          { name: 'alerta_minutos', def: "INT NOT NULL DEFAULT 0" }
+          { name: 'alerta_minutos', def: "INT NOT NULL DEFAULT 0" },
+          { name: 'ultimo_alerta_enviado', def: "VARCHAR(10) DEFAULT NULL" },
+          { name: 'ultimo_inicio_enviado', def: "VARCHAR(10) DEFAULT NULL" }
         ];
         for (const col of groupEventCols) {
           const results = await runQuery('SHOW COLUMNS FROM grupo_eventos LIKE ?', [col.name]);

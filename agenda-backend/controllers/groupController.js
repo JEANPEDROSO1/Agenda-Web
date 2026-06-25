@@ -491,8 +491,8 @@ exports.createGroupEvent = async (req, res) => {
              JOIN usuarios u ON gp.id_usuario = u.id_usuario 
              JOIN grupos g ON gp.id_grupo = g.id_grupo 
              JOIN usuarios uc ON uc.id_usuario = ? 
-             WHERE gp.id_grupo = ? AND gp.id_usuario != ?`,
-            [id_usuario, id_grupo, id_usuario],
+             WHERE gp.id_grupo = ?`,
+            [id_usuario, id_grupo],
             async (membErr, members) => {
               if (!membErr && members.length > 0) {
                 const formattedDate = new Date(data_evento + 'T' + hora_evento).toLocaleString('pt-BR');
@@ -555,7 +555,7 @@ exports.updateGroupEvent = async (req, res) => {
 
           db.query(
             `UPDATE grupo_eventos 
-             SET titulo = ?, descricao = ?, data_evento = ?, hora_evento = ?, local = ?, cor = ?, urgencia = ?, repeticao = ?, alerta_minutos = ? 
+             SET titulo = ?, descricao = ?, data_evento = ?, hora_evento = ?, local = ?, cor = ?, urgencia = ?, repeticao = ?, alerta_minutos = ?, ultimo_alerta_enviado = NULL, ultimo_inicio_enviado = NULL 
              WHERE id_grupo_evento = ?`,
             [titulo.trim(), descricao, data_evento, hora_evento, local, cor, urgencia || 'normal', repeticao || 'nenhuma', parseInt(alerta_minutos) || 0, id_evento],
             (updErr) => {
@@ -571,8 +571,8 @@ exports.updateGroupEvent = async (req, res) => {
                  JOIN usuarios u ON gp.id_usuario = u.id_usuario 
                  JOIN grupos g ON gp.id_grupo = g.id_grupo 
                  JOIN usuarios uc ON uc.id_usuario = ? 
-                 WHERE gp.id_grupo = ? AND gp.id_usuario != ?`,
-                [id_usuario, id_grupo, id_usuario],
+                 WHERE gp.id_grupo = ?`,
+                [id_usuario, id_grupo],
                 async (membErr, members) => {
                   if (!membErr && members.length > 0) {
                     const formattedDate = new Date(data_evento + 'T' + hora_evento).toLocaleString('pt-BR');
@@ -647,8 +647,8 @@ exports.deleteGroupEvent = async (req, res) => {
                  JOIN usuarios u ON gp.id_usuario = u.id_usuario 
                  JOIN grupos g ON gp.id_grupo = g.id_grupo 
                  JOIN usuarios uc ON uc.id_usuario = ? 
-                 WHERE gp.id_grupo = ? AND gp.id_usuario != ?`,
-                [id_usuario, id_grupo, id_usuario],
+                 WHERE gp.id_grupo = ?`,
+                [id_usuario, id_grupo],
                 async (membErr, members) => {
                   if (!membErr && members.length > 0) {
                     for (const member of members) {

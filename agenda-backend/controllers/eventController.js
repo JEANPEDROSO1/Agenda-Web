@@ -113,7 +113,7 @@ exports.updateEvent = (req, res) => {
   const alertaMinutosValue = parseInt(alerta_minutos) || 0;
 
   db.query(
-    'UPDATE eventos SET titulo = ?, descricao = ?, data_evento = ?, hora_evento = ?, urgencia = ?, cor = ?, repeticao = ?, alerta_minutos = ? WHERE id_evento = ?',
+    'UPDATE eventos SET titulo = ?, descricao = ?, data_evento = ?, hora_evento = ?, urgencia = ?, cor = ?, repeticao = ?, alerta_minutos = ?, ultimo_alerta_enviado = NULL, ultimo_inicio_enviado = NULL WHERE id_evento = ?',
     [titulo, descricao, data_evento, hora_evento, urgencia, cor, repeticaoValue, alertaMinutosValue, id],
     (err, result) => {
       if (err) {
