@@ -204,14 +204,14 @@ const checkAndSendEmails = async () => {
 };
 
 const startScheduler = () => {
-    console.log('[Scheduler] Serviço iniciado (intervalo: 10s)');
+    console.log('[Scheduler] Serviço iniciado (intervalo: 60s)');
     
     const checkDbReady = setInterval(() => {
         if (db.isInitialized) {
             clearInterval(checkDbReady);
             console.log('[Scheduler] Banco de dados pronto. Iniciando verificações periódicas...');
             checkAndSendEmails(); 
-            setInterval(checkAndSendEmails, 10000); 
+            setInterval(checkAndSendEmails, 60000); 
         }
     }, 1000);
 };

@@ -763,3 +763,24 @@ input:not([type="checkbox"]):not([type="radio"]):focus, textarea:focus, select:f
   background: rgba(255, 255, 255, 0.2);
   border-radius: 10px;
 }
+
+@media (max-width: 500px) {
+  .member-item {
+    padding: 8px 12px;
+  }
+  .member-avatar {
+    width: 32px;
+    height: 32px;
+    font-size: 12px;
+  }
+  .member-name {
+    font-size: 0.85rem;
+  }
+  .action-btn-circle {
+    width: 28px;
+    height: 28px;
+  }
+  .calendar-day {
+    font-size: 1rem;
+  }
+}

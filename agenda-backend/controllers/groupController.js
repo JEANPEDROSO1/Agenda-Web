@@ -470,7 +470,7 @@ exports.createGroupEvent = async (req, res) => {
     'SELECT funcao FROM grupo_participantes WHERE id_grupo = ? AND id_usuario = ?',
     [id_grupo, id_usuario],
     (checkErr, checkResults) => {
-      if (checkErr || checkResults.length === 0 || checkResults[0].funcao !== 'admin') {
+      if (checkErr || checkResults.length === 0 || !['admin', 'dono'].includes(checkResults[0].funcao)) {
         return res.status(403).json({ error: 'Apenas administradores do grupo podem criar compromissos coletivos.' });
       }
 
@@ -496,7 +496,7 @@ exports.createGroupEvent = async (req, res) => {
             async (membErr, members) => {
               if (!membErr && members.length > 0) {
                 const formattedDate = new Date(data_evento + 'T' + hora_evento).toLocaleString('pt-BR');
-                const link = `http://localhost:8000/grupos.html`; // link correto do calendário do grupo
+                const link = `https://agendaweb360.vercel.app/grupos.html`; // link correto do calendário do grupo
                 
                 for (const member of members) {
                   try {
@@ -541,7 +541,7 @@ exports.updateGroupEvent = async (req, res) => {
     'SELECT funcao FROM grupo_participantes WHERE id_grupo = ? AND id_usuario = ?',
     [id_grupo, id_usuario],
     (checkErr, checkResults) => {
-      if (checkErr || checkResults.length === 0 || checkResults[0].funcao !== 'admin') {
+      if (checkErr || checkResults.length === 0 || !['admin', 'dono'].includes(checkResults[0].funcao)) {
         return res.status(403).json({ error: 'Apenas administradores do grupo podem alterar compromissos coletivos.' });
       }
 
@@ -576,7 +576,7 @@ exports.updateGroupEvent = async (req, res) => {
                 async (membErr, members) => {
                   if (!membErr && members.length > 0) {
                     const formattedDate = new Date(data_evento + 'T' + hora_evento).toLocaleString('pt-BR');
-                    const link = `http://localhost:8000/grupos.html`;
+                    const link = `https://agendaweb360.vercel.app/grupos.html`;
                     
                     for (const member of members) {
                       try {
@@ -618,7 +618,7 @@ exports.deleteGroupEvent = async (req, res) => {
     'SELECT funcao FROM grupo_participantes WHERE id_grupo = ? AND id_usuario = ?',
     [id_grupo, id_usuario],
     (checkErr, checkResults) => {
-      if (checkErr || checkResults.length === 0 || checkResults[0].funcao !== 'admin') {
+      if (checkErr || checkResults.length === 0 || !['admin', 'dono'].includes(checkResults[0].funcao)) {
         return res.status(403).json({ error: 'Apenas administradores do grupo podem excluir compromissos coletivos.' });
       }
 
