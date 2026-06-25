@@ -226,6 +226,7 @@
   align-items: center;
   gap: 12px;
   overflow: hidden;
+  min-width: 0;
 }
 
 .member-avatar {
@@ -251,6 +252,8 @@
 
 .member-meta {
   overflow: hidden;
+  min-width: 0;
+  flex: 1;
 }
 
 .member-name {
@@ -718,7 +721,9 @@ input:not([type="checkbox"]):not([type="radio"]):focus, textarea:focus, select:f
     height: 400px;
   }
   .members-list {
-    max-height: 300px;
+    max-height: 250px;
+    overflow-y: auto;
+    padding-right: 5px;
   }
   .trello-lists-wrapper {
     flex-wrap: nowrap;
@@ -741,6 +746,16 @@ input:not([type="checkbox"]):not([type="radio"]):focus, textarea:focus, select:f
 @media (max-width: 400px) {
   .groups-container {
     padding: 0 10px;
+  }
+  .detail-card {
+    padding: 10px;
+  }
+  .section-title {
+    font-size: 1.1rem;
+    margin-bottom: 15px;
+  }
+  .group-detail-header h1 {
+    font-size: 1.2rem !important;
   }
   .group-card {
     padding: 20px;
@@ -782,5 +797,23 @@ input:not([type="checkbox"]):not([type="radio"]):focus, textarea:focus, select:f
   }
   .calendar-day {
     font-size: 1rem;
+  }
+}
+
+@media (max-width: 450px) {
+  .calendar-day {
+    font-size: 0.85rem !important;
+    max-height: 38px;
+  }
+  .member-avatar {
+    width: 28px !important;
+    height: 28px !important;
+    font-size: 11px !important;
+  }
+  .member-item {
+    padding: 6px 10px !important;
+  }
+  .detail-card {
+    padding: 10px !important;
   }
 }
