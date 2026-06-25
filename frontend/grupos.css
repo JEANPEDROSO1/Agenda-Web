@@ -817,3 +817,94 @@ input:not([type="checkbox"]):not([type="radio"]):focus, textarea:focus, select:f
     padding: 10px !important;
   }
 }
+
+/* FINAL ULTRA COMPACT MOBILE FIX */
+@media (max-width: 450px) {
+  /* Encolher toda a página do grupo no mobile */
+  .groups-container {
+    padding: 10px !important;
+    margin: 10px auto !important;
+  }
+  .group-detail-header {
+    margin-bottom: 10px !important;
+    gap: 5px !important;
+  }
+  .group-detail-header h1 {
+    font-size: 1rem !important;
+  }
+  .btn-back, .btn-primary-glass, .btn-danger-glass, .btn-success-glass {
+    padding: 6px 10px !important;
+    font-size: 0.75rem !important;
+  }
+  
+  /* Participantes */
+  .detail-card {
+    padding: 8px !important;
+    border-radius: 10px !important;
+  }
+  .section-title {
+    font-size: 0.9rem !important;
+    margin-bottom: 5px !important;
+  }
+  .member-item {
+    padding: 4px 6px !important;
+    border-radius: 6px !important;
+  }
+  .member-avatar {
+    width: 24px !important;
+    height: 24px !important;
+    font-size: 10px !important;
+  }
+  .member-name {
+    font-size: 0.75rem !important;
+  }
+  .member-email {
+    font-size: 0.65rem !important;
+  }
+  .members-list {
+    max-height: 120px !important; /* Limite muito estrito */
+    gap: 4px !important;
+  }
+  
+  /* Calendário */
+  .calendar-card {
+    min-height: auto !important;
+    height: auto !important;
+  }
+  .card-header {
+    margin-bottom: 5px !important;
+  }
+  #groupMonthYear {
+    font-size: 0.9rem !important;
+  }
+  .month-nav-btn {
+    width: 24px !important;
+    height: 24px !important;
+  }
+  .month-nav-btn svg {
+    width: 14px !important;
+    height: 14px !important;
+  }
+  .calendar-weekdays {
+    margin-bottom: 2px !important;
+  }
+  .calendar-weekdays span {
+    font-size: 0.6rem !important;
+  }
+  .calendar-grid {
+    gap: 2px !important;
+  }
+  .calendar-day {
+    font-size: 0.75rem !important;
+    max-height: 25px !important;
+    max-width: 100% !important;
+  }
+  .group-events-list {
+    max-height: 100px !important;
+  }
+  
+  /* Gap geral entre os dois cards */
+  .group-detail-grid {
+    gap: 10px !important;
+  }
+}
