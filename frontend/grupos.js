@@ -719,19 +719,41 @@ function renderGroupEventsList() {
         : `<i data-lucide="pin" class="icon-inline" style="width: 12px; height: 12px; stroke-width: 2.5; display: inline-block; vertical-align: middle; margin-right: 4px;"></i>Normal`}
     </span>`;
 
-    const formattedDate = `${String(d).padStart(2, '0')}/${String(m).padStart(2, '0')}/${y}`;
+    const now = new Date();
+    // Helper to get the actual Date object considering repetition
+    const getNextOccurrence = (dateStr, timeStr, rep) => {
+      let nextDate = new Date(`${dateStr}T${timeStr || '00:00'}`);
+      if (!rep || rep === 'nenhuma') return nextDate;
+      while (nextDate < now) {
+        if (rep === 'semanal') nextDate.setDate(nextDate.getDate() + 7);
+        else if (rep === 'mensal') nextDate.setMonth(nextDate.getMonth() + 1);
+        else if (rep === 'anual') nextDate.setFullYear(nextDate.getFullYear() + 1);
+        else break;
+      }
+      return nextDate;
+    };
+
+    const nextDate = getNextOccurrence(e.data_evento.substring(0, 10), e.hora_evento, e.repeticao);
+    const isPast = nextDate < now && (!e.repeticao || e.repeticao === 'nenhuma');
+
+    if (isPast) {
+      card.classList.add('past-event');
+    }
     
     let actionsHtml = '';
     if (isAdminOrOwner) {
+      const editBtn = isPast ? '' : `<button class="btn-edit" onclick='openEditEventModal(${JSON.stringify(e).replace(/'/g, "&apos;")})'>Editar</button>`;
       actionsHtml = `
         <div class="compromisso-actions">
-          <button class="btn-edit" onclick='openEditEventModal(${JSON.stringify(e).replace(/'/g, "&apos;")})'>Editar</button>
+          ${editBtn}
           <button class="btn-delete" onclick="deleteGroupEvent(${currentGroupData.group.id_grupo}, ${e.id_grupo_evento})">Excluir</button>
         </div>
       `;
     }
 
     const localInfo = e.local ? `<div style="margin-top: 8px; font-size: 0.85rem; color: var(--text-muted);"><i data-lucide="map-pin" style="width: 12px; height: 12px; vertical-align: middle; margin-right: 4px;"></i><strong>Local:</strong> ${e.local}</div>` : '';
+    
+    const formattedDate = `${String(d).padStart(2, '0')}/${String(m).padStart(2, '0')}/${y}`;
 
     card.innerHTML = `
       <div class="compromisso-header">

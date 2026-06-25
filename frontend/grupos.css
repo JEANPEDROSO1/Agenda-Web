@@ -730,6 +730,12 @@ input:not([type="checkbox"]):not([type="radio"]):focus, textarea:focus, select:f
     flex: 0 0 85vw;
     scroll-snap-align: center;
   }
+  .detail-card {
+    padding: 15px;
+  }
+  .group-detail-header h1 {
+    font-size: 1.4rem !important;
+  }
 }
 
 @media (max-width: 400px) {
