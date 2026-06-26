@@ -227,6 +227,7 @@
   gap: 12px;
   overflow: hidden;
   min-width: 0;
+  flex: 1; /* Adicionado para forçar a contração correta e mostrar reticências no texto */
 }
 
 .member-avatar {
@@ -844,17 +845,18 @@ input:not([type="checkbox"]):not([type="radio"]):focus, textarea:focus, select:f
     font-size: 0.75rem;
   }
   .calendar-grid {
-    gap: 4px;
+    gap: 6px;
+    align-content: start; /* PREVENTS VERTICAL STRETCHING/GAPS */
   }
   .calendar-day {
     font-size: 1rem;
-    min-height: 40px;
-    max-height: 40px;
-    aspect-ratio: 1;
+    aspect-ratio: 1; /* Mantém sempre quadrado baseado na largura disponível */
     display: flex;
     align-items: center;
     justify-content: center;
     padding: 0;
+    min-height: auto;
+    max-height: none;
   }
   
   /* Lista de Eventos */
