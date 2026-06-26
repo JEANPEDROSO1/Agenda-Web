@@ -140,7 +140,7 @@
   box-shadow: 0 4px 15px rgba(59, 130, 246, 0.3);
 }
 
-/* Seção de Detalhes SPA */
+/* SeÃ§Ã£o de Detalhes SPA */
 .group-detail-header {
   display: flex;
   justify-content: space-between;
@@ -310,7 +310,7 @@
   color: #fde047;
 }
 
-/* Calendário Compartilhado - Eventos */
+/* CalendÃ¡rio Compartilhado - Eventos */
 .group-events-list {
   display: flex;
   flex-direction: column;
@@ -456,7 +456,7 @@
 .btn-edit:hover { background: var(--primary); border-color: var(--primary); }
 .btn-delete:hover { background: var(--danger); border-color: var(--danger); }
 
-/* Modais Específicas de Grupos e Forms Glassmorphism */
+/* Modais EspecÃ­ficas de Grupos e Forms Glassmorphism */
 .form-group { margin-bottom: 20px; min-width: 0; }
 .form-group label { display: block; font-size: 0.85rem; font-weight: 700; color: var(--text-muted); margin-bottom: 8px; text-transform: uppercase; letter-spacing: 0.5px; }
 input:not(.create-group-form input):not(.trello-add-card-form input):not([type="checkbox"]):not([type="radio"]), 
@@ -707,23 +707,33 @@ input:not([type="checkbox"]):not([type="radio"]):focus, textarea:focus, select:f
 }
 
 /* ===== RESPONSIVIDADE ===== */
+@media (max-width: 992px) {
+  .group-detail-grid {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+}
+
 @media (max-width: 768px) {
   .groups-container {
     padding: 0 15px;
+    margin: 20px auto;
   }
   .create-group-form {
     flex-direction: column;
   }
-  .group-detail-grid {
-    grid-template-columns: 1fr;
+  .group-detail-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 15px;
+    margin-bottom: 20px;
   }
+  .group-detail-header h1 {
+    font-size: 1.4rem !important;
+  }
+  
   .trello-board-container {
     height: 400px;
-  }
-  .members-list {
-    max-height: 250px;
-    overflow-y: auto;
-    padding-right: 5px;
   }
   .trello-lists-wrapper {
     flex-wrap: nowrap;
@@ -735,27 +745,10 @@ input:not([type="checkbox"]):not([type="radio"]):focus, textarea:focus, select:f
     flex: 0 0 85vw;
     scroll-snap-align: center;
   }
+  
+  /* Ajuste geral dos Cards */
   .detail-card {
-    padding: 15px;
-  }
-  .group-detail-header h1 {
-    font-size: 1.4rem !important;
-  }
-}
-
-@media (max-width: 400px) {
-  .groups-container {
-    padding: 0 10px;
-  }
-  .detail-card {
-    padding: 10px;
-  }
-  .section-title {
-    font-size: 1.1rem;
-    margin-bottom: 15px;
-  }
-  .group-detail-header h1 {
-    font-size: 1.2rem !important;
+    padding: 20px;
   }
   .group-card {
     padding: 20px;
@@ -763,23 +756,59 @@ input:not([type="checkbox"]):not([type="radio"]):focus, textarea:focus, select:f
   .create-group-card {
     padding: 20px;
   }
-  .group-card-title {
-    font-size: 1.1rem;
+  .section-title {
+    font-size: 1.2rem;
+    margin-bottom: 15px;
   }
-  .group-badge {
-    font-size: 0.65rem;
+
+  /* Ajuste Participantes */
+  .members-list {
+    max-height: 300px;
+    overflow-y: auto;
+    padding-right: 5px;
+  }
+  .member-item {
+    padding: 10px 14px;
+    gap: 8px;
+  }
+  .member-avatar {
+    width: 36px;
+    height: 36px;
+    font-size: 14px;
+  }
+  .member-name {
+    font-size: 0.95rem;
+  }
+  .member-email {
+    font-size: 0.85rem;
+  }
+  .action-btn-circle {
+    width: 32px;
+    height: 32px;
   }
 }
 
-.group-events-list::-webkit-scrollbar {
-  width: 6px;
-}
-.group-events-list::-webkit-scrollbar-thumb {
-  background: rgba(255, 255, 255, 0.2);
-  border-radius: 10px;
-}
-
-@media (max-width: 500px) {
+@media (max-width: 480px) {
+  .groups-container {
+    padding: 0 10px;
+    margin: 10px auto;
+  }
+  .detail-card {
+    padding: 15px;
+  }
+  .group-detail-header h1 {
+    font-size: 1.2rem !important;
+  }
+  .btn-back, .btn-danger-glass {
+    padding: 8px 12px;
+    font-size: 0.85rem;
+  }
+  
+  /* Participantes no celular */
+  .members-list {
+    max-height: 250px;
+    gap: 10px;
+  }
   .member-item {
     padding: 8px 12px;
   }
@@ -791,120 +820,65 @@ input:not([type="checkbox"]):not([type="radio"]):focus, textarea:focus, select:f
   .member-name {
     font-size: 0.85rem;
   }
-  .action-btn-circle {
-    width: 28px;
-    height: 28px;
+  
+  /* Calendário no celular */
+  .calendar-card {
+    min-height: auto;
+    height: auto;
+    padding: 15px 10px;
+  }
+  .card-header {
+    margin-bottom: 15px;
+  }
+  #groupMonthYear {
+    font-size: 1.1rem;
+  }
+  .month-nav-btn {
+    width: 36px;
+    height: 36px;
+  }
+  .calendar-weekdays {
+    margin-bottom: 8px;
+  }
+  .calendar-weekdays span {
+    font-size: 0.75rem;
+  }
+  .calendar-grid {
+    gap: 4px;
   }
   .calendar-day {
     font-size: 1rem;
-  }
-}
-
-@media (max-width: 450px) {
-  .calendar-day {
-    font-size: 0.85rem !important;
-    max-height: 38px;
-  }
-  .member-avatar {
-    width: 28px !important;
-    height: 28px !important;
-    font-size: 11px !important;
-  }
-  .member-item {
-    padding: 6px 10px !important;
-  }
-  .detail-card {
-    padding: 10px !important;
-  }
-}
-
-/* FINAL ULTRA COMPACT MOBILE FIX */
-@media (max-width: 450px) {
-  /* Encolher toda a p�gina do grupo no mobile */
-  .groups-container {
-    padding: 10px !important;
-    margin: 10px auto !important;
-  }
-  .group-detail-header {
-    margin-bottom: 10px !important;
-    gap: 5px !important;
-  }
-  .group-detail-header h1 {
-    font-size: 1rem !important;
-  }
-  .btn-back, .btn-primary-glass, .btn-danger-glass, .btn-success-glass {
-    padding: 6px 10px !important;
-    font-size: 0.75rem !important;
+    min-height: 40px;
+    max-height: 40px;
+    aspect-ratio: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
   }
   
-  /* Participantes */
-  .detail-card {
-    padding: 8px !important;
-    border-radius: 10px !important;
-  }
-  .section-title {
-    font-size: 0.9rem !important;
-    margin-bottom: 5px !important;
-  }
-  .member-item {
-    padding: 4px 6px !important;
-    border-radius: 6px !important;
-  }
-  .member-avatar {
-    width: 24px !important;
-    height: 24px !important;
-    font-size: 10px !important;
-  }
-  .member-name {
-    font-size: 0.75rem !important;
-  }
-  .member-email {
-    font-size: 0.65rem !important;
-  }
-  .members-list {
-    max-height: 120px !important; /* Limite muito estrito */
-    gap: 4px !important;
-  }
-  
-  /* Calend�rio */
-  .calendar-card {
-    min-height: auto !important;
-    height: auto !important;
-  }
-  .card-header {
-    margin-bottom: 5px !important;
-  }
-  #groupMonthYear {
-    font-size: 0.9rem !important;
-  }
-  .month-nav-btn {
-    width: 24px !important;
-    height: 24px !important;
-  }
-  .month-nav-btn svg {
-    width: 14px !important;
-    height: 14px !important;
-  }
-  .calendar-weekdays {
-    margin-bottom: 2px !important;
-  }
-  .calendar-weekdays span {
-    font-size: 0.6rem !important;
-  }
-  .calendar-grid {
-    gap: 2px !important;
-  }
-  .calendar-day {
-    font-size: 0.75rem !important;
-    max-height: 25px !important;
-    max-width: 100% !important;
-  }
+  /* Lista de Eventos */
   .group-events-list {
-    max-height: 100px !important;
+    max-height: 250px;
   }
-  
-  /* Gap geral entre os dois cards */
-  .group-detail-grid {
-    gap: 10px !important;
+  .compromisso-item {
+    padding: 15px;
   }
+  .compromisso-header h3 {
+    font-size: 1.1rem;
+  }
+  .compromisso-descricao {
+    font-size: 0.85rem;
+  }
+  .compromisso-data {
+    font-size: 0.75rem;
+  }
+}
+
+.group-events-list::-webkit-scrollbar {
+  width: 6px;
+}
+.group-events-list::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 10px;
 }
