@@ -637,15 +637,21 @@ function renderGroupCalendar() {
 
       const isMobile = window.innerWidth <= 768;
       if (!isMobile) {
-        // Abrir modal de agendar evento automaticamente no desktop
-        document.getElementById('eventTitulo').value = '';
-        document.getElementById('eventDescricao').value = '';
-        document.getElementById('eventData').value = cellDateStr;
-        document.getElementById('eventHora').value = '12:00';
-        document.getElementById('eventUrgencia').value = 'normal';
-        document.getElementById('editEventId').value = '';
-        document.getElementById('groupEventModalTitle').textContent = 'Agendar no Grupo';
-        document.getElementById('addEventModal').style.display = 'flex';
+        const loggedUserId = parseInt(localStorage.getItem('userId'));
+        const minhaFuncao = currentGroupData ? currentGroupData.minhaFuncao : 'membro';
+        const isAdminOrOwner = minhaFuncao === 'admin' || currentGroupData?.group?.id_criador === loggedUserId;
+
+        if (isAdminOrOwner) {
+          // Abrir modal de agendar evento automaticamente no desktop
+          document.getElementById('eventTitulo').value = '';
+          document.getElementById('eventDescricao').value = '';
+          document.getElementById('eventData').value = cellDateStr;
+          document.getElementById('eventHora').value = '12:00';
+          document.getElementById('eventUrgencia').value = 'normal';
+          document.getElementById('editEventId').value = '';
+          document.getElementById('groupEventModalTitle').textContent = 'Agendar no Grupo';
+          document.getElementById('addEventModal').style.display = 'flex';
+        }
       }
     });
 
