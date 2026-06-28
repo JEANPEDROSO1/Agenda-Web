@@ -1,13 +1,16 @@
 <!DOCTYPE html>
 <html lang="pt-br">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Cadastro - Agenda Web</title>
-  <meta name="description" content="Crie sua conta na Agenda Web e comece a organizar sua rotina, compromissos e tarefas de forma simples e rápida.">
+  <meta name="description"
+    content="Crie sua conta na Agenda Web e comece a organizar sua rotina, compromissos e tarefas de forma simples e rápida.">
   <link rel="icon" type="image/png" href="logo.png">
   <link rel="stylesheet" href="cadastro.css?v=6">
 </head>
+
 <body class="auth-mesh-body">
   <!-- Fundo Animado -->
   <div class="mesh-background">
@@ -18,15 +21,17 @@
 
   <div class="glass-auth-container">
     <a href="index.html" class="glass-back-btn" aria-label="Voltar">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-        <path d="M15 18L9 12L15 6"/>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"
+        stroke-linejoin="round">
+        <path d="M15 18L9 12L15 6" />
       </svg>
     </a>
 
     <div class="glass-header">
       <div class="logo-box">
         <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <path d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
+            stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" />
         </svg>
       </div>
       <h1>Criar Conta</h1>
@@ -38,8 +43,9 @@
         <label for="nome">Nome Completo</label>
         <div class="input-wrapper">
           <svg class="input-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <path d="M2 7V17C2 18.1046 2.89543 19 4 19H20C21.1046 19 22 18.1046 22 17V7C22 5.89543 21.1046 5 20 5H4C2.89543 5 2 5.89543 2 7Z"/>
-            <path d="M2 7L12 13L22 7"/>
+            <path
+              d="M2 7V17C2 18.1046 2.89543 19 4 19H20C21.1046 19 22 18.1046 22 17V7C22 5.89543 21.1046 5 20 5H4C2.89543 5 2 5.89543 2 7Z" />
+            <path d="M2 7L12 13L22 7" />
           </svg>
           <input type="text" id="nome" placeholder="Seu nome" required>
         </div>
@@ -49,49 +55,51 @@
         <label for="email">E-mail</label>
         <div class="input-wrapper">
           <svg class="input-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <path d="M4 4H20V20H4V4Z" stroke-linecap="round" stroke-linejoin="round"/>
-            <path d="M7 9H17" stroke-linecap="round"/>
-            <path d="M7 13H13" stroke-linecap="round"/>
+            <path d="M4 4H20V20H4V4Z" stroke-linecap="round" stroke-linejoin="round" />
+            <path d="M7 9H17" stroke-linecap="round" />
+            <path d="M7 13H13" stroke-linecap="round" />
           </svg>
           <input type="email" id="email" placeholder="Seu e-mail" required>
         </div>
       </div>
-      
+
       <div class="glass-input-group">
         <label for="senha">Senha</label>
         <div class="input-wrapper">
           <svg class="input-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <rect x="6" y="10" width="12" height="8" rx="2"/>
-            <path d="M9 10V7C9 5.34315 10.3431 4 12 4C13.6569 4 15 5.34315 15 7V10" stroke-linecap="round"/>
+            <rect x="6" y="10" width="12" height="8" rx="2" />
+            <path d="M9 10V7C9 5.34315 10.3431 4 12 4C13.6569 4 15 5.34315 15 7V10" stroke-linecap="round" />
           </svg>
           <input type="password" id="senha" placeholder="Crie uma senha" required>
           <button type="button" class="password-toggle" data-target="senha">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <path d="M1 12C1 12 5 5 12 5C19 5 23 12 23 12C23 12 19 19 12 19C5 19 1 12 1 12Z"/>
-              <circle cx="12" cy="12" r="3"/>
+              <path d="M1 12C1 12 5 5 12 5C19 5 23 12 23 12C23 12 19 19 12 19C5 19 1 12 1 12Z" />
+              <circle cx="12" cy="12" r="3" />
             </svg>
           </button>
         </div>
         <small style="display: block; margin-top: 8px; color: #94a3b8; font-size: 0.8rem; line-height: 1.4;">
-          A senha deve ter no mínimo 8 caracteres, incluindo letra maiúscula, minúscula, número e caractere especial (ex: @, #, $, !).
+          A senha deve ter no mínimo 8 caracteres, incluindo letra maiúscula, minúscula, número e caractere especial
+          (ex: @, #, $).
         </small>
       </div>
 
-        <div class="glass-input-group">
-          <label for="confirmarSenha">Confirmar Senha</label>
-          <div class="input-wrapper">
-            <svg class="input-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <rect x="6" y="10" width="12" height="8" rx="2"/>
-              <path d="M9 10V7C9 5.34315 10.3431 4 12 4C13.6569 4 15 5.34315 15 7V10" stroke-linecap="round"/>
-            </svg>
-            <input type="password" id="confirmarSenha" placeholder="Confirme a senha" required>
-            <button type="button" class="password-toggle" data-target="confirmarSenha"></button>
-          </div>
+      <div class="glass-input-group">
+        <label for="confirmarSenha">Confirmar Senha</label>
+        <div class="input-wrapper">
+          <svg class="input-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <rect x="6" y="10" width="12" height="8" rx="2" />
+            <path d="M9 10V7C9 5.34315 10.3431 4 12 4C13.6569 4 15 5.34315 15 7V10" stroke-linecap="round" />
+          </svg>
+          <input type="password" id="confirmarSenha" placeholder="Confirme a senha" required>
+          <button type="button" class="password-toggle" data-target="confirmarSenha"></button>
         </div>
+      </div>
       <button type="submit" class="glass-submit-btn glass-submit-alt">
         Finalizar Cadastro
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M5 12h14M12 5l7 7-7 7"/>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+          stroke-linejoin="round">
+          <path d="M5 12h14M12 5l7 7-7 7" />
         </svg>
       </button>
     </form>
@@ -110,4 +118,5 @@
     }
   </script>
 </body>
+
 </html>
