@@ -176,7 +176,7 @@ document.getElementById('cadastroForm')?.addEventListener('submit', async (e) =>
 
   const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^A-Za-z0-9]).{8,}$/;
   if (!passwordRegex.test(senha)) {
-    showNotification('A senha deve ter no mínimo 8 caracteres, com pelo menos uma letra maiúscula, uma minúscula, um número e um caractere especial.', 'error');
+    showNotification('A senha não atende aos requisitos. Verifique as regras abaixo do campo.', 'error');
     return;
   }
 
