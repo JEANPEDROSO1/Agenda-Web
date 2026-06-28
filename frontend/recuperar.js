@@ -153,6 +153,12 @@ document.addEventListener('DOMContentLoaded', () => {
     const novaSenha = document.getElementById('novaSenha').value;
     const confirmarNovaSenha = document.getElementById('confirmarNovaSenha').value;
 
+    const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^A-Za-z0-9]).{8,}$/;
+    if (!passwordRegex.test(novaSenha)) {
+      showNotification('A senha não atende aos requisitos. Verifique as regras abaixo do campo.', 'error');
+      return;
+    }
+
     if (novaSenha !== confirmarNovaSenha) {
       showNotification('As senhas não coincidem. Verifique os campos.', 'error');
       return;

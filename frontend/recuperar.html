@@ -48,6 +48,7 @@
     .code-digit {
       width: 45px;
       height: 55px;
+      padding: 0;
       font-size: 24px;
       font-weight: 700;
       text-align: center;
@@ -157,11 +158,14 @@
               <rect x="6" y="10" width="12" height="8" rx="2"/>
               <path d="M9 10V7C9 5.34315 10.3431 4 12 4C13.6569 4 15 5.34315 15 7V10" stroke-linecap="round"/>
             </svg>
-            <input type="password" id="novaSenha" placeholder="Mínimo 6 caracteres" required minlength="6">
+            <input type="password" id="novaSenha" placeholder="Mínimo 8 caracteres" required minlength="8">
             <button type="button" class="password-toggle" data-target="novaSenha">
               <!-- Ícone dinâmico do script.js -->
             </button>
           </div>
+          <small style="display: block; margin-top: 8px; color: #94a3b8; font-size: 0.8rem; line-height: 1.4;">
+            A senha deve ter no mínimo 8 caracteres, incluindo letra maiúscula, minúscula, número e caractere especial (ex: @, #, $, !).
+          </small>
         </div>
 
         <div class="glass-input-group">
