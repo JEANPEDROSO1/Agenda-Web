@@ -173,6 +173,13 @@ document.getElementById('cadastroForm')?.addEventListener('submit', async (e) =>
   const email = document.getElementById('email').value.trim();
   const senha = document.getElementById('senha').value;
   const confirmarSenha = document.getElementById('confirmarSenha').value;
+
+  const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^A-Za-z0-9]).{8,}$/;
+  if (!passwordRegex.test(senha)) {
+    showNotification('A senha deve ter no mínimo 8 caracteres, com pelo menos uma letra maiúscula, uma minúscula, um número e um caractere especial.', 'error');
+    return;
+  }
+
   if (senha !== confirmarSenha) {
     showNotification('As senhas informadas não são iguais. Verifique os campos de senha e tente novamente.', 'error');
     return;

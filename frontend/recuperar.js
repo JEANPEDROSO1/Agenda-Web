@@ -38,6 +38,26 @@ document.addEventListener('DOMContentLoaded', () => {
         digits[index - 1].focus();
       }
     });
+
+    digit.addEventListener('paste', (e) => {
+      e.preventDefault();
+      const pastedData = (e.clipboardData || window.clipboardData).getData('text');
+      // Filtra para pegar apenas os números e limita ao tamanho máximo (6 dígitos)
+      const pastedNumbers = pastedData.replace(/[^0-9]/g, '').slice(0, digits.length);
+      
+      if (pastedNumbers) {
+        // Preenche os inputs a partir do input atual onde o paste ocorreu
+        for (let i = 0; i < pastedNumbers.length; i++) {
+          if (index + i < digits.length) {
+            digits[index + i].value = pastedNumbers[i];
+          }
+        }
+        
+        // Move o foco para o próximo campo vazio após os colados, ou para o último campo
+        const nextIndex = Math.min(index + pastedNumbers.length, digits.length - 1);
+        digits[nextIndex].focus();
+      }
+    });
   });
 
   // PASSO 1: Solicitar código de recuperação

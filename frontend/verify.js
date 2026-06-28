@@ -12,6 +12,30 @@ document.addEventListener('DOMContentLoaded', () => {
     return;
   }
 
+  const codigoInput = document.getElementById('codigo');
+  if (codigoInput) {
+    // Trata digitação normal
+    codigoInput.addEventListener('input', (e) => {
+      e.target.value = e.target.value.replace(/[^0-9]/g, '');
+    });
+
+    // Trata colagem (paste) garantindo que letras sejam ignoradas
+    codigoInput.addEventListener('paste', (e) => {
+      e.preventDefault();
+      const pastedData = (e.clipboardData || window.clipboardData).getData('text');
+      const numbersOnly = pastedData.replace(/[^0-9]/g, '');
+      
+      const start = codigoInput.selectionStart;
+      const end = codigoInput.selectionEnd;
+      const currentValue = codigoInput.value;
+      
+      const newValue = currentValue.substring(0, start) + numbersOnly + currentValue.substring(end);
+      
+      codigoInput.value = newValue;
+      codigoInput.selectionStart = codigoInput.selectionEnd = start + numbersOnly.length;
+    });
+  }
+
   const verifyForm = document.getElementById('verifyForm');
   if (verifyForm) {
     verifyForm.addEventListener('submit', async (e) => {
