@@ -15,10 +15,6 @@ async function resetDatabase() {
   });
 
   const tables = [
-    'trello_cartao_responsaveis',
-    'trello_cartoes',
-    'trello_listas',
-    'trello_quadros',
     'grupo_eventos',
     'grupo_participantes',
     'grupos',

@@ -1,12 +1,9 @@
 /**
- * Módulo de Grupos, Calendário Compartilhado e Quadro Kanban (Trello) - Agenda Web
+ * Módulo de Grupos e Calendário Compartilhado - Agenda Web
  */
 
 let currentGroupId = null;
 let currentGroupData = null; // Detalhes do grupo selecionado
-let currentBoardId = null;
-let currentSelectedCard = null; // Cartão Trello atualmente selecionado
-
 document.addEventListener('DOMContentLoaded', async () => {
   // Verificar se o usuário está logado
   const token = localStorage.getItem('token');
@@ -71,8 +68,6 @@ document.addEventListener('DOMContentLoaded', async () => {
   document.getElementById('btnBackToGroups').addEventListener('click', () => {
     currentGroupId = null;
     currentGroupData = null;
-    currentBoardId = null;
-    currentSelectedCard = null;
     document.getElementById('singleGroupSection').style.display = 'none';
     document.getElementById('groupsListSection').style.display = 'block';
     const inviteEmail = document.getElementById('inviteEmail');

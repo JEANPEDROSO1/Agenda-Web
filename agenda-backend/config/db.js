@@ -263,53 +263,6 @@ pool.getConnection((err, connection) => {
           await runQuery('ALTER TABLE perfis MODIFY foto_caminho LONGTEXT');
         }
 
-        // 9. Tabela trello_quadros
-        await runQuery(`
-          CREATE TABLE IF NOT EXISTS trello_quadros (
-            id_quadro INT AUTO_INCREMENT PRIMARY KEY,
-            id_grupo INT NOT NULL,
-            nome VARCHAR(255) NOT NULL,
-            FOREIGN KEY (id_grupo) REFERENCES grupos(id_grupo) ON DELETE CASCADE
-          )
-        `);
-
-        // 10. Tabela trello_listas
-        await runQuery(`
-          CREATE TABLE IF NOT EXISTS trello_listas (
-            id_lista INT AUTO_INCREMENT PRIMARY KEY,
-            id_quadro INT NOT NULL,
-            nome VARCHAR(255) NOT NULL,
-            posicao INT NOT NULL DEFAULT 0,
-            FOREIGN KEY (id_quadro) REFERENCES trello_quadros(id_quadro) ON DELETE CASCADE
-          )
-        `);
-
-        // 11. Tabela trello_cartoes
-        await runQuery(`
-          CREATE TABLE IF NOT EXISTS trello_cartoes (
-            id_cartao INT AUTO_INCREMENT PRIMARY KEY,
-            id_lista INT NOT NULL,
-            titulo VARCHAR(255) NOT NULL,
-            descricao TEXT,
-            prazo DATE DEFAULT NULL,
-            concluido TINYINT(1) NOT NULL DEFAULT 0,
-            posicao INT NOT NULL DEFAULT 0,
-            FOREIGN KEY (id_lista) REFERENCES trello_listas(id_lista) ON DELETE CASCADE
-          )
-        `);
-
-        // 12. Tabela trello_cartao_responsaveis
-        await runQuery(`
-          CREATE TABLE IF NOT EXISTS trello_cartao_responsaveis (
-            id_cartao_responsavel INT AUTO_INCREMENT PRIMARY KEY,
-            id_cartao INT NOT NULL,
-            id_usuario INT NOT NULL,
-            FOREIGN KEY (id_cartao) REFERENCES trello_cartoes(id_cartao) ON DELETE CASCADE,
-            FOREIGN KEY (id_usuario) REFERENCES usuarios(id_usuario) ON DELETE CASCADE,
-            UNIQUE KEY unique_cartao_responsavel (id_cartao, id_usuario)
-          )
-        `);
-
         // 13. Tabela recuperacao_senha
         await runQuery(`
           CREATE TABLE IF NOT EXISTS recuperacao_senha (
